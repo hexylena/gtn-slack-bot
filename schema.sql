@@ -1,0 +1,17 @@
+PRAGMA foreign_keys=OFF;
+BEGIN TRANSACTION;
+CREATE TABLE IF NOT EXISTS "transcript" (
+	"id"      INTEGER PRIMARY KEY AUTOINCREMENT
+	"user_id" VARCHAR(64),
+	"time"    TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"channel" VARCHAR(64),
+	"proof"   text,
+);
+CREATE TABLE IF NOT EXISTS "certificate_request" (
+	"id"       INTEGER PRIMARY KEY AUTOINCREMENT,
+	"user_id"  VARCHAR(64),
+	"time"     TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+	"course"   TEXT NOT NULL,
+	"approved" INTEGER
+);
+COMMIT;
