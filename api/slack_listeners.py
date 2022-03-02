@@ -3,8 +3,6 @@ import re
 import requests
 import random
 import uuid
-import eventlet
-eventlet.monkey_patch()
 
 from .models import Transcript, CertificateRequest
 from django.http import HttpResponse
@@ -54,12 +52,11 @@ def validateGalaxyURLs(text):
     if "https://" in text:
         urls = re.findall(r"https?://[^/]*/u/[^/]*/./[^ #()\[\]]*", text)
         for url in urls:
-            with eventlet.Timeout(10):
-                resp = requests.get(url, timeout=10)
-                if resp.status_code != 200:
-                    errors.append(f"This url was not loading for us. #{url}")
-                if "galaxy" not in resp.text:
-                    errors.append(f"This url doesn't look like a Galaxy URL")
+            resp = requests.get(url, timeout=10)
+            if resp.status_code != 200:
+                errors.append(f"This url was not loading for us. #{url}")
+            if "galaxy" not in resp.text:
+                errors.append(f"This url doesn't look like a Galaxy URL")
     else:
         errors.append("We could not find a url in your submission")
     return errors
