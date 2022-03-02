@@ -1,4 +1,5 @@
 import logging
+from .models import Transcript
 import os
 
 from slack_bolt import App
@@ -19,4 +20,13 @@ def handle_app_mentions(logger, event, say):
     say(f"Hi there, <@{event['user']}>")
 
 
+@app.command("/completed")
+def handle_completed(ack, body, logger):
+    try:
+        q = Transcript(slack_user_id=body['user_id'], channel=body['channel_name'], proof=body['text'])
+        q.save()
 
+        ack("Saved!")
+    except Exception as e:
+        logger(e)
+        ack("Something went wrong! We could not record your completion. Please contact <@U01F7TAQXNG>")
