@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import Transcript
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 from slack_bolt import App
 import os
 import logging
@@ -17,6 +18,7 @@ app = App(
 def index(request):
     return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
 
+@csrf_exempt
 @app.command("/completed")
 def completed(ack, body, logger, say):
     ack()
@@ -28,3 +30,5 @@ def completed(ack, body, logger, say):
     except Exception as e:
         print(e)
         say("Something went wrong! We could not record your completion. Please contact <@U01F7TAQXNG>")
+
+    return HttpResponse(status=200)
