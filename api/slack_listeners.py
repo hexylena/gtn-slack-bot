@@ -9,7 +9,7 @@ import json
 import os
 
 
-__import__('pprint').pprint(CHANNEL_MAPPING)
+# __import__('pprint').pprint(CHANNEL_MAPPING)
 
 from slack_bolt import App
 
@@ -34,6 +34,46 @@ def handle_app_mentions(logger, event, say):
 def debug(ack, body, logger, say):
     ack()
     say(f"{body}")
+
+
+@csrf_exempt
+@app.command("/certify")
+def certify(ack, client, body, logger, say):
+    ack()
+    # ephemeral(client, body, "Your request for a certificate has been received.")
+    client.views_open(
+        # Pass a valid trigger_id within 3 seconds of receiving it
+        trigger_id=body["trigger_id"],
+        # View payload
+        view={
+            "type": "modal",
+            # View identifier
+            "callback_id": "view_1",
+            "title": {"type": "plain_text", "text": "My App"},
+            "submit": {"type": "plain_text", "text": "Submit"},
+            "blocks": [
+                {
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": "Welcome to a modal with _blocks_"},
+                    "accessory": {
+                        "type": "button",
+                        "text": {"type": "plain_text", "text": "Click me!"},
+                        "action_id": "button_abc"
+                    }
+                },
+                {
+                    "type": "input",
+                    "block_id": "input_c",
+                    "label": {"type": "plain_text", "text": "What are your hopes and dreams?"},
+                    "element": {
+                        "type": "plain_text_input",
+                        "action_id": "dreamy_input",
+                        "multiline": True
+                    }
+                }
+            ]
+        }
+    )
 
 
 def ephemeral(client, body, message):
