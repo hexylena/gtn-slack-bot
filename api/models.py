@@ -4,7 +4,7 @@ from django.db import models
 class Transcript(models.Model):
     slack_user_id = models.CharField(max_length=32)
     time = models.DateTimeField(auto_now_add=True)
-    channel = models.CharField(max_length=32)
+    channel = models.TextField()
     proof = models.TextField()
 
 
