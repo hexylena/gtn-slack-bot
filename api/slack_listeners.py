@@ -65,6 +65,9 @@ def validateGalaxyURLs(text):
         errors.append("We could not find a url in your submission")
     return errors
 
+def logReq(body):
+    print(f"REQ | {body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body.get('text', '')}")
+
 
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
@@ -75,7 +78,7 @@ def handle_app_mentions(logger, event, say):
 @csrf_exempt
 @app.command("/debug")
 def debug(ack, body, logger, say):
-    print(f"{body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body['text']}")
+    logReq(body)
     ack()
     say(f"{body}")
 
@@ -83,7 +86,7 @@ def debug(ack, body, logger, say):
 @csrf_exempt
 @app.command("/request-certificate")
 def certify(ack, client, body, logger, say):
-    print(f"{body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body['text']}")
+    logReq(body)
     # Automatically try and join channels. This ... could be better.
     if body["channel_id"] not in JOINED:
         JOINED.append(body["channel_id"])
@@ -130,7 +133,7 @@ def certify(ack, client, body, logger, say):
 @csrf_exempt
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
-    print(f"{body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body['text']}")
+    logReq(body)
     # Automatically try and join channels. This ... could be better.
     if body["channel_id"] not in JOINED:
         JOINED.append(body["channel_id"])
@@ -191,7 +194,7 @@ def completed(ack, body, logger, say, client):
 @csrf_exempt
 @app.command("/transcript")
 def transcript(ack, body, client):
-    print(f"{body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body['text']}")
+    logReq(body)
     ack()
     logger.debug(body)
 
