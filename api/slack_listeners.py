@@ -25,13 +25,14 @@ def handle_app_mentions(logger, event, say):
 @app.command("/completed")
 def completed(ack, body, logger, say):
     ack()
+    logger.debug(body)
     try:
         q = Transcript(slack_user_id=body['user_id'], channel=body['channel_name'], proof=body['text'])
         q.save()
         say("Saved!")
 
     except Exception as e:
-        print(e)
-        say("Something went wrong! We could not record your completion. Please contact <@U01F7TAQXNG>")
+        logger.error(e)
+        say(f"Something went wrong! ({e}) We could not record your completion. Please contact <@U01F7TAQXNG>")
 
     return HttpResponse(status=200)
