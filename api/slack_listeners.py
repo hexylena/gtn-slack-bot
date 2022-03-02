@@ -10,6 +10,7 @@ import os
 
 
 # __import__('pprint').pprint(CHANNEL_MAPPING)
+JOINED = []
 
 from slack_bolt import App
 
@@ -126,6 +127,11 @@ def ephemeral(client, body, message):
 @csrf_exempt
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
+    # Automatically try and join channels. This ... could be better.
+    if body['channel_id'] not in JOINED:
+        JOINED.append(body['channel_id'])
+        app.client.conversations_join(channel=body['channel_id'])
+
     ack()
     if 'text' not in body:
         ephemeral(client, body, f":warning: Please run this command with the histories you are using as proof of completing this tutorial. E.g. /completed https://usegalaxy.../u/your-user/h/your-history\n\nWe will check these histories before granting your certificate at the end of the course.")
@@ -169,6 +175,7 @@ def transcript(ack, body, client):
 
     congrats = random.choice(['Excellent work!', 'Way to go!', 'Great Progress!'])
     text = f"*{congrats}*\n"
-    text += "\n".join(output),
+    for o in output:
+        text += f"{o}\n"
 
     ephemeral(client, body, text)
