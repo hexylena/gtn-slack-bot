@@ -18,7 +18,7 @@ def index(request):
     return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
 
 @app.command("/completed")
-def handle_completed(ack, body, logger, say):
+def completed(ack, body, logger, say):
     ack()
     try:
         q = Transcript(slack_user_id=body['user_id'], channel=body['channel_name'], proof=body['text'])
