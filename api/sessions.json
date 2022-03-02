@@ -1,0 +1,241 @@
+{
+  "webinars": {
+    "title": "Webinar Series: Galaxy Resources For..",
+    "description": "In this webinar series, we cover resources for different types of Galaxy users and audiences.",
+    "videos": [
+      "webinar/researchers",
+      "webinar/educators",
+      "webinar/tooldevs",
+      "webinar/admins"
+    ]
+  },
+  "sequence-analysis/quality-control": {
+    "title": "Quality Control",
+    "description": "In this sesssion, we will walk you through the basics of quality checking your sequencing data. This session consists of a lecture followed by a hands-on tutorial.",
+    "videos": [
+      "sequence-analysis/quality-control/slides",
+      "sequence-analysis/quality-control/tutorial"
+    ]
+  },
+  "sequence-analysis/mapping": {
+    "title": "Mapping",
+    "description": "In this sesssion, we will walk you through the basics of mapping your sequencing data to a reference genome. This session consists of a lecture followed by a hands-on tutorial.",
+    "videos": [
+      "sequence-analysis/mapping/slides",
+      "sequence-analysis/mapping/tutorial"
+    ]
+  },
+  "assembly": {
+    "title": "Genome Assembly",
+    "description": "This session provides an introduction to Genome Assembly",
+    "videos": [
+      "assembly/general-introduction/slides",
+      "assembly/chloroplast-assembly/tutorial"
+    ]
+  },
+  "variant-analysis/tb-variant-analysis": {
+    "title": "Tuberculosis Variant Analysis",
+    "description": "Variation in the genome of M. tuberculosis (Mtb) is associated with changes in phenotype, for example drug resistance and virulence. It is also useful for outbreak investigation as the single nucleotide polymorphisms (SNPs) in a sample can be used to build a phylogeny.",
+    "videos": [
+      "variant-analysis/tb-variant-analysis/slides",
+      "variant-analysis/tb-variant-analysis/tutorial"
+    ]
+  },
+  "epigenetics/atac-seq": {
+    "title": "Epigenetics: ATAC-Seq",
+    "description": "ATAC-seq (Assay for Transposase-Accessible Chromatin using sequencing) is a technique used in molecular biology to assess genome-wide chromatin accessibility. This session will introduce ATAC-Seq and walk you through an analysis step by step.\n",
+    "videos": [
+      "epigenetics/atac-seq/slides",
+      "epigenetics/atac-seq/tutorial"
+    ]
+  },
+  "transcriptomics/scrna-intro": {
+    "title": "Introduction to Single-Cell RNA-seq Data Analysis",
+    "description": "Single-cell RNA-seq analysis is a rapidly evolving field at the forefront\nof transcriptomic research, used in high-throughput developmental studies\n",
+    "videos": [
+      "transcriptomics/scrna-intro/slides",
+      "transcriptomics/scrna-seq-basic-pipeline/tutorial"
+    ]
+  },
+  "transcriptomics/mirna-target-finder": {
+    "title": "Whole transcriptome analysis of Arabidopsis thaliana",
+    "description": "In plants, miRNAs can silence targets through RNA degradation as well as translational repression pathways, and unlike animals, a large proportion of miRNA and their targets have less than four mismatches. This feature has been exploited for developing miRNAs target prediction tools, providing an efficient approach to elucidate the miRNA-mediated regulatory networks, which can contribute to biotechnological solutions to improve crops productivity.\n",
+    "videos": [
+      "transcriptomics/mirna-target-finder/slides",
+      "transcriptomics/mirna-target-finder/tutorial"
+    ]
+  },
+  "climate/fates": {
+    "title": "Functionally Assembled Terrestrial Ecosystem Simulator (FATES)",
+    "description": "This session will provide a brief overview of FATES, and guide you through a Galaxy analysis step by step.",
+    "videos": [
+      "climate/fates/slides",
+      "climate/fates/tutorial"
+    ]
+  },
+  "genome-annotation/annotation-with-prokka": {
+    "title": "Genome Annotation with Prokka",
+    "description": "This tutorial will introduce genome annotation process and give you hands-on experience with annotating a prokaryotic genome using Prokka.",
+    "videos": [
+      "genome-annotation/annotation-with-prokka/slides",
+      "genome-annotation/annotation-with-prokka/tutorial"
+    ]
+  },
+  "genome-annotation/apollo": {
+    "title": "Genome Annotation with Apollo",
+    "description": "This session will introduce the Apollo genome annotation platform, and provide you hands-on experience with using Apollo in Galaxy.",
+    "videos": [
+      "genome-annotation/apollo/slides",
+      "genome-annotation/apollo/tutorial"
+    ]
+  },
+  "proteomics/encyclopedia": {
+    "title": "EncyclopeDIA",
+    "description": "Data independent acquisition (DIA) mass spectrometry is a powerful technique that is improving the\nreproducibility and throughput of proteomics studies. EncyclopeDIA is library search engine comprised of\nseveral algorithms for DIA data analysis and can search for peptides using either DDA-based spectrum libraries\nor DIA-based chromatogram libraries.\n",
+    "videos": [
+      "proteomics/encyclopedia/slides",
+      "proteomics/encyclopedia/tutorial"
+    ]
+  },
+  "proteomics/protegenomics": {
+    "title": "ProteoGenomics",
+    "description": "Proteogenomics is a field of biological research that utilizes a combination of proteomics, genomics, and\ntranscriptomics to aid in the discovery and identification of peptides\n",
+    "videos": [
+      "proteomics/proteogenomics-dbcreation/tutorial",
+      "proteomics/proteogenomics-dbsearch/tutorial",
+      "proteomics/proteogenomics-novel-peptide-analysis/tutorial"
+    ]
+  },
+  "metagenomics/mothur-miseq-sop-short": {
+    "title": "16S taxonomic profiling",
+    "description": "To determine the composition of a microbiome sample, sequencing of the 16S rRNA gene\nis often used. This allows us to identify the bacterial species present in our sample.\nThis lecture and practical session introduces you to 16S analysis in Galaxy using the\nmothur tool suite.\n",
+    "videos": [
+      "metagenomics/introduction/slides",
+      "metagenomics/mothur-miseq-sop-short/tutorial"
+    ]
+  },
+  "metagenomics/nanopore": {
+    "title": "Microbiome Analysis using Nanopore Sequencing",
+    "description": "In this 3-part module, you will learn about Nanopore long-read sequencing for the\ndetection of antimicrobial resistance (AMR). There is a short video showing you the\nwetlab steps involved in using the MinION sequencer. A talk about the clinical applications,\nand finally a practical tutorial walking you through an AMR analysis in Galaxy.\n",
+    "videos": [
+      "wetlab/miseq/demo",
+      "metagenomics/clinical-applications",
+      "metagenomics/plasmid-metagenomics-nanopore/tutorial"
+    ]
+  },
+  "statistics/deeplearning": {
+    "title": "Deep Learning Demystified",
+    "description": "This 3-part session will introduce you to the world of deep learning and cover Feedforward\nNeural Networks (FNN), Recurrent Neural Networks (FNN), and Convolutional Neural Networks\n(CNN).\n",
+    "videos": [
+      "statistics/FNN",
+      "statistics/RNN",
+      "statistics/CNN"
+    ]
+  },
+  "galaxy-interface/ncbi-sarf": {
+    "title": "SRA Aligned read format in Galaxy",
+    "description": "This session will introduce the SRA Aligned Read format, and show you how to use this in Galaxy to analyze a SARS-CoV-2 dataset.",
+    "videos": [
+      "galaxy-interface/ncbi-sarf/slides",
+      "galaxy-interface/ncbi-sarf/tutorial"
+    ]
+  },
+  "dev/architecture": {
+    "title": "Galaxy Code Architecture Lecture Series",
+    "description": "In this 9-part Lecture series, John Chilton will walk you through the Galaxy Code Architecture.",
+    "videos": [
+      "dev/architecture/slides-ecosystem",
+      "dev/architecture/slides-models-managers",
+      "dev/architecture/slides-app-di",
+      "dev/architecture/slides-project-management",
+      "dev/architecture/slides-web-client",
+      "dev/architecture/slides-pluggable-components",
+      "dev/architecture/slides-principles",
+      "dev/architecture/slides-web-requests",
+      "dev/architecture/slides-files-directories"
+    ]
+  },
+  "dev/debugging/tutorial": {
+    "title": "Debugging Galaxy",
+    "description": "This series of videos will guide (future) Galaxy contributors through the process of debugging Galaxy.",
+    "videos": [
+      "dev/debugging/tutorial/intro",
+      "dev/debugging/tutorial/unit-test-failure",
+      "dev/debugging/tutorial/api-test-failure",
+      "dev/debugging/tutorial/client-unit-test",
+      "dev/debugging/tutorial/client-linter",
+      "dev/debugging/tutorial/selenium",
+      "dev/debugging/tutorial/runtime-error",
+      "dev/debugging/tutorial/summary"
+    ]
+  },
+  "dev/tool-from-scratch/tutorial": {
+    "title": "Galaxy Tool Development: From Conda to Deployment",
+    "description": "This series of tutorials will walk you through the process of developing tools in Galaxy.",
+    "videos": [
+      "dev/tool-from-scratch/tutorial/conda",
+      "dev/tool-from-scratch/tutorial/planemo-init",
+      "dev/tool-from-scratch/tutorial/tool-wrapper",
+      "dev/tool-from-scratch/tutorial/shed-yml",
+      "dev/tool-from-scratch/tutorial/testing",
+      "dev/tool-from-scratch/tutorial/publish"
+    ]
+  },
+  "galaxy/r": {
+    "title": "Using R in Galaxy",
+    "description": "Want a bit more control over your Analyses? You can run R in Rstudio directly within Galaxy",
+    "videos": [
+      "data-science/rstudio-galaxy",
+      "data-science/r-basics/tutorial",
+      "data-science/r-advanced/tutorial"
+    ]
+  },
+  "visualisation/circos": {
+    "title": "Visualisation with Circos",
+    "description": "Circos (Krzywinski et al. 2009) is a software package for visualizing data in a circular layout. This makes Circos ideal for exploring relationships between objects or positions. Circos plots have appeared in thousands of scientific publications. Although originally designed for visualizing genomic data, it can create figures from data in any field.\n",
+    "videos": [
+      "visualisation/circos/slides",
+      "visualisation/circos/tutorial"
+    ]
+  },
+  "admin/ansible": {
+    "title": "Ansible",
+    "description": "Here you'll learn the basics of Ansible",
+    "videos": [
+      "admin/ansible/tutorial",
+      "admin/ansible/slides"
+    ]
+  },
+  "admin/cvmfs": {
+    "title": "CVMFS",
+    "description": "Reference data management is easier than ever with CVMFS",
+    "videos": [
+      "admin/cvmfs/slides",
+      "admin/cvmfs/tutorial"
+    ]
+  },
+  "admin/pulsar": {
+    "title": "Pulsar",
+    "description": "Remote compute made possible with Pulsar",
+    "videos": [
+      "admin/pulsar/slides",
+      "admin/pulsar/tutorial"
+    ]
+  },
+  "admin/monitoring": {
+    "title": "Monitoring",
+    "description": "Learn advanced Galaxy monitoring with Telegraf, Influx, and Grafana.",
+    "videos": [
+      "admin/monitoring/slides",
+      "admin/monitoring/tutorial"
+    ]
+  },
+  "admin/tool-management": {
+    "title": "Tool Management",
+    "description": "Learn how to install and manage tools in Galaxy",
+    "videos": [
+      "admin/tool-management/slides",
+      "admin/tool-management/tutorial"
+    ]
+  }
+}
