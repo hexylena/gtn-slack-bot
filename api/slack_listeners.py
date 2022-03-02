@@ -168,8 +168,7 @@ def transcript(ack, body, client):
                 "type": "header",
                 "text": {
                     "type": "plain_text",
-                    "text": random.choice(['Excellent work!', 'Way to go!', 'Great Progress!']),
-                    "emoji": True
+                    "text": 'Excellent work!', #random.choice(['Excellent work!', 'Way to go!', 'Great Progress!']),
                 }
             },
             {
@@ -177,7 +176,6 @@ def transcript(ack, body, client):
                 "text": {
                     "type": "plain_text",
                     "text": "\n".join(output),
-                    "emoji": True
                 }
             }
         ]
