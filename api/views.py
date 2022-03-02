@@ -17,18 +17,3 @@ app = App(
 # Create your views here.
 def index(request):
     return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
-
-@csrf_exempt
-@app.command("/completed")
-def completed(ack, body, logger, say):
-    ack()
-    try:
-        q = Transcript(slack_user_id=body['user_id'], channel=body['channel_name'], proof=body['text'])
-        q.save()
-        say("Saved!")
-
-    except Exception as e:
-        print(e)
-        say("Something went wrong! We could not record your completion. Please contact <@U01F7TAQXNG>")
-
-    return HttpResponse(status=200)
