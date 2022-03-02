@@ -37,7 +37,7 @@ def debug(ack, body, logger, say):
 
 
 @csrf_exempt
-@app.view("certificate_name")
+@app.view("view_1")
 def handle_submission(ack, body, client, view, logger):
     print("Handling Submission")
     human_name = view["state"]["values"]["input_c"]["human_name"]
@@ -96,7 +96,7 @@ def certify(ack, client, body, logger, say):
         view={
             "type": "modal",
             # View identifier
-            "callback_id": "certificate_name",
+            "callback_id": "view_1",
             "title": {"type": "plain_text", "text": "Certificate Name"},
             "submit": {"type": "plain_text", "text": "Submit"},
             "blocks": [
@@ -164,7 +164,8 @@ def transcript(ack, body, client):
     logger.debug(body)
 
     results = Transcript.objects.filter(slack_user_id=body['user_id']).order_by('-time')
-    output = [f"{idx} {x.channel} ({x.time})" for idx, x in enumerate(results)]
+    output = [f"{idx} {x.channel} ({x.time})" for (idx, x) in enumerate(results)]
+    print(output)
 
     congrats = random.choice(['Excellent work!', 'Way to go!', 'Great Progress!'])
     text = f"*{congrats}*\n"
