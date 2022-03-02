@@ -1,7 +1,7 @@
 import logging
 import random
 import uuid
-from .models import Transcript
+from .models import Transcript, CertificateRequest
 from django.http import HttpResponse
 from .videolibrary import CHANNEL_MAPPING
 from django.views.decorators.csrf import csrf_exempt
@@ -37,6 +37,51 @@ def debug(ack, body, logger, say):
 
 
 @csrf_exempt
+@app.view("certificate_name")
+def handle_submission(ack, body, client, view, logger):
+    human_name = view["state"]["values"]["input_c"]["human_name"]
+    user = body["user"]["id"]
+
+    # Validate the inputs
+    errors = {}
+    if human_name is not None and len(human_name) < 1:
+        errors["input_c"] = "You must provide a name here"
+
+    if len(errors) > 0:
+        ack(response_action="errors", errors=errors)
+        return
+
+    # Acknowledge the view_submission request and close the modal
+    ack()
+    # Do whatever you want with the input data - here we're saving it to a DB
+    # then sending the user a verification of their submission
+
+    # Message to send user
+    msg = ""
+    try:
+        # Save to DB
+        q = CertificateRequest(slack_user_id=body['user_id'], human_name=human_name, course="GTN Tapas", approved=False)
+        q.save()
+
+        msg = f"Your request for a certificate was successful, it is pending review by a course organiser."
+    except Exception as e:
+        # Handle error
+        error_id = str(uuid.uuid4())
+        logger.error(error_id)
+        logger.error(e)
+        ephemeral(client, body, f"Something went wrong! Please contact <@U01F7TAQXNG> and provide the error ID: {error_id}")
+
+    # Message the user
+    try:
+        ephemeral(client, body, msg)
+    except e:
+        error_id = str(uuid.uuid4())
+        logger.error(error_id)
+        logger.error(e)
+        ephemeral(client, body, f"Something went wrong! Please contact <@U01F7TAQXNG> and provide the error ID: {error_id}")
+
+
+@csrf_exempt
 @app.command("/certify")
 def certify(ack, client, body, logger, say):
     ack()
@@ -48,26 +93,17 @@ def certify(ack, client, body, logger, say):
         view={
             "type": "modal",
             # View identifier
-            "callback_id": "view_1",
-            "title": {"type": "plain_text", "text": "My App"},
+            "callback_id": "certificate_name",
+            "title": {"type": "plain_text", "text": "Certificate Name"},
             "submit": {"type": "plain_text", "text": "Submit"},
             "blocks": [
                 {
-                    "type": "section",
-                    "text": {"type": "mrkdwn", "text": "Welcome to a modal with _blocks_"},
-                    "accessory": {
-                        "type": "button",
-                        "text": {"type": "plain_text", "text": "Click me!"},
-                        "action_id": "button_abc"
-                    }
-                },
-                {
                     "type": "input",
                     "block_id": "input_c",
-                    "label": {"type": "plain_text", "text": "What are your hopes and dreams?"},
+                    "label": {"type": "plain_text", "text": "Please enter your name as you would like it to appear on your certificate"},
                     "element": {
                         "type": "plain_text_input",
-                        "action_id": "dreamy_input",
+                        "action_id": "human_name",
                         "multiline": True
                     }
                 }
