@@ -1,1 +1,2 @@
-web: python3 run.py
+release: python manage.py migrate && python manage.py collectstatic --no-input
+web: gunicorn certbot.wsgi
