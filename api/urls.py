@@ -15,6 +15,6 @@ def slack_events_handler(request: HttpRequest):
 
 urlpatterns = [
     path('', views.index, name='index'),
-    # path('completed', views.completed, name='completed'),
+    path('completed', views.completed, name='completed'),
     path("slack/events", slack_events_handler, name="slack_events"),
 ]
