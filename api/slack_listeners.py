@@ -39,8 +39,11 @@ def debug(ack, body, logger, say):
 @csrf_exempt
 @app.view("certificate_name")
 def handle_submission(ack, body, client, view, logger):
+    print("Handling Submission")
     human_name = view["state"]["values"]["input_c"]["human_name"]
+    print(view)
     user = body["user"]["id"]
+    print(body)
 
     # Validate the inputs
     errors = {}
@@ -104,7 +107,7 @@ def certify(ack, client, body, logger, say):
                     "element": {
                         "type": "plain_text_input",
                         "action_id": "human_name",
-                        "multiline": True
+                        "multiline": False
                     }
                 }
             ]
@@ -134,7 +137,7 @@ def completed(ack, body, logger, say, client):
 
     real_module = CHANNEL_MAPPING[body['channel_name']]
     if len(real_module) == 1:
-        module = real_module[1]
+        module = real_module[0]
     else:
         module = 'channel:' + body['channel_name']
 
@@ -142,6 +145,7 @@ def completed(ack, body, logger, say, client):
         q = Transcript(slack_user_id=body['user_id'], channel=module, proof=body['text'])
         q.save()
         ephemeral(client, body, f"Saved this course to your transcript! Congrats! You can use the command /transcript to list your transcript at any time.")
+        ephemeral(client, body, f"You should write a short feedback here for the authors! Let them know how much you enjoyed the tutorial, or if you had any issues.")
         return HttpResponse(status=200)
 
     except Exception as e:
@@ -162,27 +166,8 @@ def transcript(ack, body, client):
     results = Transcript.objects.filter(slack_user_id=body['user_id']).order_by('-time')
     output = [f"{idx} {x.channel} ({x.time})" for idx, x in enumerate(results)]
 
-    blocks = {
-        "blocks": [
-            {
-                "type": "header",
-                "text": {
-                    "type": "plain_text",
-                    "text": 'Excellent work!', #random.choice(['Excellent work!', 'Way to go!', 'Great Progress!']),
-                }
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "plain_text",
-                    "text": "\n".join(output),
-                }
-            }
-        ]
-    }
+    congrats = random.choice(['Excellent work!', 'Way to go!', 'Great Progress!'])
+    text = f"*{congrats}*\n"
+    text += "\n".join(output),
 
-    client.chat_postEphemeral(
-        channel=body['channel_id'],
-        user=body['user_id'],
-        blocks=blocks, #f"We have recorded that you completed the following modules: {', '.join(output)}"
-    )
+    ephemeral(client, body, text)
