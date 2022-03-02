@@ -127,7 +127,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-django_heroku.settings(locals())
+django_heroku.settings(locals(), logging=False)
 
 if "DYNO" in os.environ:
     STATIC_ROOT = 'static'

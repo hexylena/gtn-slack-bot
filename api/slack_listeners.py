@@ -89,8 +89,15 @@ def completed(ack, body, logger, say, client):
         )
         return HttpResponse(status=200)
 
+    real_module = channel_mapping[body['channel_name']]
+    if len(real_module) == 1:
+        module = real_module[1]
+    else:
+        print(f'qq {real_module}')
+        logging.warning(f'zz {real_module}')
+
     try:
-        q = Transcript(slack_user_id=body['user_id'], channel=body['channel_name'], proof=body['text'])
+        q = Transcript(slack_user_id=body['user_id'], channel=module, proof=body['text'])
         q.save()
         client.chat_postEphemeral(
             channel=body['channel_id'],
