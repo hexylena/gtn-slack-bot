@@ -52,11 +52,15 @@ def validateGalaxyURLs(text):
     if "https://" in text:
         urls = re.findall(r"https?://[^/]*/u/[^/]*/./[^ #()\[\]]*", text)
         for url in urls:
-            resp = requests.get(url, timeout=10)
+            try:
+                resp = requests.get(url, timeout=10)
+            except requests.ReadTimeout:
+                pass
+
             if resp.status_code != 200:
-                errors.append(f"This url was not loading for us. #{url}")
+                errors.append(f"This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
-                errors.append(f"This url doesn't look like a Galaxy URL")
+                errors.append(f"This url doesn't look like a Galaxy URL. #{url}")
     else:
         errors.append("We could not find a url in your submission")
     return errors
@@ -134,7 +138,7 @@ def completed(ack, body, logger, say, client):
         ephemeral(
             client,
             body,
-            f":warning: Please run this command with the histories you are using as proof of completing this tutorial. E.g. /completed https://usegalaxy.../u/your-user/h/your-history\n\nWe will check these histories before granting your certificate at the end of the course.",
+            f":warning: Please run this command with the histories you are using as proof of completing this tutorial. E.g. /completed https://usegalaxy.../u/your-user/h/your-history\n\nWe will check these histories before granting your certificate at the end of the course. You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.",
         )
         return HttpResponse(status=200)
 
