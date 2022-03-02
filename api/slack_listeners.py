@@ -1,4 +1,6 @@
 import logging
+import re
+import requests
 import random
 import uuid
 from .models import Transcript, CertificateRequest
@@ -24,6 +26,14 @@ app = App(
 )
 
 
+def ephemeral(client, body, message):
+    client.chat_postEphemeral(
+        channel=body['channel_id'],
+        user=body['user_id'],
+        text=message,
+    )
+
+
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
     logger.info(event)
@@ -38,90 +48,41 @@ def debug(ack, body, logger, say):
 
 
 @csrf_exempt
-@app.view("view_1")
-def handle_submission(ack, body, client, view, logger):
-    print("Handling Submission")
-    human_name = view["state"]["values"]["input_c"]["human_name"]
-    print(view)
-    user = body["user"]["id"]
-    print(body)
+@app.command("/request-certificate")
+def certify(ack, client, body, logger, say):
+    # Automatically try and join channels. This ... could be better.
+    if body['channel_id'] not in JOINED:
+        JOINED.append(body['channel_id'])
+        app.client.conversations_join(channel=body['channel_id'])
 
-    # Validate the inputs
-    errors = {}
-    if human_name is not None and len(human_name) < 1:
-        errors["input_c"] = "You must provide a name here"
-
-    if len(errors) > 0:
-        ack(response_action="errors", errors=errors)
-        return
-
-    # Acknowledge the view_submission request and close the modal
     ack()
-    # Do whatever you want with the input data - here we're saving it to a DB
-    # then sending the user a verification of their submission
 
-    # Message to send user
+    if 'text' not in body:
+        ephemeral(client, body, f":warning: Please provide the name you wish to appear on your certificate, as you wish it to appear. For example: /request-certificate Jane Doe")
+        return HttpResponse(status=200)
+
+    human_name = body['text'].strip()
+
     msg = ""
     try:
         # Save to DB
-        q = CertificateRequest(slack_user_id=body['user_id'], human_name=human_name, course="GTN Tapas", approved=False)
-        q.save()
+        existing_requests = CertificateRequest.objects.find(slack_user_id=body['user_id'])
+        if len(existing_requests) == 0:
+            q = CertificateRequest(slack_user_id=body['user_id'], human_name=human_name, course="GTN Tapas", approved=False)
+            q.save()
+        else:
+            existing_requests[0].human_name = human_name
+            existing_requests[0].save()
 
         msg = f"Your request for a certificate was successful, it is pending review by a course organiser."
+        ephemeral(client, body, msg)
+
     except Exception as e:
         # Handle error
         error_id = str(uuid.uuid4())
         logger.error(error_id)
         logger.error(e)
         ephemeral(client, body, f"Something went wrong! Please contact <@U01F7TAQXNG> and provide the error ID: {error_id}")
-
-    # Message the user
-    try:
-        ephemeral(client, body, msg)
-    except e:
-        error_id = str(uuid.uuid4())
-        logger.error(error_id)
-        logger.error(e)
-        ephemeral(client, body, f"Something went wrong! Please contact <@U01F7TAQXNG> and provide the error ID: {error_id}")
-
-
-@csrf_exempt
-@app.command("/certify")
-def certify(ack, client, body, logger, say):
-    ack()
-    # ephemeral(client, body, "Your request for a certificate has been received.")
-    client.views_open(
-        # Pass a valid trigger_id within 3 seconds of receiving it
-        trigger_id=body["trigger_id"],
-        # View payload
-        view={
-            "type": "modal",
-            # View identifier
-            "callback_id": "view_1",
-            "title": {"type": "plain_text", "text": "Certificate Name"},
-            "submit": {"type": "plain_text", "text": "Submit"},
-            "blocks": [
-                {
-                    "type": "input",
-                    "block_id": "input_c",
-                    "label": {"type": "plain_text", "text": "Please enter your name as you would like it to appear on your certificate"},
-                    "element": {
-                        "type": "plain_text_input",
-                        "action_id": "human_name",
-                        "multiline": False
-                    }
-                }
-            ]
-        }
-    )
-
-
-def ephemeral(client, body, message):
-    client.chat_postEphemeral(
-        channel=body['channel_id'],
-        user=body['user_id'],
-        text=message,
-    )
 
 
 @csrf_exempt
@@ -146,6 +107,22 @@ def completed(ack, body, logger, say, client):
         module = real_module[0]
     else:
         module = 'channel:' + body['channel_name']
+
+    errors = []
+    if 'https://' in body['text']:
+        urls = re.findall(r'https?://[^/]*/u/[^/]*/./[^ #()\[\]]*', body['text'])
+        for url in urls:
+            resp = requests.get(url)
+            if resp.status_code != 200:
+                errors.append(f"This url was not loading for us. #{url}")
+            if 'galaxy' not in resp.text:
+                errors.append(f"This url doesn't look like a Galaxy URL")
+    else:
+        errors.append("We could not find a url in your submission")
+
+    if errors:
+        ephemeral(client, body, '\n'.join(errors))
+        return HttpResponse(status=200)
 
     try:
         q = Transcript(slack_user_id=body['user_id'], channel=module, proof=body['text'])
