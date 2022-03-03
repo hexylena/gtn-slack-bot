@@ -59,7 +59,9 @@ def error_handler(client, body, e):
 def validateGalaxyURLs(text):
     errors = []
     if "https://" in text:
+        print('https in text')
         urls = re.findall(r"https?://[^/]*/u/[^/]*/./[^ #()\[\]]*", text)
+        print(f'urls: {urls}')
         for url in urls:
             try:
                 resp = requests.get(url, timeout=10)
@@ -69,6 +71,8 @@ def validateGalaxyURLs(text):
                 errors.append(f":warning: This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
                 errors.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
+        else:
+            errors.append(f":warning: No galaxy URLs detected.")
     else:
         errors.append(":warning: We could not find a url in your submission")
     return errors
@@ -179,9 +183,11 @@ def completed(ack, body, logger, say, client):
         module = "channel:" + body["channel_name"]
 
     errors = []
+    print(body["channel_name"][0:6])
+    print(body["channel_name"][0:6] == 'admin_')
     if body["channel_name"][0:6] != "admin_":
         # Then we validate URLs
-        errors = validateGalaxyURLs(body["text"])
+        errors = validateGalaxyURLs(body.get('text', '').strip())
         print(errors)
         if len(errors) > 0:
             msg = (
@@ -196,7 +202,7 @@ def completed(ack, body, logger, say, client):
 
     try:
         q = Transcript(
-            slack_user_id=body["user_id"], channel=module, proof=body["text"]
+            slack_user_id=body["user_id"], channel=module, proof=body.get('text', '')
         )
         q.save()
 
@@ -217,10 +223,11 @@ def completed(ack, body, logger, say, client):
         )
         ephemeral(client, body, msg)
 
+        congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!'])
         message(
             client,
             body["channel_id"],
-            f"Congratulations <@{body['user_id']}> on completing this tutorial! :tada:",
+            f"{congrats} <@{body['user_id']}> just completed this tutorial! :tada:",
         )
         return HttpResponse(status=200)
 
@@ -244,7 +251,7 @@ def transcript(ack, body, client):
     for x in results:
         if x.channel in courses_seen:
             continue
-        output.append(f"{x.time.strftime('%A, %B %d %H:%m %Z')} | {x.channel} ")
+        output.append(f"{x.time.strftime('%A, %B %d %H:%M %Z')} | {x.channel} ")
         courses_seen[x.channel] = True
 
     congrats = random.choice(["Excellent work!", "Way to go!", "Great Progress!"])
