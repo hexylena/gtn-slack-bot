@@ -1,5 +1,7 @@
 import logging
 from django.db.models import Count
+from django.db.models import DateField
+from django.db.models.functions import Cast
 import traceback
 import re
 import requests
@@ -275,7 +277,7 @@ def statsall(ack, body, client):
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for idx, x in results[0:20]:
-        output += "{x.dcount} - {x.channel}\n"
+        output += f"{x.dcount} - {x.channel}\n"
 
     ephemeral(client, body, output)
 
@@ -291,6 +293,6 @@ def stats(ack, body, client):
 
     output = ":1234: People Completing this tutorial by Day\n\nDay - Count\n"
     for idx, x in results[0:20]:
-        output += "{x.day} - {x.dcount}\n"
+        output += f"{x.day} - {x.dcount}\n"
 
     ephemeral(client, body, output)
