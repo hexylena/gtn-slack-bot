@@ -1,4 +1,5 @@
 import logging
+import traceback
 import re
 import requests
 import random
@@ -45,10 +46,11 @@ def error_handler(client, body, e):
     error_id = str(uuid.uuid4())
     logger.error(error_id)
     logger.error(e)
+    traceback.print_exc()
     ephemeral(
         client,
         body,
-        f"Something went wrong! Please contact <@U01F7TAQXNG> and provide them the error ID: {error_id}",
+        f"Something went wrong! Please contact <@U01F7TAQXNG> and provide her the error ID: {error_id}",
     )
     return HttpResponse(status=200)
 
@@ -165,24 +167,27 @@ def completed(ack, body, logger, say, client):
         module = "channel:" + body["channel_name"]
 
     errors = []
-    try:
-        errors = validateGalaxyURLs(body['text'])
-    except Exception as e:
-        return error_handler(client, body, e)
+    if body['channel_name'][0:6] != 'admin_':
+        # Then we validate URLs
+        try:
+            errors = validateGalaxyURLs(body['text'])
+        except Exception as e:
+            return error_handler(client, body, e)
 
-    if errors:
-        ephemeral(
-            client,
-            body,
-            (
-            ":warning: It seems your submission had some issues.\n\n"
-            "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
-            "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
-            "\n"
-            "\n".join(errors)
+        if errors:
+            msg = (
+                ":warning: It seems your submission had some issues.\n\n"
+                "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
+                "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
+                "\n"
+                "\n".join(errors)
             )
-        )
-        print(f"User submitted: {body['text']}")
+            ephemeral(
+                client,
+                body,
+                msg
+            )
+            print(f"User submitted: {body['text']}")
 
     try:
         q = Transcript(
@@ -190,19 +195,22 @@ def completed(ack, body, logger, say, client):
         )
         q.save()
 
-        message(client, body['channel_id'], "Congratulations <@{body['user_id']}> on completing this tutorial! :tada:")
+        prompt = random.choice(['What did you like about the material?', 'What did you struggle with?', 'Let us know what you thought about the material!'])
+        msg = (
+            "Saved this course to your transcript! Congrats!\n"
+            "• You can use the command /transcript to list your transcript at any time.\n"
+            "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
+            "\n"
+            ":pray: If you liked the tutorial tell the instructor thanks!\n"
+            f":speaking_head_in_silhouette: {prompt}",
+        )
         ephemeral(
             client,
             body,
-            (
-                "Saved this course to your transcript! Congrats!\n"
-                "• You can use the command /transcript to list your transcript at any time.\n"
-                "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
-                "\n"
-                ":pray: If you liked the tutorial tell the instructor thanks!\n"
-                ":speaking_head_in_silhouette: " + random.choice(['What did you like about the material?', 'What did you struggle with?', 'Let us know what you thought about the material!']),
-            )
+            msg
         )
+
+        message(client, body['channel_id'], f"Congratulations <@{body['user_id']}> on completing this tutorial! :tada:")
         return HttpResponse(status=200)
 
     except Exception as e:
