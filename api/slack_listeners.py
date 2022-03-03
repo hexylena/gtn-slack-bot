@@ -13,7 +13,6 @@ import json
 import os
 
 
-# __import__('pprint').pprint(CHANNEL_MAPPING)
 JOINED = []
 
 from slack_bolt import App
@@ -59,7 +58,6 @@ def error_handler(client, body, e):
 def validateGalaxyURLs(text):
     errors = []
     if "https://" in text:
-        print('https in text')
         urls = re.findall(r"https?://[^\s]+", text)
         print(f'urls: {urls}')
         for url in urls:
@@ -183,12 +181,9 @@ def completed(ack, body, logger, say, client):
         module = "channel:" + body["channel_name"]
 
     errors = []
-    print(body["channel_name"][0:6])
-    print(body["channel_name"][0:6] == 'admin_')
     if body["channel_name"][0:6] != "admin_":
         # Then we validate URLs
         errors = validateGalaxyURLs(body.get('text', '').strip())
-        print(errors)
         if len(errors) > 0:
             msg = (
                 ":warning: It seems your submission had some issues.\n\n"
@@ -198,7 +193,7 @@ def completed(ack, body, logger, say, client):
                 "\n".join(errors)
             )
             ephemeral(client, body, msg)
-            print(f"User submitted: {body['text']}")
+            print(f"User submitted: {body['text']} got errors {errors}")
 
     try:
         q = Transcript(
