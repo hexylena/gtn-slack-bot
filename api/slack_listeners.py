@@ -56,6 +56,15 @@ def error_handler(client, body, e):
     return HttpResponse(status=200)
 
 
+def channel2module(body):
+    real_module = CHANNEL_MAPPING[body["channel_name"]]
+    if len(real_module) == 1:
+        module = real_module[0]
+    else:
+        module = "channel:" + body["channel_name"]
+    return module
+
+
 def validateGalaxyURLs(text):
     errors = []
     if "https://" in text:
@@ -175,11 +184,7 @@ def completed(ack, body, logger, say, client):
         )
         return HttpResponse(status=200)
 
-    real_module = CHANNEL_MAPPING[body["channel_name"]]
-    if len(real_module) == 1:
-        module = real_module[0]
-    else:
-        module = "channel:" + body["channel_name"]
+    module = channel2module(body)
 
     errors = []
     if body["channel_name"][0:6] != "admin_":
@@ -261,8 +266,8 @@ def transcript(ack, body, client):
     ephemeral(client, body, text)
 
 @csrf_exempt
-@app.command("/stats")
-def stats(ack, body, client):
+@app.command("/stats-all")
+def statsall(ack, body, client):
     logReq(body)
     ack()
 
@@ -271,5 +276,21 @@ def stats(ack, body, client):
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for idx, x in results[0:20]:
         output += "{x.dcount} - {x.channel}\n"
+
+    ephemeral(client, body, output)
+
+@csrf_exempt
+@app.command("/stats")
+def stats(ack, body, client):
+    logReq(body)
+    ack()
+
+    module = channel2module(body)
+
+    results = Transcript.objects.filter(channel='123adsfsdf').values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('channel')).order_by('-day')
+
+    output = ":1234: People Completing this tutorial by Day\n\nDay - Count\n"
+    for idx, x in results[0:20]:
+        output += "{x.day} - {x.dcount}\n"
 
     ephemeral(client, body, output)
