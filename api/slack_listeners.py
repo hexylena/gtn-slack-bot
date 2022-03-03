@@ -1,4 +1,5 @@
 import logging
+from django.db.models import Count
 import traceback
 import re
 import requests
@@ -258,3 +259,17 @@ def transcript(ack, body, client):
         text += f"{o}\n"
 
     ephemeral(client, body, text)
+
+@csrf_exempt
+@app.command("/stats")
+def stats(ack, body, client):
+    logReq(body)
+    ack()
+
+    results = Transcript.objects.values('channel').annotate(dcount=Count('channel')).order_by('-dcount') #.filter(dcount__gt=2)
+
+    output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
+    for idx, x in results[0:20]:
+        output += "{x.dcount} - {x.channel}\n"
+
+    ephemeral(client, body, output)
