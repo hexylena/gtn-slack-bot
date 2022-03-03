@@ -142,12 +142,18 @@ def completed(ack, body, logger, say, client):
             ":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial."
         )
         return HttpResponse(status=200)
-    ack()
 
     # Automatically try and join channels. This ... could be better.
     if body["channel_id"] not in JOINED:
         JOINED.append(body["channel_id"])
-        app.client.conversations_join(channel=body["channel_id"])
+        try:
+            app.client.conversations_join(channel=body["channel_id"])
+        except:
+            ack(":warning: I could not automatically join this conversation, please invite me to use Certificate commands here.")
+            return HttpResponse(status=200)
+
+    ack()
+
 
     # If the body is blank (and we're not in the admin_ tutorials)
     if "text" not in body and body["channel_name"][0:6] != "admin_":
