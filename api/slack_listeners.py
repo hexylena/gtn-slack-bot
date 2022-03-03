@@ -60,6 +60,8 @@ def validateGalaxyURLs(text):
     if "https://" in text:
         urls = re.findall(r"https?://[^\s]+", text)
         print(f'urls: {urls}')
+        if len(urls) == 0:
+            errors.append(f":warning: No galaxy URLs detected.")
         for url in urls:
             try:
                 resp = requests.get(url, timeout=10)
@@ -69,8 +71,6 @@ def validateGalaxyURLs(text):
                 errors.append(f":warning: This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
                 errors.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
-        else:
-            errors.append(f":warning: No galaxy URLs detected.")
     else:
         errors.append(":warning: We could not find a url in your submission")
     return errors
@@ -190,10 +190,12 @@ def completed(ack, body, logger, say, client):
                 "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
                 "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
                 "\n"
-                "\n".join(errors)
             )
+            for e in errors:
+                msg += e + "\n"
+
+            print(f"User submitted: {body['text']} got errors {errors} msg {msg}")
             ephemeral(client, body, msg)
-            print(f"User submitted: {body['text']} got errors {errors}")
 
     try:
         q = Transcript(
@@ -218,12 +220,13 @@ def completed(ack, body, logger, say, client):
         )
         ephemeral(client, body, msg)
 
-        congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!'])
-        message(
-            client,
-            body["channel_id"],
-            f"{congrats} <@{body['user_id']}> just completed this tutorial! :tada:",
-        )
+        if len(errors) == 0:
+            congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!'])
+            message(
+                client,
+                body["channel_id"],
+                f"{congrats} <@{body['user_id']}> just completed this tutorial! :tada:",
+            )
         return HttpResponse(status=200)
 
     except Exception as e:
