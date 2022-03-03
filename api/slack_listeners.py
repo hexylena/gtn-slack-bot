@@ -35,6 +35,7 @@ def ephemeral(client, body, message):
         text=message,
     )
 
+
 def message(client, channel, message):
     client.chat_postMessage(
         channel=channel,
@@ -63,8 +64,7 @@ def validateGalaxyURLs(text):
             try:
                 resp = requests.get(url, timeout=10)
             except requests.ReadTimeout:
-                pass
-
+                errors.append(f"We could not access this URL before it timed out.")
             if resp.status_code != 200:
                 errors.append(f"This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
@@ -73,8 +73,11 @@ def validateGalaxyURLs(text):
         errors.append("We could not find a url in your submission")
     return errors
 
+
 def logReq(body):
-    print(f"REQ | {body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body.get('text', '')}")
+    print(
+        f"REQ | {body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body.get('text', '')}"
+    )
 
 
 @app.event("app_mention")
@@ -134,8 +137,10 @@ def certify(ack, client, body, logger, say):
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
     logReq(body)
-    if body['channel_name'] == 'directmessage':
-        ack(":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial.")
+    if body["channel_name"] == "directmessage":
+        ack(
+            ":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial."
+        )
         return HttpResponse(status=200)
     ack()
 
@@ -144,7 +149,8 @@ def completed(ack, body, logger, say, client):
         JOINED.append(body["channel_id"])
         app.client.conversations_join(channel=body["channel_id"])
 
-    if "text" not in body:
+    # If the body is blank (and we're not in the admin_ tutorials)
+    if "text" not in body and body["channel_name"][0:6] != "admin_":
         ephemeral(
             client,
             body,
@@ -167,13 +173,10 @@ def completed(ack, body, logger, say, client):
         module = "channel:" + body["channel_name"]
 
     errors = []
-    if body['channel_name'][0:6] != 'admin_':
+    if body["channel_name"][0:6] != "admin_":
         # Then we validate URLs
-        try:
-            errors = validateGalaxyURLs(body['text'])
-        except Exception as e:
-            return error_handler(client, body, e)
-
+        errors = validateGalaxyURLs(body["text"])
+        print(errors)
         if errors:
             msg = (
                 ":warning: It seems your submission had some issues.\n\n"
@@ -182,11 +185,7 @@ def completed(ack, body, logger, say, client):
                 "\n"
                 "\n".join(errors)
             )
-            ephemeral(
-                client,
-                body,
-                msg
-            )
+            ephemeral(client, body, msg)
             print(f"User submitted: {body['text']}")
 
     try:
@@ -195,22 +194,28 @@ def completed(ack, body, logger, say, client):
         )
         q.save()
 
-        prompt = random.choice(['What did you like about the material?', 'What did you struggle with?', 'Let us know what you thought about the material!'])
+        prompt = random.choice(
+            [
+                "What did you like about the material?",
+                "What did you struggle with?",
+                "Let us know what you thought about the material!",
+            ]
+        )
         msg = (
             "Saved this course to your transcript! Congrats!\n"
             "• You can use the command /transcript to list your transcript at any time.\n"
             "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
             "\n"
             ":pray: If you liked the tutorial tell the instructor thanks!\n"
-            f":speaking_head_in_silhouette: {prompt}",
+            f":speaking_head_in_silhouette: {prompt}"
         )
-        ephemeral(
-            client,
-            body,
-            msg
-        )
+        ephemeral(client, body, msg)
 
-        message(client, body['channel_id'], f"Congratulations <@{body['user_id']}> on completing this tutorial! :tada:")
+        message(
+            client,
+            body["channel_id"],
+            f"Congratulations <@{body['user_id']}> on completing this tutorial! :tada:",
+        )
         return HttpResponse(status=200)
 
     except Exception as e:
