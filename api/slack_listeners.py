@@ -60,7 +60,7 @@ def validateGalaxyURLs(text):
     errors = []
     if "https://" in text:
         print('https in text')
-        urls = re.findall(r"https?://[^/]*/u/[^/]*/./[^ #()\[\]]*", text)
+        urls = re.findall(r"https?://[^\s]+", text)
         print(f'urls: {urls}')
         for url in urls:
             try:
