@@ -277,7 +277,7 @@ def statsall(ack, body, client):
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for x in results[0:20]:
-        output += f"{x.dcount} - {x.channel}\n"
+        output += f"{x['dcount']} - {x['channel']}\n"
 
     ephemeral(client, body, output)
 
@@ -289,10 +289,10 @@ def stats(ack, body, client):
 
     module = channel2module(body)
 
-    results = Transcript.objects.filter(channel='123adsfsdf').values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('channel')).order_by('-day')
+    results = Transcript.objects.filter(channel=module).values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('channel')).order_by('-day')
 
-    output = ":1234: People Completing this tutorial by Day\n\nDay - Count\n"
+    output = ":calendar: People Completing this tutorial by Day\n\nDay - Count\n"
     for x in results[0:20]:
-        output += f"{x.day} - {x.dcount}\n"
+        output += f"{x['channel']} - {x['dcount']}\n"
 
     ephemeral(client, body, output)
