@@ -34,6 +34,12 @@ def ephemeral(client, body, message):
         text=message,
     )
 
+def message(client, channel, message):
+    client.chat_postMessage(
+        channel=channel,
+        text=message,
+    )
+
 
 def error_handler(client, body, e):
     error_id = str(uuid.uuid4())
@@ -73,14 +79,6 @@ def logReq(body):
 def handle_app_mentions(logger, event, say):
     logger.info(event)
     say(f"Hi there, <@{event['user']}>")
-
-
-@csrf_exempt
-@app.command("/debug")
-def debug(ack, body, logger, say):
-    logReq(body)
-    ack()
-    say(f"{body}")
 
 
 @csrf_exempt
@@ -134,12 +132,16 @@ def certify(ack, client, body, logger, say):
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
     logReq(body)
+    if body['channel_name'] == 'directmessage':
+        ack(":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial.")
+        return HttpResponse(status=200)
+    ack()
+
     # Automatically try and join channels. This ... could be better.
     if body["channel_id"] not in JOINED:
         JOINED.append(body["channel_id"])
         app.client.conversations_join(channel=body["channel_id"])
 
-    ack()
     if "text" not in body:
         ephemeral(
             client,
@@ -169,19 +171,37 @@ def completed(ack, body, logger, say, client):
         return error_handler(client, body, e)
 
     if errors:
-        ephemeral(client, body, "It seems your submission had some issues. Please re-run the command with /completed <your galaxy history url>" "\n".join(errors))
+        ephemeral(
+            client,
+            body,
+            (
+            ":warning: It seems your submission had some issues.\n\n"
+            "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
+            "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
+            "\n"
+            "\n".join(errors)
+            )
+        )
         print(f"User submitted: {body['text']}")
-        return HttpResponse(status=200)
 
     try:
         q = Transcript(
             slack_user_id=body["user_id"], channel=module, proof=body["text"]
         )
         q.save()
+
+        message(client, body['channel_id'], "Congratulations <@{body['user_id']}> on completing this tutorial! :tada:")
         ephemeral(
             client,
             body,
-            f"Saved this course to your transcript! Congrats! You can use the command /transcript to list your transcript at any time.\nYou should write a short feedback here for the authors! Let them know how much you enjoyed the tutorial, or if you had any issues.",
+            (
+                "Saved this course to your transcript! Congrats!\n"
+                "• You can use the command /transcript to list your transcript at any time.\n"
+                "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
+                "\n"
+                ":pray: If you liked the tutorial tell the instructor thanks!\n"
+                ":speaking_head_in_silhouette: " + random.choice(['What did you like about the material?', 'What did you struggle with?', 'Let us know what you thought about the material!']),
+            )
         )
         return HttpResponse(status=200)
 
