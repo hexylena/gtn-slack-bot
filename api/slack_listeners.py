@@ -64,13 +64,13 @@ def validateGalaxyURLs(text):
             try:
                 resp = requests.get(url, timeout=10)
             except requests.ReadTimeout:
-                errors.append(f"We could not access this URL before it timed out.")
+                errors.append(f":warning: We could not access this URL before it timed out.")
             if resp.status_code != 200:
-                errors.append(f"This url was not 200 OK. #{url}")
+                errors.append(f":warning: This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
-                errors.append(f"This url doesn't look like a Galaxy URL. #{url}")
+                errors.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
     else:
-        errors.append("We could not find a url in your submission")
+        errors.append(":warning: We could not find a url in your submission")
     return errors
 
 
@@ -177,7 +177,7 @@ def completed(ack, body, logger, say, client):
         # Then we validate URLs
         errors = validateGalaxyURLs(body["text"])
         print(errors)
-        if errors:
+        if len(errors) > 0:
             msg = (
                 ":warning: It seems your submission had some issues.\n\n"
                 "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
@@ -203,7 +203,7 @@ def completed(ack, body, logger, say, client):
         )
         msg = (
             "Saved this course to your transcript! Congrats!\n"
-            "• You can use the command /transcript to list your transcript at any time.\n"
+            "• You can use the command /transcript to list all of your completed tutorials.\n"
             "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
             "\n"
             ":pray: If you liked the tutorial tell the instructor thanks!\n"
@@ -232,11 +232,14 @@ def transcript(ack, body, client):
     logger.debug(body)
 
     results = Transcript.objects.filter(slack_user_id=body["user_id"]).order_by("-time")
-    output = [
-        f"{x.channel:<30} ({x.time.strftime('%A, %B %d')})"
-        for (idx, x) in enumerate(results)
-    ]
-    print(output)
+
+    courses_seen = {}
+    output = []
+    for x in results:
+        if x.channel in courses_seen:
+            continue
+        output.append(f"{x.time.strftime('%A, %B %d %H:%m %Z')} | {x.channel} ")
+        courses_seen[x.channel] = True
 
     congrats = random.choice(["Excellent work!", "Way to go!", "Great Progress!"])
     text = f"*{congrats}*\n"
