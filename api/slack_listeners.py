@@ -276,7 +276,7 @@ def statsall(ack, body, client):
     results = Transcript.objects.values('channel').annotate(dcount=Count('channel')).order_by('-dcount') #.filter(dcount__gt=2)
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
-    for idx, x in results[0:20]:
+    for x in results[0:20]:
         output += f"{x.dcount} - {x.channel}\n"
 
     ephemeral(client, body, output)
@@ -292,7 +292,7 @@ def stats(ack, body, client):
     results = Transcript.objects.filter(channel='123adsfsdf').values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('channel')).order_by('-day')
 
     output = ":1234: People Completing this tutorial by Day\n\nDay - Count\n"
-    for idx, x in results[0:20]:
+    for x in results[0:20]:
         output += f"{x.day} - {x.dcount}\n"
 
     ephemeral(client, body, output)
