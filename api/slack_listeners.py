@@ -291,7 +291,7 @@ def stats(ack, body, client):
 
     results = Transcript.objects.filter(channel=module).values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('day')).order_by('-day')
 
-    output = ":calendar: People Completing this tutorial by Day\n\nDay - Count\n"
+    output = ":calendar: People completing this tutorial by Day\n\nDay - Count\n"
     for x in results[0:20]:
         output += f"{x['day']} - {x['dcount']}\n"
 
