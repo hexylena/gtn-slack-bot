@@ -224,8 +224,8 @@ def completed(ack, body, logger, say, client):
             "• You can use the command /transcript to list all of your completed tutorials.\n"
             "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
             "\n"
-            ":pray: If you liked the tutorial tell the instructor thanks!\n"
-            f":speaking_head_in_silhouette: {prompt}"
+            ":pray: If you liked the tutorial tell the instructor thanks! Write a message in this channel!\n"
+            f":speaking_head_in_silhouette: {prompt} Write it here and let us know!"
         )
         ephemeral(client, body, msg)
 
