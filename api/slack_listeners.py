@@ -230,7 +230,7 @@ def completed(ack, body, logger, say, client):
         ephemeral(client, body, msg)
 
         if len(errors) == 0:
-            congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!'])
+            congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!', '太好了！', 'чудова робота'])
             message(
                 client,
                 body["channel_id"],
