@@ -219,7 +219,8 @@ def completed(ack, body, logger, say, client):
             ]
         )
         msg = (
-            "Saved this course to your transcript! Congrats!\n"
+            "You submitted proof for *{module}* in <#{body['channel_id']}>. Congrats!\n"
+            "• Did you mean to register completion of another tutorial? That's fine, go do it in that channel!\n"
             "• You can use the command /transcript to list all of your completed tutorials.\n"
             "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
             "\n"
