@@ -98,8 +98,8 @@ def handle_app_mentions(logger, event, say):
 
 
 @csrf_exempt
-@app.command("/request-certificate")
 @auto_error_handler
+@app.command("/request-certificate")
 def certify(ack, client, body, logger, say):
     logReq(body)
     # Automatically try and join channels. This ... could be better.
