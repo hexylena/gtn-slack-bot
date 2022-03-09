@@ -72,7 +72,7 @@ def validateGalaxyURLs(text):
     fatal = []
     if "https://" not in text:
         fatal.append(":octagonal_sign: We could not find a url in your submission")
-        return warnings, fatal
+        return (warnings, fatal)
 
     if "https://youtube.com" in text or 'https://youtu.be' in text or "https://www.youtube.com" in text:
         fatal.append(":octagonal_sign: Please do not submit the YouTube urls, we do not need them.")
@@ -87,7 +87,7 @@ def validateGalaxyURLs(text):
         fatal.append(":octagonal_sign: This does not include a galaxy shared history url")
 
     if len(fatal) > 0:
-        return warnings, fatal
+        return (warnings, fatal)
 
     urls = re.findall(r"https?://[^\s]+", text)
     print(f'urls: {urls}')
@@ -101,7 +101,7 @@ def validateGalaxyURLs(text):
             warnings.append(f":warning: This url was not 200 OK. #{url}")
         if "galaxy" not in resp.text:
             warnings.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
-    return warnings, fatal
+    return (warnings, fatal)
 
 
 def logReq(body):
@@ -208,7 +208,7 @@ def completed(ack, body, logger, say, client):
     if body["channel_name"][0:6] != "admin_" and body["channel_name"][0:4] != "dev_":
 
         # Then we validate URLs
-        errors, fatalities = validateGalaxyURLs(body.get('text', '').strip())
+        (errors, fatalities) = validateGalaxyURLs(body.get('text', '').strip())
         if len(fatalities) > 0:
             msg = (
                 ":octagonal_sign: Your submission had some issues. We believe it may not contain a Galaxy History URL\n\n"
