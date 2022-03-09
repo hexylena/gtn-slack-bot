@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from slack_bolt import App
 import os
 import logging
+
 logger = logging.getLogger(__name__)
 
 app = App(

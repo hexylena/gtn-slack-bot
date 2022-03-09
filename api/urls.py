@@ -9,11 +9,13 @@ from django.views.decorators.csrf import csrf_exempt
 
 from . import views
 
+
 @csrf_exempt
 def slack_events_handler(request: HttpRequest):
     return handler.handle(request)
 
+
 urlpatterns = [
-    path('', views.index, name='index'),
+    path("", views.index, name="index"),
     path("slack/events", slack_events_handler, name="slack_events"),
 ]

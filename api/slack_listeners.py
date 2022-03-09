@@ -16,13 +16,13 @@ import json
 import os
 
 ENCOURAGEMENT = [
-    'Congratulations!',
-    '¡Felicidades!',
-    'Fantastic work!',
-    'Great job!',
-    '太好了！',
-    'Goed Gedaan!',
-    'чудова робота'
+    "Congratulations!",
+    "¡Felicidades!",
+    "Fantastic work!",
+    "Great job!",
+    "太好了！",
+    "Gefeliciteerd!",
+    "чудова робота",
 ]
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
@@ -86,11 +86,19 @@ def validateGalaxyURLs(text):
         fatal.append(":octagonal_sign: We could not find a url in your submission")
         return (warnings, fatal)
 
-    if "https://youtube.com" in text or 'https://youtu.be' in text or "https://www.youtube.com" in text:
-        fatal.append(f":octagonal_sign: Please do not submit the YouTube urls, we do not need it. {please}")
+    if (
+        "https://youtube.com" in text
+        or "https://youtu.be" in text
+        or "https://www.youtube.com" in text
+    ):
+        fatal.append(
+            f":octagonal_sign: Please do not submit the YouTube urls, we do not need it. {please}"
+        )
 
     if "https://gallantries.github.io" in text:
-        fatal.append(f":octagonal_sign: Please do not submit the Schedule's URL, we do not need it. {please}")
+        fatal.append(
+            f":octagonal_sign: Please do not submit the Schedule's URL, we do not need it. {please}"
+        )
 
     if "https://usegalaxy.xx/u/saskia/h/my-history-name" in text:
         fatal.append(f":octagonal_sign: This is the example URL. {please}")
@@ -99,13 +107,15 @@ def validateGalaxyURLs(text):
         fatal.append(f":octagonal_sign: This is the training website's URL. {please}")
 
     if "galaxy" not in text:
-        fatal.append(f":octagonal_sign: This does not include a galaxy shared history url. {please}")
+        fatal.append(
+            f":octagonal_sign: This does not include a galaxy shared history url. {please}"
+        )
 
     if len(fatal) > 0:
         return (warnings, fatal)
 
     urls = re.findall(r"https?://[^\s]+", text)
-    print(f'urls: {urls}')
+    print(f"urls: {urls}")
 
     for url in urls:
         try:
@@ -113,9 +123,13 @@ def validateGalaxyURLs(text):
             if resp.status_code != 200:
                 warnings.append(f":warning: This url was not 200 OK. #{url}")
             if "galaxy" not in resp.text:
-                warnings.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
+                warnings.append(
+                    f":warning: This url doesn't look like a Galaxy URL. #{url}"
+                )
         except requests.ReadTimeout:
-            warnings.append(f":warning: We could not access this URL before it timed out.")
+            warnings.append(
+                f":warning: We could not access this URL before it timed out."
+            )
     return (warnings, fatal)
 
 
@@ -194,11 +208,12 @@ def completed(ack, body, logger, say, client):
         try:
             app.client.conversations_join(channel=body["channel_id"])
         except:
-            ack(":warning: I could not automatically join this conversation, please invite me to use Certificate commands here.")
+            ack(
+                ":warning: I could not automatically join this conversation, please invite me to use Certificate commands here."
+            )
             return HttpResponse(status=200)
 
     ack()
-
 
     # If the body is blank (and we're not in the admin_ tutorials)
     if "text" not in body and body["channel_name"][0:6] != "admin_":
@@ -224,11 +239,9 @@ def completed(ack, body, logger, say, client):
     if body["channel_name"][0:6] != "admin_" and body["channel_name"][0:4] != "dev_":
 
         # Then we validate URLs
-        (errors, fatalities) = validateGalaxyURLs(body.get('text', '').strip())
+        (errors, fatalities) = validateGalaxyURLs(body.get("text", "").strip())
         if len(fatalities) > 0:
-            msg = (
-                ":octagonal_sign: Your submission had some issues. We believe it may not contain a Galaxy History URL\n\n"
-            )
+            msg = ":octagonal_sign: Your submission had some issues. We believe it may not contain a Galaxy History URL\n\n"
             for e in fatalities:
                 msg += e + "\n"
 
@@ -240,7 +253,9 @@ def completed(ack, body, logger, say, client):
                 f"> Channel: {body['channel_name']}\n"
                 f"> URL: {body.get('text', 'No text submitted')}"
             )
-            print(f"User submitted: {body['text']} got fatalities {fatalities} msg {msg}")
+            print(
+                f"User submitted: {body['text']} got fatalities {fatalities} msg {msg}"
+            )
             ephemeral(client, body, msg)
             return HttpResponse(status=200)
         elif len(errors) > 0:
@@ -258,7 +273,7 @@ def completed(ack, body, logger, say, client):
 
     try:
         q = Transcript(
-            slack_user_id=body["user_id"], channel=module, proof=body.get('text', '')
+            slack_user_id=body["user_id"], channel=module, proof=body.get("text", "")
         )
         q.save()
 
@@ -319,19 +334,25 @@ def transcript(ack, body, client):
 
     ephemeral(client, body, text)
 
+
 @csrf_exempt
 @app.command("/stats-all")
 def statsall(ack, body, client):
     logReq(body)
     ack()
 
-    results = Transcript.objects.values('channel').annotate(dcount=Count('channel')).order_by('-dcount') #.filter(dcount__gt=2)
+    results = (
+        Transcript.objects.values("channel")
+        .annotate(dcount=Count("channel"))
+        .order_by("-dcount")
+    )  # .filter(dcount__gt=2)
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for x in results[0:20]:
         output += f"{x['dcount']} - {x['channel']}\n"
 
     ephemeral(client, body, output)
+
 
 @csrf_exempt
 @app.command("/stats")
@@ -341,7 +362,14 @@ def stats(ack, body, client):
 
     module = channel2module(body)
 
-    results = Transcript.objects.filter(channel=module).values('time').annotate(day=Cast('time', output_field=DateField())).values('day').annotate(dcount=Count('day')).order_by('-day')
+    results = (
+        Transcript.objects.filter(channel=module)
+        .values("time")
+        .annotate(day=Cast("time", output_field=DateField()))
+        .values("day")
+        .annotate(dcount=Count("day"))
+        .order_by("-day")
+    )
 
     output = ":calendar: People completing this tutorial by Day\n\nDay - Count\n"
     for x in results[0:20]:
