@@ -204,7 +204,8 @@ def completed(ack, body, logger, say, client):
 
     module = channel2module(body)
 
-    errors, fatalities = []
+    errors = []
+    fatalities = []
     if body["channel_name"][0:6] != "admin_" and body["channel_name"][0:4] != "dev_":
 
         # Then we validate URLs
