@@ -222,8 +222,8 @@ def completed(ack, body, logger, say, client):
                 "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
                 "\n"
                 "This _might_ be a false-positive. If you believe the URL you're trying to submit is correct, please contact <@U01F7TAQXNG> and provide her with the following information:\n"
-                "> Channel: {body['channel_name']}\n"
-                "> URL: {body.get('text', 'No text submitted')}"
+                f"> Channel: {body['channel_name']}\n"
+                f"> URL: {body.get('text', 'No text submitted')}"
             )
             print(f"User submitted: {body['text']} got fatalities {fatalities} msg {msg}")
             ephemeral(client, body, msg)
