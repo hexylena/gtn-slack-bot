@@ -70,21 +70,25 @@ def channel2module(body):
 def validateGalaxyURLs(text):
     warnings = []
     fatal = []
+    please = "Please submit the URL to your own Galaxy history for this tutorial."
     if "https://" not in text:
         fatal.append(":octagonal_sign: We could not find a url in your submission")
         return (warnings, fatal)
 
     if "https://youtube.com" in text or 'https://youtu.be' in text or "https://www.youtube.com" in text:
-        fatal.append(":octagonal_sign: Please do not submit the YouTube urls, we do not need them.")
+        fatal.append(f":octagonal_sign: Please do not submit the YouTube urls, we do not need it. {please}")
 
     if "https://gallantries.github.io" in text:
-        fatal.append(":octagonal_sign: Please do not submit the Schedule's URL, we do not need it.")
+        fatal.append(f":octagonal_sign: Please do not submit the Schedule's URL, we do not need it. {please}")
+
+    if "https://usegalaxy.xx/u/saskia/h/my-history-name" in text:
+        fatal.append(f":octagonal_sign: This is the example URL. {please}")
 
     if "https://training.galaxyproject.org" in text:
-        fatal.append(":octagonal_sign: Please do not submit the Schedule's URL, we do not need it.")
+        fatal.append(f":octagonal_sign: This is the training website's URL. {please}")
 
     if "galaxy" not in text:
-        fatal.append(":octagonal_sign: This does not include a galaxy shared history url")
+        fatal.append(f":octagonal_sign: This does not include a galaxy shared history url. {please}")
 
     if len(fatal) > 0:
         return (warnings, fatal)
@@ -218,7 +222,7 @@ def completed(ack, body, logger, say, client):
                 msg += e + "\n"
 
             msg += (
-                "Galaxy history URLs look like https://usegalaxy.xyz/u/saskia/h/my-history-name.\n"
+                "Galaxy history URLs look like https://usegalaxy.xx/u/saskia/h/my-history-name.\n"
                 "Need to know how to share your history? <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|Follow this tutorial!>\n"
                 "\n"
                 "This _might_ be a false-positive. If you believe the URL you're trying to submit is correct, please contact <@U01F7TAQXNG> and provide her with the following information:\n"
