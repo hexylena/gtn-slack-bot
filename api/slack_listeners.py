@@ -15,6 +15,17 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 
+ENCOURAGEMENT = [
+    'Congratulations!',
+    '¡Felicidades!',
+    'Fantastic work!',
+    'Great job!',
+    '太好了！',
+    'Goed Gedaan!',
+    'чудова робота'
+]
+
+TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
 
 JOINED = []
 
@@ -270,7 +281,7 @@ def completed(ack, body, logger, say, client):
         ephemeral(client, body, msg)
 
         if len(errors) == 0:
-            congrats = random.choice(['Congratulations!', '¡Felicidades!', 'Fantastic work!', 'Great job!', '太好了！', 'чудова робота'])
+            congrats = random.choice(ENCOURAGEMENT)
             message(
                 client,
                 body["channel_id"],
@@ -301,7 +312,7 @@ def transcript(ack, body, client):
         output.append(f"{x.time.strftime('%A, %B %d %H:%M %Z')} | {x.channel} ")
         courses_seen[x.channel] = True
 
-    congrats = random.choice(["Excellent work!", "Way to go!", "Great Progress!"])
+    congrats = random.choice(TRANSCRIPT_ENCOURAGEMENT)
     text = f"*{congrats}*\n"
     for o in output:
         text += f"{o}\n"
