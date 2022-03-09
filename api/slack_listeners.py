@@ -218,7 +218,7 @@ def completed(ack, body, logger, say, client):
             msg = (
                 ":octagonal_sign: Your submission had some issues. We believe it may not contain a Galaxy History URL\n\n"
             )
-            for e in errors:
+            for e in fatalities:
                 msg += e + "\n"
 
             msg += (
