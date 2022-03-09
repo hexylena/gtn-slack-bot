@@ -10,7 +10,7 @@ import uuid
 
 from .models import Transcript, CertificateRequest
 from django.http import HttpResponse
-from .videolibrary import CHANNEL_MAPPING
+from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest
 from django.views.decorators.csrf import csrf_exempt
 import json
 import os
@@ -23,19 +23,25 @@ ENCOURAGEMENT = [
     "太好了！",
     "Gefeliciteerd!",
     "чудова робота",
+    "Ben fatto!",
 ]
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
 
 JOINED = []
 
+# conversations = app.client.conversations_list(limit=400).data
+# for convo in conversations:
+#    if convo['is_member'] is True:
+#        JOINED.append(convo['name'])
+
 from slack_bolt import App
 
 logger = logging.getLogger(__name__)
 
 app = App(
-    token=os.environ["SLACK_BOT_TOKEN"],
-    signing_secret=os.environ["SLACK_SIGNING_SECRET"],
+    token=os.environ.get("SLACK_BOT_TOKEN", ""),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
     # disable eagerly verifying the given SLACK_BOT_TOKEN value
     token_verification_enabled=True,
 )
@@ -69,68 +75,14 @@ def error_handler(client, body, e):
     return HttpResponse(status=200)
 
 
-def channel2module(body):
-    real_module = CHANNEL_MAPPING[body["channel_name"]]
-    if len(real_module) == 1:
-        module = real_module[0]
-    else:
-        module = "channel:" + body["channel_name"]
-    return module
+def auto_error_handler(func):
+    def inner(*args, **kwargs):
+        print(f"XXX Hello {args} {kwargs}")
+        print([type(x) for x in args])
+        func(*args, **kwargs)
+        print("XXX Bye ")
+    return inner
 
-
-def validateGalaxyURLs(text):
-    warnings = []
-    fatal = []
-    please = "Please submit the URL to your own Galaxy history for this tutorial."
-    if "https://" not in text:
-        fatal.append(":octagonal_sign: We could not find a url in your submission")
-        return (warnings, fatal)
-
-    if (
-        "https://youtube.com" in text
-        or "https://youtu.be" in text
-        or "https://www.youtube.com" in text
-    ):
-        fatal.append(
-            f":octagonal_sign: Please do not submit the YouTube urls, we do not need it. {please}"
-        )
-
-    if "https://gallantries.github.io" in text:
-        fatal.append(
-            f":octagonal_sign: Please do not submit the Schedule's URL, we do not need it. {please}"
-        )
-
-    if "https://usegalaxy.xx/u/saskia/h/my-history-name" in text:
-        fatal.append(f":octagonal_sign: This is the example URL. {please}")
-
-    if "https://training.galaxyproject.org" in text:
-        fatal.append(f":octagonal_sign: This is the training website's URL. {please}")
-
-    if "galaxy" not in text:
-        fatal.append(
-            f":octagonal_sign: This does not include a galaxy shared history url. {please}"
-        )
-
-    if len(fatal) > 0:
-        return (warnings, fatal)
-
-    urls = re.findall(r"https?://[^\s]+", text)
-    print(f"urls: {urls}")
-
-    for url in urls:
-        try:
-            resp = requests.get(url, timeout=10)
-            if resp.status_code != 200:
-                warnings.append(f":warning: This url was not 200 OK. #{url}")
-            if "galaxy" not in resp.text:
-                warnings.append(
-                    f":warning: This url doesn't look like a Galaxy URL. #{url}"
-                )
-        except requests.ReadTimeout:
-            warnings.append(
-                f":warning: We could not access this URL before it timed out."
-            )
-    return (warnings, fatal)
 
 
 def logReq(body):
@@ -147,6 +99,7 @@ def handle_app_mentions(logger, event, say):
 
 @csrf_exempt
 @app.command("/request-certificate")
+@auto_error_handler
 def certify(ack, client, body, logger, say):
     logReq(body)
     # Automatically try and join channels. This ... could be better.
@@ -168,25 +121,8 @@ def certify(ack, client, body, logger, say):
 
     msg = ""
     try:
-        # Save to DB
-        existing_requests = CertificateRequest.objects.filter(
-            slack_user_id=body["user_id"]
-        )
-        if len(existing_requests) == 0:
-            q = CertificateRequest(
-                slack_user_id=body["user_id"],
-                human_name=human_name,
-                course="GTN Tapas",
-                approved=False,
-            )
-            q.save()
-        else:
-            existing_requests[0].human_name = human_name
-            existing_requests[0].save()
-
-        msg = f"Your request for a certificate was successful, it is pending review by a course organiser."
-        ephemeral(client, body, msg)
-
+        addCertificateRequest(body['user_id'], human_name)
+        ephemeral(client, body, f"Your request for a certificate was successful, it is pending review by a course organiser.")
     except Exception as e:
         # Handle error
         return error_handler(client, body, e)
