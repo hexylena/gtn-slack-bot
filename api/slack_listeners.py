@@ -99,12 +99,12 @@ def validateGalaxyURLs(text):
     for url in urls:
         try:
             resp = requests.get(url, timeout=10)
+            if resp.status_code != 200:
+                warnings.append(f":warning: This url was not 200 OK. #{url}")
+            if "galaxy" not in resp.text:
+                warnings.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
         except requests.ReadTimeout:
             warnings.append(f":warning: We could not access this URL before it timed out.")
-        if resp.status_code != 200:
-            warnings.append(f":warning: This url was not 200 OK. #{url}")
-        if "galaxy" not in resp.text:
-            warnings.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
     return (warnings, fatal)
 
 
