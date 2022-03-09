@@ -75,20 +75,23 @@ def error_handler(client, body, e):
     return HttpResponse(status=200)
 
 
-def auto_error_handler(func):
-    def inner(*args, **kwargs):
-        print(f"XXX Hello {args} {kwargs}")
-        print([type(x) for x in args])
-        func(*args, **kwargs)
-        print("XXX Bye ")
-    return inner
-
-
-
 def logReq(body):
     print(
         f"REQ | {body['user_name']} | {body['user_id']} | {body['channel_id']} | {body['channel_name']}| {body['command']} | {body.get('text', '')}"
     )
+
+
+def auto_join_channel(body):
+    # Automatically try and join channels. This ... could be better.
+    if body["channel_id"] not in JOINED:
+        JOINED.append(body["channel_id"])
+        try:
+            app.client.conversations_join(channel=body["channel_id"])
+        except:
+            ack(
+                ":warning: I could not automatically join this conversation, please invite me to use Certificate commands here."
+            )
+            return HttpResponse(status=200)
 
 
 @app.event("app_mention")
@@ -98,15 +101,10 @@ def handle_app_mentions(logger, event, say):
 
 
 @csrf_exempt
-@auto_error_handler
 @app.command("/request-certificate")
 def certify(ack, client, body, logger, say):
     logReq(body)
-    # Automatically try and join channels. This ... could be better.
-    if body["channel_id"] not in JOINED:
-        JOINED.append(body["channel_id"])
-        app.client.conversations_join(channel=body["channel_id"])
-
+    auto_join_channel(body)
     ack()
 
     if "text" not in body:
@@ -137,18 +135,7 @@ def completed(ack, body, logger, say, client):
             ":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial."
         )
         return HttpResponse(status=200)
-
-    # Automatically try and join channels. This ... could be better.
-    if body["channel_id"] not in JOINED:
-        JOINED.append(body["channel_id"])
-        try:
-            app.client.conversations_join(channel=body["channel_id"])
-        except:
-            ack(
-                ":warning: I could not automatically join this conversation, please invite me to use Certificate commands here."
-            )
-            return HttpResponse(status=200)
-
+    auto_join_channel(body)
     ack()
 
     # If the body is blank (and we're not in the admin_ tutorials)
@@ -250,8 +237,8 @@ def completed(ack, body, logger, say, client):
 @app.command("/transcript")
 def transcript(ack, body, client):
     logReq(body)
+    auto_join_channel(body)
     ack()
-    logger.debug(body)
 
     results = Transcript.objects.filter(slack_user_id=body["user_id"]).order_by("-time")
 
@@ -275,6 +262,7 @@ def transcript(ack, body, client):
 @app.command("/stats-all")
 def statsall(ack, body, client):
     logReq(body)
+    auto_join_channel(body)
     ack()
 
     results = (
@@ -294,6 +282,7 @@ def statsall(ack, body, client):
 @app.command("/stats")
 def stats(ack, body, client):
     logReq(body)
+    auto_join_channel(body)
     ack()
 
     module = channel2module(body)
