@@ -218,8 +218,8 @@ def completed(ack, body, logger, say, client):
                 msg += e + "\n"
 
             msg += (
-                "Galaxy history URLs look like https://usegalaxy.eu/u/helena/h/some-history.\n"
-                "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
+                "Galaxy history URLs look like https://usegalaxy.xyz/u/saskia/h/my-history-name.\n"
+                "Need to know how to share your history? <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|Follow this tutorial!>\n"
                 "\n"
                 "This _might_ be a false-positive. If you believe the URL you're trying to submit is correct, please contact <@U01F7TAQXNG> and provide her with the following information:\n"
                 f"> Channel: {body['channel_name']}\n"
