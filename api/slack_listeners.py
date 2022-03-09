@@ -68,24 +68,40 @@ def channel2module(body):
 
 
 def validateGalaxyURLs(text):
-    errors = []
-    if "https://" in text:
-        urls = re.findall(r"https?://[^\s]+", text)
-        print(f'urls: {urls}')
-        if len(urls) == 0:
-            errors.append(f":warning: No galaxy URLs detected.")
-        for url in urls:
-            try:
-                resp = requests.get(url, timeout=10)
-            except requests.ReadTimeout:
-                errors.append(f":warning: We could not access this URL before it timed out.")
-            if resp.status_code != 200:
-                errors.append(f":warning: This url was not 200 OK. #{url}")
-            if "galaxy" not in resp.text:
-                errors.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
-    else:
-        errors.append(":warning: We could not find a url in your submission")
-    return errors
+    warnings = []
+    fatal = []
+    if "https://" not in text:
+        fatal.append(":octagonal_sign: We could not find a url in your submission")
+        return warnings, fatal
+
+    if "https://youtube.com" in text or 'https://youtu.be' in text or "https://www.youtube.com" in text:
+        fatal.append(":octagonal_sign: Please do not submit the YouTube urls, we do not need them.")
+
+    if "https://gallantries.github.io" in text:
+        fatal.append(":octagonal_sign: Please do not submit the Schedule's URL, we do not need it.")
+
+    if "https://training.galaxyproject.org" in text:
+        fatal.append(":octagonal_sign: Please do not submit the Schedule's URL, we do not need it.")
+
+    if "galaxy" not in text:
+        fatal.append(":octagonal_sign: This does not include a galaxy shared history url")
+
+    if len(fatal) > 0:
+        return warnings, fatal
+
+    urls = re.findall(r"https?://[^\s]+", text)
+    print(f'urls: {urls}')
+
+    for url in urls:
+        try:
+            resp = requests.get(url, timeout=10)
+        except requests.ReadTimeout:
+            warnings.append(f":warning: We could not access this URL before it timed out.")
+        if resp.status_code != 200:
+            warnings.append(f":warning: This url was not 200 OK. #{url}")
+        if "galaxy" not in resp.text:
+            warnings.append(f":warning: This url doesn't look like a Galaxy URL. #{url}")
+    return warnings, fatal
 
 
 def logReq(body):
@@ -188,14 +204,33 @@ def completed(ack, body, logger, say, client):
 
     module = channel2module(body)
 
-    errors = []
-    if body["channel_name"][0:6] != "admin_":
+    errors, fatalities = []
+    if body["channel_name"][0:6] != "admin_" and body["channel_name"][0:4] != "dev_":
+
         # Then we validate URLs
-        errors = validateGalaxyURLs(body.get('text', '').strip())
-        if len(errors) > 0:
+        errors, fatalities = validateGalaxyURLs(body.get('text', '').strip())
+        if len(fatalities) > 0:
+            msg = (
+                ":octagonal_sign: Your submission had some issues. We believe it may not contain a Galaxy History URL\n\n"
+            )
+            for e in errors:
+                msg += e + "\n"
+
+            msg += (
+                "Galaxy history URLs look like https://usegalaxy.eu/u/helena/h/some-history.\n"
+                "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
+                "\n"
+                "This _might_ be a false-positive. If you believe the URL you're trying to submit is correct, please contact <@U01F7TAQXNG> and provide her with the following information:\n"
+                "> Channel: {body['channel_name']}\n"
+                "> URL: {body.get('text', 'No text submitted')}"
+            )
+            print(f"User submitted: {body['text']} got fatalities {fatalities} msg {msg}")
+            ephemeral(client, body, msg)
+            return HttpResponse(status=200)
+        elif len(errors) > 0:
             msg = (
                 ":warning: It seems your submission had some issues.\n\n"
-                "These might be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
+                "These _might_ be false-positives. However, if these errors look valid, then please re-run the command with /completed <your galaxy history url>\n"
                 "Reminder: You can <https://training.galaxyproject.org/training-material/faqs/galaxy/histories_sharing.html|follow this tutorial> to share your history.\n"
                 "\n"
             )
