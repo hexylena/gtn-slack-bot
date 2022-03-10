@@ -23,6 +23,8 @@ ENCOURAGEMENT = [
     "太好了！",
     "Gefeliciteerd!",
     "чудова робота",
+    "Amazing!",
+    "Awesome!",
     "Ben fatto!",
     "bon travail",
     "शाबाश", # Hindi
@@ -33,7 +35,7 @@ ENCOURAGEMENT = [
     "সাবাশ", # Bangla
     "অভিনন্দন", # Assamese
     "అభినందనలు", # Telugu
-    "അഭിനന്ദനങ്ങൾ", # Malayalam 
+    "അഭിനന്ദനങ്ങൾ", # Malayalam
     "ਬਹੁਤ ਖੂਬ", # Punjabi
     "શાબ્બાશ", # Gujarathi
     "مبارک ہو", # Urdu
