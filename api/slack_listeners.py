@@ -24,7 +24,22 @@ ENCOURAGEMENT = [
     "Gefeliciteerd!",
     "чудова робота",
     "Ben fatto!",
+    "bon travail",
+    "शाबाश", # Hindi
+    "வாழ்த்துக்கள்", # Tamil
+    "ଅଭିନନ୍ଦନ ", # Odia,
+    "अभिनंदन", # Marathi
+    "ಅಭಿನಂದನೆಗಳು", # Kannada
+    "সাবাশ", # Bangla
+    "অভিনন্দন", # Assamese
+    "అభినందనలు", # Telugu
+    "അഭിനന്ദനങ്ങൾ", # Malayalam 
+    "ਬਹੁਤ ਖੂਬ", # Punjabi
+    "શાબ્બાશ", # Gujarathi
+    "مبارک ہو", # Urdu
 ]
+
+print(ENCOURAGEMENT)
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
 
