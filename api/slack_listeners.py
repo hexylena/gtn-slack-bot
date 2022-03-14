@@ -38,7 +38,6 @@ ENCOURAGEMENT = [
     "അഭിനന്ദനങ്ങൾ", # Malayalam
     "ਬਹੁਤ ਖੂਬ", # Punjabi
     "શાબ્બાશ", # Gujarathi
-    "مبارک ہو", # Urdu
 ]
 
 print(ENCOURAGEMENT)
@@ -282,15 +281,11 @@ def statsall(ack, body, client):
     auto_join_channel(body, ack)
     ack()
 
-    results = (
-        Transcript.objects.values("channel")
-        .annotate(dcount=Count("channel"))
-        .order_by("-dcount")
-    )  # .filter(dcount__gt=2)
+    results = Transcript.objects.values('channel').annotate(Count('slack_user_id', distinct=True)).order_by('-slack_user_id__count')
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for x in results[0:20]:
-        output += f"{x['dcount']} - {x['channel']}\n"
+        output += f"{x['slack_user_id__count']} - {x['channel']}\n"
 
     ephemeral(client, body, output)
 
@@ -309,17 +304,18 @@ def stats(ack, body, client):
 
     module = channel2module(body)
 
-    results = (
-        Transcript.objects.filter(channel=module)
-        .values("time")
-        .annotate(day=Cast("time", output_field=DateField()))
-        .values("day")
-        .annotate(dcount=Count("day"))
-        .order_by("-day")
-    )
+    results = Transcript.objects.filter(channel=module).values('time', 'slack_user_id').annotate(day=Cast("time", output_field=DateField())).values('day').annotate(Count('slack_user_id', distinct=True)).order_by("-day")
+    # results = (
+        # Transcript.objects.filter(channel=module)
+        # .values("time")
+        # .annotate(day=Cast("time", output_field=DateField()))
+        # .values("day")
+        # .annotate(dcount=Count("day"))
+        # .order_by("-day")
+    # )
 
     output = ":calendar: People completing this tutorial by Day\n\nDay - Count\n"
     for x in results[0:20]:
-        output += f"{x['day']} - {x['dcount']}\n"
+        output += f"{x['day']} - {x['slack_user_id__count']}\n"
 
     ephemeral(client, body, output)
