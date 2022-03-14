@@ -17,7 +17,8 @@ import os
 
 ENCOURAGEMENT = [
     "Congratulations!",
-    "¡Felicidades!",
+    "¡Buen trabajo!",
+    "¡Felicitaciones!",
     "Fantastic work!",
     "Great job!",
     "太好了！",
@@ -25,6 +26,8 @@ ENCOURAGEMENT = [
     "чудова робота",
     "Amazing!",
     "Awesome!",
+    "Félicitations!",
+    "Bien fait!"
     "Ben fatto!",
     "bon travail",
     "शाबाश", # Hindi

@@ -13,4 +13,4 @@ class CertificateRequest(models.Model):
     human_name = models.CharField(max_length=64)
     time = models.DateTimeField(auto_now_add=True)
     course = models.TextField()
-    approved = models.CharField(max_length=32)
+    approved = models.TextField()

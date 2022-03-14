@@ -1,4 +1,7 @@
 from django.shortcuts import render
+from django.http import HttpResponse
+from django.template import loader
+import bleach
 from .models import Transcript
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -18,3 +21,16 @@ app = App(
 # Create your views here.
 def index(request):
     return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
+
+def transcript(request, slack_user_id):
+    trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
+    safetrans = [
+        (x.time, x.channel, bleach.clean(x.proof))
+        for x in trans
+    ]
+    template = loader.get_template('transcript.html')
+    context = {
+        'transcript': safetrans,
+        'slack_user_id': slack_user_id,
+    }
+    return HttpResponse(template.render(context, request))

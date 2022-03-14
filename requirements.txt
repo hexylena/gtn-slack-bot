@@ -10,3 +10,4 @@ slack-bolt==1.9.1
 slack-sdk==3.11.0
 sqlparse==0.4.2
 whitenoise==6.0.0
+bleach
