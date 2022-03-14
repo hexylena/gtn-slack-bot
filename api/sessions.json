@@ -89,6 +89,14 @@
       "genome-annotation/apollo/tutorial"
     ]
   },
+  "genome-annotation/crispr-screen": {
+    "title": "CRISPR Screen Analysis",
+    "description": "This lecture will introduce the basic concepts involved in CRISPR screen analysis.",
+    "videos": [
+      "genome-annotation/crispr-screen/slides",
+      "genome-annotation/crispr-screen/tutorial"
+    ]
+  },
   "proteomics/encyclopedia": {
     "title": "EncyclopeDIA",
     "description": "Data independent acquisition (DIA) mass spectrometry is a powerful technique that is improving the\nreproducibility and throughput of proteomics studies. EncyclopeDIA is library search engine comprised of\nseveral algorithms for DIA data analysis and can search for peptides using either DDA-based spectrum libraries\nor DIA-based chromatogram libraries.\n",
@@ -169,18 +177,6 @@
       "dev/debugging/tutorial/summary"
     ]
   },
-  "dev/tool-from-scratch/tutorial": {
-    "title": "Galaxy Tool Development: From Conda to Deployment",
-    "description": "This series of tutorials will walk you through the process of developing tools in Galaxy.",
-    "videos": [
-      "dev/tool-from-scratch/tutorial/conda",
-      "dev/tool-from-scratch/tutorial/planemo-init",
-      "dev/tool-from-scratch/tutorial/tool-wrapper",
-      "dev/tool-from-scratch/tutorial/shed-yml",
-      "dev/tool-from-scratch/tutorial/testing",
-      "dev/tool-from-scratch/tutorial/publish"
-    ]
-  },
   "galaxy/r": {
     "title": "Using R in Galaxy",
     "description": "Want a bit more control over your Analyses? You can run R in Rstudio directly within Galaxy",
@@ -202,8 +198,8 @@
     "title": "Ansible",
     "description": "Here you'll learn the basics of Ansible",
     "videos": [
-      "admin/ansible/tutorial",
-      "admin/ansible/slides"
+      "admin/ansible/slides",
+      "admin/ansible/tutorial"
     ]
   },
   "admin/cvmfs": {
