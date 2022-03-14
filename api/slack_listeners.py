@@ -51,7 +51,9 @@ ENCOURAGEMENT = [
     "Çok iyi gidiyorsun", # Turkish
     "Bien hecho!", # ES
     "Lo has logrado!", # ES
-
+    "እንኳን ደስ አሎት!", # Arahmaic
+    "Συγχαρητήρια", # Greek
+    "Ini tchié, bara gnana", # Bambara, local language spoken in Mali
 ]
 
 print(ENCOURAGEMENT)
