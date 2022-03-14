@@ -42,4 +42,5 @@ ENCOURAGEMENT = [
     "ਵਧਾਈਆਂ", # Punjabi
     "धेरै राम्रो ", # Nepali
     "Ekú oríré", # (Yoruba, Nigeria). It means 'Congratulations'
+    "Bra jobbat", # good job in Swedish
 ]
