@@ -30,7 +30,8 @@ ENCOURAGEMENT = [
     "Bien fait!"
     "Ben fatto!",
     "bon travail",
-    "Wayɛ Adeɛ", # Bono
+    "Wayɛ Adeɛ", # Twi from Ghana
+    "Mmo", # Twi
     "शाबाश", # Hindi
     "வாழ்த்துக்கள்", # Tamil
     "ଅଭିନନ୍ଦନ ", # Odia,
