@@ -52,8 +52,12 @@ ENCOURAGEMENT = [
     "Bien hecho!", # ES
     "Lo has logrado!", # ES
     "እንኳን ደስ አሎት!", # Arahmaic
-    "Συγχαρητήρια", # Greek
+    "Συγχαρητήρια", # Greek (Congrats!)
+    "Καλή δουλειά", # Greek (good job!)
     "Ini tchié, bara gnana", # Bambara, local language spoken in Mali
+    "ਵਧਾਈਆਂ", # Punjabi
+    "धेरै राम्रो ", # Nepali
+    "Ekú oríré", # (Yoruba, Nigeria). It means 'Congratulations'
 ]
 
 print(ENCOURAGEMENT)
