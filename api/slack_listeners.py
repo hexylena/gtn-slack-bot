@@ -47,6 +47,7 @@ ENCOURAGEMENT = [
     "Parabéns", # PT
     "Bom trabalho", #PT
     "Tebrikler", # Turkish
+    "Çok iyi gidiyorsun", # Turkish
     "Bien hecho!", # ES
     "Lo has logrado!", # ES
 
