@@ -38,6 +38,9 @@ ENCOURAGEMENT = [
     "അഭിനന്ദനങ്ങൾ", # Malayalam
     "ਬਹੁਤ ਖੂਬ", # Punjabi
     "શાબ્બાશ", # Gujarathi
+    "Parabéns", # PT
+    "Bom trabalho", #PT
+    "Tebrikler", # Turkish
 ]
 
 print(ENCOURAGEMENT)
