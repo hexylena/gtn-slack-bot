@@ -30,6 +30,7 @@ ENCOURAGEMENT = [
     "Bien fait!"
     "Ben fatto!",
     "bon travail",
+    "Wayɛ Adeɛ", # Bono
     "शाबाश", # Hindi
     "வாழ்த்துக்கள்", # Tamil
     "ଅଭିନନ୍ଦନ ", # Odia,
@@ -41,6 +42,8 @@ ENCOURAGEMENT = [
     "അഭിനന്ദനങ്ങൾ", # Malayalam
     "ਬਹੁਤ ਖੂਬ", # Punjabi
     "શાબ્બાશ", # Gujarathi
+    "অভিনন্দন", # Bengali - Congratulations
+    "খুব ভালো", # Bengali - Very good
     "Parabéns", # PT
     "Bom trabalho", #PT
     "Tebrikler", # Turkish
