@@ -44,6 +44,9 @@ ENCOURAGEMENT = [
     "Parabéns", # PT
     "Bom trabalho", #PT
     "Tebrikler", # Turkish
+    "Bien hecho!", # ES
+    "Lo has logrado!", # ES
+
 ]
 
 print(ENCOURAGEMENT)
