@@ -23,7 +23,7 @@ ENCOURAGEMENT = [
     "সাবাশ", # Bangla
     "অভিনন্দন", # Assamese
     "అభినందనలు", # Telugu
-    "Kazi nzuri", Swahili
+    "Kazi nzuri", # Swahili
     "അഭിനന്ദനങ്ങൾ", # Malayalam
     "ਬਹੁਤ ਖੂਬ", # Punjabi
     "શાબ્બાશ", # Gujarathi
