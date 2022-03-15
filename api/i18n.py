@@ -8,6 +8,7 @@ ENCOURAGEMENT = [
     "好样的！",
     "恭喜你！",
     "再接再厉！",
+    "おめでとうございます",
     "Gefeliciteerd!",
     "чудова робота",
     "Amazing!",
