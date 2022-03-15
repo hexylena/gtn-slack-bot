@@ -49,4 +49,7 @@ ENCOURAGEMENT = [
     "Gratulálunk", # Hungarian
     "Gratulacje", # Polish
     "Gratuliere", # German?
+    #"ممتاز", # arabic
+    #"عمل جيد",  #
+    #"تهانينا", #
 ]
