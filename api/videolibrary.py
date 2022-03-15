@@ -103,9 +103,10 @@ def validateGalaxyURLs(text):
         fatal.append(f":octagonal_sign: This is the training website's URL. {please}")
 
     if "galaxy" not in text:
-        fatal.append(
-            f":octagonal_sign: This does not include a galaxy shared history url. {please}"
-        )
+        if not ('/u/' in text and ('/h/' in text or '/w/' in text)):
+            fatal.append(
+                f":octagonal_sign: This does not include a galaxy shared history url. {please}"
+            )
 
     if len(fatal) > 0:
         return (warnings, fatal)
