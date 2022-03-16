@@ -63,6 +63,8 @@ for k, v in videos.items():
         CHANNEL_MAPPING[c].append("video:" + k)
 
 CHANNEL_MAPPING = {k: list(set(v)) for k, v in CHANNEL_MAPPING.items()}
+for k, v in list(CHANNEL_MAPPING.items()):
+    CHANNEL_MAPPING[k.lower()] = v
 
 
 def channel2module(body):
