@@ -98,13 +98,10 @@ def get_user_info_cached(user_id):
 def easter_egg(client, body):
     info = get_user_info_cached(body['user_id'])
     emoji = info['user']['profile']['status_emoji']
-    print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
     if emoji == ':transgender_flag:':
-        print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
-        # ephemeral(client, body, "Thanks for advancing the trans agenda by taking over science! :transgender_flag:")
+        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the trans agenda by taking over science! :test_tube::transgender_flag:")
     elif emoji == ':rainbow-flag':
-        print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
-        # ephemeral(client, body, "Thanks for advancing the queer agenda by taking over science! :rainbow-flag:")
+        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag:")
 
 
 @app.event("app_mention")
