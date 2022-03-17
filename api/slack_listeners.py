@@ -87,6 +87,26 @@ def auto_join_channel(body, ack):
             return HttpResponse(status=200)
 
 
+USER_PROFILE_CACHE = {}
+def get_user_info_cached(user_id):
+    if user_id not in USER_PROFILE_CACHE:
+        info = app.client.users_info(user=user_id)
+        USER_PROFILE_CACHE[user_id] = info
+    return USER_PROFILE_CACHE[user_id]
+
+
+def easter_egg(client, body):
+    info = get_user_info_cached(body['user_id'])
+    emoji = info['user']['profile']['status_emoji']
+    print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
+    if emoji == ':transgender_flag:':
+        print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
+        # ephemeral(client, body, "Thanks for advancing the trans agenda by taking over science! :transgender_flag:")
+    elif emoji == ':rainbow-flag':
+        print(f"XXX {body['user_id']} | {body['user_name']} | {emoji}")
+        # ephemeral(client, body, "Thanks for advancing the queer agenda by taking over science! :rainbow-flag:")
+
+
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
     logger.info(event)
@@ -186,6 +206,12 @@ def completed(ack, body, logger, say, client):
 
             print(f"User submitted: {body['text']} got errors {errors} msg {msg}")
             ephemeral(client, body, msg)
+
+    try:
+        easter_egg(client, body)
+    except Exception as e:
+        print(f"XXX {e}")
+        pass
 
     try:
         q = Transcript(
