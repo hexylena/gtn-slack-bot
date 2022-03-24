@@ -138,7 +138,7 @@ def certify(ack, client, body, logger, say):
     ephemeral(
         client,
         body,
-        f":warning: Please provide feedback <https://docs.google.com/forms/d/e/1FAIpQLSeZ6hCdXNsurYs6Oa9AWoAf4ifwzQK_FAY4RQ8TomnlqJW9Kg/viewform?usp=sf_link|via our feedback survey>, if you have not done so already!",
+        f":warning: As a final requirement for your certificate, please fill in the feedback <https://docs.google.com/forms/d/e/1FAIpQLSeZ6hCdXNsurYs6Oa9AWoAf4ifwzQK_FAY4RQ8TomnlqJW9Kg/viewform?usp=sf_link|via our feedback survey>, if you have not done so already!",
     )
 
 
@@ -287,7 +287,10 @@ def statsall(ack, body, client):
     auto_join_channel(body, ack)
     ack()
 
-    results = Transcript.objects.values('channel').annotate(Count('slack_user_id', distinct=True)).order_by('-slack_user_id__count')
+    if 'text' in body and len(body['text'].strip()) > 0:
+        results = Transcript.objects.filter(channel__icontains=body['text'].lower()).values('channel').annotate(Count('slack_user_id', distinct=True)).order_by('-slack_user_id__count')
+    else:
+        results = Transcript.objects.values('channel').annotate(Count('slack_user_id', distinct=True)).order_by('-slack_user_id__count')
 
     output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for x in results[0:20]:
