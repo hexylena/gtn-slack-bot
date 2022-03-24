@@ -130,7 +130,7 @@ def certify(ack, client, body, logger, say):
     msg = ""
     try:
         addCertificateRequest(body['user_id'], human_name)
-        ephemeral(client, body, f"Your request for a certificate was successful, it is pending review by a course organiser.")
+        ephemeral(client, body, f"Your request for a certificate was successful, it is pending review by a course organiser. Your name will appear as '{human_name}' on your certificate (exactly as it appears between the 'single quotes'.) If you need to correct this, just re-run the command with your corrected name.")
     except Exception as e:
         # Handle error
         return error_handler(client, body, e)
