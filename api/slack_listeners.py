@@ -135,6 +135,12 @@ def certify(ack, client, body, logger, say):
         # Handle error
         return error_handler(client, body, e)
 
+    ephemeral(
+        client,
+        body,
+        f":warning: Please provide feedback <https://docs.google.com/forms/d/e/1FAIpQLSeZ6hCdXNsurYs6Oa9AWoAf4ifwzQK_FAY4RQ8TomnlqJW9Kg/viewform?usp=sf_link|via our feedback survey>, if you have not done so already!",
+    )
+
 
 @csrf_exempt
 @app.command("/completed")
