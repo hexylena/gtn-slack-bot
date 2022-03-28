@@ -14,7 +14,6 @@ ENCOURAGEMENT = [
     "Amazing!",
     "Awesome!",
     "Félicitations!",
-    "Bien fait!",
     "Ben fatto!",
     "bon travail",
     "Wayɛ Adeɛ", # Twi from Ghana
