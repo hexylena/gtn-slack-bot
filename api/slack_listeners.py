@@ -107,7 +107,7 @@ def easter_egg(client, body):
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
     logger.info(event)
-    say(f"Hi there, <@{event['user']}>")
+    say(f"Hi there, <@{event['user']}>\n\n<https://gallantries.github.io/video-library/certbot|Were you trying to submit a certificate?> You must put /certificate at the start of your message. Please try again!")
 
 
 @csrf_exempt
