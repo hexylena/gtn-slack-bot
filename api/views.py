@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.template import loader
 import bleach
 from .models import Transcript
+from django.http import JsonResponse
+from .videolibrary import CHANNEL_MAPPING
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from slack_bolt import App
@@ -34,3 +36,6 @@ def transcript(request, slack_user_id):
         'slack_user_id': slack_user_id,
     }
     return HttpResponse(template.render(context, request))
+
+def mapping(request):
+    return JsonResponse(CHANNEL_MAPPING)

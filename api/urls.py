@@ -17,6 +17,7 @@ def slack_events_handler(request: HttpRequest):
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path('mapping.json', views.mapping, name='mapping'),
     path('transcript/<str:slack_user_id>/', views.transcript, name='transcript'),
     path("slack/events", slack_events_handler, name="slack_events"),
 ]
