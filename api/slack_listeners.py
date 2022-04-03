@@ -146,6 +146,13 @@ def certify(ack, client, body, logger, say):
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
     logReq(body)
+    ack(
+        ":octagonal_sign: This event is unfortunately over. Check back next year for Smörgåsbord 3!"
+    )
+    return HttpResponse(status=200)
+
+
+
     if body["channel_name"] == "directmessage":
         ack(
             ":warning: This command cannot be run in a Direct Message, please run it in a channel for a tutorial."
