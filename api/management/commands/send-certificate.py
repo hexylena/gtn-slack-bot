@@ -22,9 +22,9 @@ app = App(
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
-        pass
+        parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
-    def build_certificate_for_user(self, user_id):
+    def build_certificate_for_user(self, user_id, slack=False):
         cert = CertificateRequest.objects.get(slack_user_id=user_id)
         transcript = Transcript.objects.filter(slack_user_id=user_id, valid=True)
 
@@ -68,10 +68,11 @@ class Command(BaseCommand):
         # Upload
         shutil.copyfile(final_pdf.name, f'certs/{cert.human_name}.pdf')
 
-        # upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
-        # message = "Congratulations on attending GTN Tapas! Please find your certificate below."
-        # message += "<"+upload['file']['permalink']+"| >"
-        # print(app.client.chat_postMessage(channel=user_id, text=message))
+        if slack:
+            upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
+            message = "Congratulations on attending GTN Tapas! Please find your certificate below."
+            message += "<"+upload['file']['permalink']+"| >"
+            print(app.client.chat_postMessage(channel=user_id, text=message))
 
         # Final cleanup
         final_pdf.close()
@@ -80,4 +81,4 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         # Hardcode for now
         user_id = 'U01F7TAQXNG'
-        self.build_certificate_for_user(user_id)
+        self.build_certificate_for_user(user_id, slack=options['slack'])

@@ -227,7 +227,7 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:zoom="0.8516017"
-     inkscape:cx="145.98903"
+     inkscape:cx="397.28021"
      inkscape:cy="704.26382"
      inkscape:window-x="0"
      inkscape:window-y="0"
@@ -620,7 +620,8 @@
   <flowRoot
      xml:space="preserve"
      id="flowRoot948"
-     style="font-style:normal;font-weight:normal;font-size:21.33333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"><flowRegion
+     style="font-style:normal;font-weight:normal;font-size:21.33333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+     transform="translate(-2.3485157,28.182189)"><flowRegion
        id="flowRegion950"><rect
          id="rect952"
          width="717.47156"
@@ -628,4 +629,14 @@
          x="42.273285"
          y="164.32526" /></flowRegion>
 		 <flowPara id="COURSES">COURSES</flowPara>
-	   </flowRoot></svg>
+	   </flowRoot>  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:16px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+     x="160.87334"
+     y="145.53712"
+     id="text931"><tspan
+       sodipodi:role="line"
+       id="tspan929"
+       x="160.87334"
+       y="145.53712">Participant successfully completed the following tutorials:</tspan></text>
+</svg>
