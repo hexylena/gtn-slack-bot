@@ -14,6 +14,9 @@ sessionsjson = os.path.join(file_path, "sessions.json")
 with open(sessionsjson, "r") as handle:
     sessions = json.load(handle)
 
+gtnjson= os.path.join(file_path, "gtn.json")
+with open(gtnjson, "r") as handle:
+    gtndata = json.load(handle)
 
 def convert_name(path):
     path_parts = path.split("/")
@@ -130,6 +133,30 @@ def validateGalaxyURLs(text):
                 ":warning: We could not access this URL before it timed out."
             )
     return (warnings, fatal)
+
+
+def get_course_name(module):
+    (type, key) = module.split(':', 1)
+    key2 = "" + key
+    if key2.endswith('/tutorial'):
+        key2 = key2[0:len(key2) - len('/tutorial')]
+    if key2.endswith('/slides'):
+        key2 = key2[0:len(key2) - len('/slides')]
+
+
+    if type == 'session':
+        return sessions[key].get('title', key)
+    elif type == 'video':
+        possible_titles = [
+            videos.get(key, {}).get('title', None),
+            gtndata.get(key, None),
+            videos.get(key2, {}).get('title', None),
+            gtndata.get(key2, None)
+        ]
+        possible_titles = list(set([x for x in possible_titles if x is not None]))
+        return possible_titles[0]
+    else:
+        raise Exception(0)
 
 
 def addCertificateRequest(user_id, human_name):
