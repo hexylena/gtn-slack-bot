@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
+import shutil
 import subprocess
 import os
 import tempfile
@@ -64,13 +65,13 @@ class Command(BaseCommand):
         os.unlink(cert_pdf.name)
         os.unlink(transcript_pdf.name)
 
-        print(cert_pdf.name, transcript_pdf.name, final_pdf.name)
-
         # Upload
-        upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
-        message = "Congratulations on attending GTN Tapas! Please find your certificate below."
-        message += "<"+upload['file']['permalink']+"| >"
-        print(app.client.chat_postMessage(channel=user_id, text=message))
+        shutil.copyfile(final_pdf.name, f'certs/{cert.human_name}.pdf')
+
+        # upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
+        # message = "Congratulations on attending GTN Tapas! Please find your certificate below."
+        # message += "<"+upload['file']['permalink']+"| >"
+        # print(app.client.chat_postMessage(channel=user_id, text=message))
 
         # Final cleanup
         final_pdf.close()
