@@ -38,7 +38,7 @@ class Command(BaseCommand):
 
         # Fix human names
         for cr in CertificateRequest.objects.all():
-            if cr.human_name == cr.slack_user_id and cr.slack_user_id.startswith('U'):
+            if (cr.human_name == cr.slack_user_id and cr.slack_user_id.startswith('U')) or '://' in cr.human_name:
                 info = app.client.users_info(user=cr.slack_user_id).data
                 cr.human_name = info['user']['real_name']
                 cr.save()
