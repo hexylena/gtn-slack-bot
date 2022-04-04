@@ -38,7 +38,7 @@
 							{% endfor %}
 						</select>
 					</td>
-					<td><a href="{{ row.2 }}">{{ row.2 }}</a></td>
+					<td>{{ row.2 | safe }}</a></td>
 					<td><img src="/static/admin/img/icon-{% if row.5 %}yes{% else %}no{% endif %}.svg"></td>
 				</tr>
 				{% endfor %}
