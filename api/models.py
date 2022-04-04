@@ -6,6 +6,7 @@ class Transcript(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     channel = models.TextField()
     proof = models.TextField()
+    valid = models.BooleanField(default=False)
 
 
 class CertificateRequest(models.Model):
@@ -13,4 +14,4 @@ class CertificateRequest(models.Model):
     human_name = models.CharField(max_length=64)
     time = models.DateTimeField(auto_now_add=True)
     course = models.TextField()
-    approved = models.TextField()
+    approved = models.BooleanField()

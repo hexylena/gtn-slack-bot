@@ -10,12 +10,14 @@
 <body>
 	<div class="container">
 		<h1>Transcript for {{ slack_user_id }}</h1>
+	<form method="POST">{% csrf_token %}
 		<table border="">
 			<thead>
 				<tr>
 					<th style="width: 5em;">Valid</th>
 					<th>Material</th>
 					<th>Proof</th>
+					<th style="width: 5em;">DB Validity</th>
 				</tr>
 			</thead>
 			<tbody>
@@ -23,22 +25,25 @@
 				<tr>
 					<td>
 						<label>
-						<input type="checkbox" id="{{ row.3 }}" checked/>
-						Valid
+							<input type="checkbox" name="valid.{{ row.3 }}" id="{{ row.3 }}" {% if row.4 %}checked{% endif %}/>
+							Valid
 						</label>
 					</td>
 					<td>
-						<select name="actual_course">
+						<select name="actual_course.{{ row.3 }}">
 							{% for value in channel_mapping %}
 							<option value="{{ value }}" {% if value == row.1 %}selected{% endif %}>{{ value }}</option>
 							{% endfor %}
 						</select>
 					</td>
 					<td><a href="{{ row.2 }}">{{ row.2 }}</a></td>
+					<td><img src="/static/admin/img/icon-{% if row.5 %}yes{% else %}no{% endif %}.svg"></td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
+		<input class="btn btn-success" type="submit" value="Submit!">
+	</form>
 	</div>
 </body>
 <style type="text/css" media="all">
