@@ -24,7 +24,8 @@ def probably_hist(text):
 
 # Create your views here.
 def index(request):
-    return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
+    template = loader.get_template('index.html')
+    return HttpResponse(template.render({}, request))
 
 def transcript_list(request):
     trans = CertificateRequest.objects.all()
