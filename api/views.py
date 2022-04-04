@@ -78,7 +78,7 @@ def transcript(request, slack_user_id):
 
     trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
     safetrans = [
-        (x.time, x.channel, '<br>'.join([f'<a href="{x}">{x}</a>' for x in bleach.clean(x.proof).split()]) , x.id, probably_hist(x.proof), x.valid)
+        (x.time, x.channel, bleach.clean('<br>'.join([f'<a href="{x}">{x}</a>' for x in bleach.clean(x.proof).split()])) , x.id, probably_hist(x.proof), x.valid)
         for x in trans
     ]
     template = loader.get_template('transcript.html')
