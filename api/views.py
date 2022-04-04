@@ -72,7 +72,7 @@ def transcript(request, slack_user_id):
             t.save()
 
         cr = CertificateRequest.objects.filter(slack_user_id=slack_user_id).get()
-        cr.approved = True
+        cr.approved = 'ACC' if request.POST['decision'] == 'ACC' else 'REJ'
         cr.save()
         return redirect('transcript_list')
 

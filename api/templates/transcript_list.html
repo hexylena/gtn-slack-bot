@@ -17,17 +17,15 @@
 			<thead>
 				<tr>
 					<th>User</th>
-					<th>Approved</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for user in users %}
-				{% if not user.approved %}
+				{% if user.approved != 'ACC' and user.approved != 'REJ' %}
 				<tr>
 					<td>
 						<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
 					</td>
-					<td><img src="/static/admin/img/icon-{% if user.approved %}yes{% else %}no{% endif %}.svg"></td>
 				</tr>
 				{% endif %}
 				{% endfor %}
@@ -43,12 +41,33 @@
 			</thead>
 			<tbody>
 				{% for user in users %}
-				{% if user.approved %}
+				{% if user.approved == 'ACC' %}
 				<tr>
 					<td>
 						<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
 					</td>
-					<td><img src="/static/admin/img/icon-{% if user.approved %}yes{% else %}no{% endif %}.svg"></td>
+					<td><img src="/static/admin/img/icon-yes.svg"></td>
+				</tr>
+				{% endif %}
+				{% endfor %}
+			</tbody>
+		</table>
+		<h2>Rejected Requests</h2>
+		<table class="table table-striped">
+			<thead>
+				<tr>
+					<th>User</th>
+					<th>Approved</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for user in users %}
+				{% if user.approved == 'REJ' %}
+				<tr>
+					<td>
+						<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
+					</td>
+					<td><img src="/static/admin/img/icon-no.svg"></td>
 				</tr>
 				{% endif %}
 				{% endfor %}

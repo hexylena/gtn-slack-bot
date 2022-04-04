@@ -38,12 +38,16 @@
 							{% endfor %}
 						</select>
 					</td>
-					<td>{{ row.2 | safe }}</a></td>
+					<td>{{ row.2 | safe }}</td>
 					<td><img src="/static/admin/img/icon-{% if row.5 %}yes{% else %}no{% endif %}.svg"></td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
+		<select name="decision">
+			<option value="ACC">Accept</option>
+			<option value="REJ">Reject</option>
+		</select>
 		<input class="btn btn-success" type="submit" value="Submit!">
 	</form>
 	<a class="btn" href="/transcript/">Return to transcript list</a>
