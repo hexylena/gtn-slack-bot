@@ -18,6 +18,8 @@ class CertificateRequest(models.Model):
     CertificateStates = [
         ('ACC', 'Accepted'),
         ('REJ', 'Rejected'),
-        ('UNK', 'Unknown')
+        ('UNK', 'Unknown'),
+        ('S/S', 'Certificate Sent'),
+        ('S/F', 'User informed of Failure'),
     ]
     approved = models.CharField(max_length=3, choices=CertificateStates, default='UNK')

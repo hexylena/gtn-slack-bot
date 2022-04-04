@@ -24,8 +24,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
-    def build_certificate_for_user(self, user_id, slack=False):
-        cert = CertificateRequest.objects.get(slack_user_id=user_id)
+    def build_certificate_for_user(self, cert, slack=False):
+        # cert = CertificateRequest.objects.get(slack_user_id=user_id)
+        user_id = cert.slack_user_id
         transcript = Transcript.objects.filter(slack_user_id=user_id, valid=True)
 
         cert_svg = tempfile.NamedTemporaryFile(delete=False, suffix='.svg')
@@ -79,7 +80,13 @@ class Command(BaseCommand):
         final_pdf.close()
         os.unlink(final_pdf.name)
 
+        # Mark it as sent, successful.
+        cert.approved = 'S/S'
+        cert.save()
+
     def handle(self, *args, **options):
         # Hardcode for now
-        user_id = 'U01F7TAQXNG'
-        self.build_certificate_for_user(user_id, slack=options['slack'])
+        for cert in CertificateRequest.objects.filter(approved='ACC'):
+            print(cert.slack_user_id)
+            # user_id = 'U01F7TAQXNG'
+            self.build_certificate_for_user(cert, slack=options['slack'])
