@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from django.shortcuts import redirect
 from django.template import loader
 import bleach
 from api.models import Transcript, CertificateRequest
@@ -72,9 +73,7 @@ def transcript(request, slack_user_id):
         cr = CertificateRequest.objects.filter(slack_user_id=slack_user_id).get()
         cr.approved = True
         cr.save()
-        print(cr, cr.approved)
-
-        __import__('pprint').pprint(results_valid)
+        return redirect('transcript_list')
 
 
     trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
