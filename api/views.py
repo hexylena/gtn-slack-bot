@@ -92,4 +92,4 @@ def transcript(request, slack_user_id):
     return HttpResponse(template.render(context, request))
 
 def mapping(request):
-    return JsonResponse(CHANNEL_MAPPING)
+    return JsonResponse(CHANNEL_MAPPING, json_dumps_params={'indent': 2})
