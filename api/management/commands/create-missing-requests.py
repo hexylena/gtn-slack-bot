@@ -40,6 +40,17 @@ class Command(BaseCommand):
         for cr in CertificateRequest.objects.all():
             if (cr.human_name == cr.slack_user_id and cr.slack_user_id.startswith('U')) or '://' in cr.human_name:
                 info = app.client.users_info(user=cr.slack_user_id).data
-                cr.human_name = info['user']['real_name']
+
+                # Sometimes users won't use the real name, and instead display
+                # name or another field!
+                potential_names = [
+                    info['user']['real_name'],
+                    info['user']['name'],
+                    info['user']['profile']['display_name'],
+                ]
+                # So we use this "Great" metric of whichever is longer as their
+                # probable full name.
+                longer = sorted(potential_names, key=lambda x: -len(x))
+                cr.human_name = longer[0]
                 cr.save()
                 time.sleep(2)
