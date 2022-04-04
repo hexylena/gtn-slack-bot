@@ -28,7 +28,7 @@ def index(request):
     return HttpResponse(template.render({}, request))
 
 def transcript_list(request):
-    trans = CertificateRequest.objects.all()
+    trans = CertificateRequest.objects.all().order_by('slack_user_id')
     template = loader.get_template('transcript_list.html')
     context = {
         'users': trans,
