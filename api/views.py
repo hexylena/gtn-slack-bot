@@ -24,16 +24,25 @@ app = App(
 def index(request):
     return HttpResponse("Привіт Світ! You're at the GTN Certificate Bot index.")
 
+def transcript_list(request):
+    trans = Transcript.objects.all().values('slack_user_id').distinct()
+    template = loader.get_template('transcript_list.html')
+    context = {
+        'users': trans,
+    }
+    return HttpResponse(template.render(context, request))
+
 def transcript(request, slack_user_id):
     trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
     safetrans = [
-        (x.time, x.channel, bleach.clean(x.proof))
+        (x.time, x.channel, bleach.clean(x.proof), x.id)
         for x in trans
     ]
     template = loader.get_template('transcript.html')
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
+        'channel_mapping': [item for sublist in CHANNEL_MAPPING.values() for item in sublist],
     }
     return HttpResponse(template.render(context, request))
 

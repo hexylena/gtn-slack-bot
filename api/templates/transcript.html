@@ -13,25 +13,43 @@
 		<table border="">
 			<thead>
 				<tr>
-					<th>Time</th>
+					<th style="width: 5em;">Valid</th>
 					<th>Material</th>
 					<th>Proof</th>
-					<th>Valid</th>
 				</tr>
 			</thead>
 			<tbody>
 				{% for row in transcript %}
 				<tr>
-					<td>{{ row.0 }}</td>
-					<td>{{ row.1 }}</td>
-					<td><a href="{{ row.2 }}">{{ row.2 }}</a></td>
 					<td>
-						<input type="checkbox" name="" id="" value="" />
+						<label>
+						<input type="checkbox" id="{{ row.3 }}" checked/>
+						Valid
+						</label>
 					</td>
+					<td>
+						<select name="actual_course">
+							{% for value in channel_mapping %}
+							<option value="{{ value }}" {% if value == row.1 %}selected{% endif %}>{{ value }}</option>
+							{% endfor %}
+						</select>
+					</td>
+					<td><a href="{{ row.2 }}">{{ row.2 }}</a></td>
 				</tr>
 				{% endfor %}
 			</tbody>
 		</table>
 	</div>
 </body>
+<style type="text/css" media="all">
+label {
+	width: 100%;
+	height: 100%;
+	padding: 0.5em 0;
+}
+
+label:hover {
+	background: #ccc;
+}
+</style>
 </html>

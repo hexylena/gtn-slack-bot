@@ -228,6 +228,8 @@ def completed(ack, body, logger, say, client):
             slack_user_id=body["user_id"], channel=module, proof=body.get("text", "")
         )
         q.save()
+        # Ensure everyone has an automatic certificate request.
+        addCertificateRequest(body['user_id'], body['user_id'])
 
         prompt = random.choice(
             [
