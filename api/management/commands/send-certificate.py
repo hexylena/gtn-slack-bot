@@ -72,6 +72,7 @@ class Command(BaseCommand):
             upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
             message = "Congratulations on attending GTN Tapas! Please find your certificate below."
             message += "<"+upload['file']['permalink']+"| >"
+            message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in #general."
             print(app.client.chat_postMessage(channel=user_id, text=message))
 
         # Final cleanup
