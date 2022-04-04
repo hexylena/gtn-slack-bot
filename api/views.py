@@ -85,7 +85,7 @@ def transcript(request, slack_user_id):
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
-        'channel_mapping': sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist]),
+        'channel_mapping': list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist]))),
         'message': None,
     }
     return HttpResponse(template.render(context, request))
