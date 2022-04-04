@@ -14,4 +14,10 @@ class CertificateRequest(models.Model):
     human_name = models.CharField(max_length=64)
     time = models.DateTimeField(auto_now_add=True)
     course = models.TextField()
-    approved = models.BooleanField()
+
+    CertificateStates = [
+        ('ACC', 'Accepted'),
+        ('REJ', 'Rejected'),
+        ('UNK', 'Unknown')
+    ]
+    approved = models.CharField(max_length=3, choices=CertificateStates, default='UNK')
