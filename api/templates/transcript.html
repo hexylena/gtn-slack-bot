@@ -10,7 +10,7 @@
 		<h1>Transcript for {{ slack_user_id }}</h1>
 	<a class="btn" href="/transcript/">Return to transcript list</a>
 	<form method="POST">{% csrf_token %}
-		<table border="">
+		<table class='table table-striped'>
 			<thead>
 				<tr>
 					<th style="width: 5em;">Valid</th>
@@ -30,6 +30,9 @@
 					</td>
 					<td>
 						<select name="actual_course.{{ row.3 }}">
+							<!-- fallback option -->
+							<option value="{{ row.1 }}">{{ row.1 }} [SEE NOTE]</option>
+							<!-- But hopefully it finds it here -->
 							{% for value in channel_mapping %}
 							<option value="{{ value }}" {% if value == row.1 %}selected{% endif %}>{{ value }}</option>
 							{% endfor %}
@@ -41,6 +44,9 @@
 				{% endfor %}
 			</tbody>
 		</table>
+		<p>
+			SEE NOTE: if this default option is auto-selected it means that there's an issue mapping it correctly to our dataset. It should work, but, this is odd.
+		</p>
 		<input class="btn btn-success" type="submit" value="Submit!">
 	</form>
 	<a class="btn" href="/transcript/">Return to transcript list</a>
