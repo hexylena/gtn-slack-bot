@@ -115,7 +115,12 @@ def handle_app_mentions(logger, event, say):
 def certify(ack, client, body, logger, say):
     logReq(body)
     auto_join_channel(body, ack)
+    if '://' in body['text']:
+        ack(":octagonal_sign: Human names do not contain URLs, please retry.")
+        return HttpResponse(status=200)
+
     ack()
+
 
     if "text" not in body:
         ephemeral(
