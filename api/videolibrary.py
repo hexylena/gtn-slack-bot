@@ -101,6 +101,11 @@ def validateGalaxyURLs(text):
             f":octagonal_sign: Please do not submit the Schedule's URL, we do not need it. {please}"
         )
 
+    if "interactivetoolentrypoint.interactivetool" in text:
+        fatal.append(
+            f":octagonal_sign: Please do not submit the URL to your interactive tools, we do not need to access them. Instead a history is better with any outputs from your interactive tool session (e.g. jupyter/rstudio) saved back to your history. {please}"
+        )
+
     if "https://usegalaxy.xx/u/saskia/h/my-history-name" in text:
         fatal.append(f":octagonal_sign: This is the example URL. {please}")
 
