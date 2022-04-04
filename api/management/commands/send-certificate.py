@@ -74,7 +74,7 @@ class Command(BaseCommand):
 
         # Final cleanup
         final_pdf.close()
-        os.unlink(final_pdf)
+        os.unlink(final_pdf.name)
 
     def handle(self, *args, **options):
         # Hardcode for now

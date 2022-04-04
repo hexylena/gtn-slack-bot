@@ -1,5 +1,14 @@
 from django.core.management.base import BaseCommand, CommandError
+import time
+import os
 from api.models import Transcript, CertificateRequest
+from slack_bolt import App
+
+app = App(
+    token=os.environ.get("SLACK_BOT_TOKEN", ""),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
+    token_verification_enabled=True,
+)
 
 
 class Command(BaseCommand):
@@ -20,3 +29,17 @@ class Command(BaseCommand):
                     approved=False,
                 )
                 q.save()
+
+        # Delete duplicate CRs
+        for cr in CertificateRequest.objects.all():
+            courses_completed = Transcript.objects.filter(slack_user_id=cr.slack_user_id)
+            if len(courses_completed) == 0:
+                cr.delete()
+
+        # Fix human names
+        for cr in CertificateRequest.objects.all():
+            if cr.human_name == cr.slack_user_id and cr.slack_user_id.startswith('U'):
+                info = app.client.users_info(user=cr.slack_user_id).data
+                cr.human_name = info['user']['real_name']
+                cr.save()
+                time.sleep(2)
