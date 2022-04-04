@@ -33,6 +33,7 @@ def transcript_list(request):
     template = loader.get_template('transcript_list.html')
     context = {
         'users': trans,
+        'done': 100 * len([x.approved for x in trans if x.approved]) / len(trans),
     }
     return HttpResponse(template.render(context, request))
 
