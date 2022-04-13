@@ -1,9 +1,10 @@
 from django.core.management.base import BaseCommand, CommandError
+import tqdm
 import shutil
 import subprocess
 import os
 import tempfile
-from api.videolibrary import get_course_name
+from api.videolibrary import get_course_name_and_time
 from api.models import Transcript, CertificateRequest
 from slack_bolt import App
 
@@ -25,6 +26,9 @@ class Command(BaseCommand):
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
     def build_certificate_for_user(self, cert, slack=False):
+        if os.path.exists(f'certs/{cert.human_name}.pdf'):
+            return
+
         # cert = CertificateRequest.objects.get(slack_user_id=user_id)
         user_id = cert.slack_user_id
         transcript = Transcript.objects.filter(slack_user_id=user_id, valid=True)
@@ -35,10 +39,15 @@ class Command(BaseCommand):
         transcript_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
         final_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
 
+        uniq_items = dict([
+            get_course_name_and_time(t.channel) for t in transcript
+        ])
+        print(uniq_items)
+
         # Generate our transcript text
         transcript_text = ""
-        for i, t in enumerate(transcript):
-            transcript_text += f'<flowPara id="courses.{i}">{get_course_name(t.channel)}</flowPara>'
+        for i, t in enumerate(sorted(uniq_items.keys())):
+            transcript_text += f'<flowPara id="courses.{i}">{t} - {uniq_items[t]}</flowPara>'
 
         # Front side of cert
         cert_svg.write(TEMPLATE.replace('NAME', cert.human_name).encode())
@@ -86,7 +95,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Hardcode for now
-        for cert in CertificateRequest.objects.filter(approved='ACC'):
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='S/S').order_by('slack_user_id')):
             print(cert.slack_user_id)
             # user_id = 'U01F7TAQXNG'
             self.build_certificate_for_user(cert, slack=options['slack'])

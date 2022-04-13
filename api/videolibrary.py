@@ -1,4 +1,6 @@
 import os
+import isodate
+from datetime import datetime, timedelta
 import requests
 import re
 import json
@@ -17,6 +19,10 @@ with open(sessionsjson, "r") as handle:
 gtnjson= os.path.join(file_path, "gtn.json")
 with open(gtnjson, "r") as handle:
     gtndata = json.load(handle)
+
+studyloadjson = os.path.join(file_path, "studyload.json")
+with open(studyloadjson, "r") as handle:
+    studyloaddata = json.load(handle)
 
 def convert_name(path):
     path_parts = path.split("/")
@@ -140,7 +146,10 @@ def validateGalaxyURLs(text):
     return (warnings, fatal)
 
 
-def get_course_name(module):
+def parse_time(timestr):
+    return isodate.parse_duration(f'PT{timestr}'.upper())
+
+def get_course_name_and_time(module):
     (type, key) = module.split(':', 1)
     key2 = "" + key
     if key2.endswith('/tutorial'):
@@ -148,9 +157,24 @@ def get_course_name(module):
     if key2.endswith('/slides'):
         key2 = key2[0:len(key2) - len('/slides')]
 
+    # Fix up a couple of bad keys.
+    if 'admin/connect-to-compute-cluster/combined' == key:
+        key = 'admin/connect-to-compute-cluster'
+    elif 'admin/object-store/exercise' == key:
+        key = 'admin/object-store'
 
     if type == 'session':
-        return sessions[key].get('title', key)
+        sum_study = timedelta(seconds=0)
+        for sk in sessions[key]['videos']:
+            sk2 = "" + sk
+            if sk2.endswith('/tutorial'):
+                sk2 = sk2[:len(sk2) - len('/tutorial')]
+            if sk2.endswith('/slides'):
+                sk2 = sk2[:len(sk2) - len('/slides')]
+
+            sum_study += parse_time(studyloaddata.get(key, studyloaddata.get(sk2, "00M")))
+
+        return (sessions[key].get('title', key), sum_study)
     elif type == 'video':
         possible_titles = [
             videos.get(key, {}).get('title', None),
@@ -159,9 +183,24 @@ def get_course_name(module):
             gtndata.get(key2, None)
         ]
         possible_titles = list(set([x for x in possible_titles if x is not None]))
-        return possible_titles[0]
+        possible_study = [
+            studyloaddata.get(key, None),
+            studyloaddata.get(key2, None),
+        ]
+        possible_study = list(set([x for x in possible_study if x is not None]))
+
+        if len(possible_titles) == 0:
+            raise Exception(f"Fix {key} / {key2}")
+        return (possible_titles[0], parse_time(possible_study[0] if len(possible_study) > 0 else '15m'))
+    elif type == 'channel':
+        if key in ('galaxy-intro', 'galaxy-intro2'):
+            return ("Intro to Galaxy", parse_time('2H'))
+        elif key == 'general':
+            return ("General Galaxy Skills Module", parse_time('2H'))
+        else:
+            raise Exception(f"Unknown module {module}")
     else:
-        raise Exception(0)
+        raise Exception(f"Unknown module {module}")
 
 
 def addCertificateRequest(user_id, human_name):

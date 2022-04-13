@@ -227,8 +227,8 @@
      showguides="true"
      inkscape:guide-bbox="true"
      inkscape:zoom="0.8516017"
-     inkscape:cx="150.68606"
-     inkscape:cy="657.29351"
+     inkscape:cx="265.76333"
+     inkscape:cy="281.53099"
      inkscape:window-x="0"
      inkscape:window-y="0"
      inkscape:window-maximized="1"
@@ -317,7 +317,7 @@
          x="127.87016"
          y="821.94177" /></flowRegion><flowPara
        id="flowPara1101"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:100%;font-family:'Exo 2';-inkscape-font-specification:'Exo 2, ';text-align:center;text-anchor:middle">Completed the</flowPara><flowPara
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:32px;line-height:100%;font-family:'Exo 2';-inkscape-font-specification:'Exo 2, ';text-align:center;text-anchor:middle">Attended the</flowPara><flowPara
        id="flowPara1105"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;line-height:100%;font-family:'Exo 2';-inkscape-font-specification:'Exo 2, ';text-align:center;text-anchor:middle">GTN Smörgåsbord 2</flowPara><flowPara
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:64px;line-height:100%;font-family:'Exo 2';-inkscape-font-specification:'Exo 2, ';text-align:center;text-anchor:middle"
@@ -683,4 +683,14 @@
      x="413.53918"
      y="235.38773"
      mask="url(#mask2069)" />
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:17.33333397px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
+     x="173.79016"
+     y="954.60083"
+     id="text950"><tspan
+       sodipodi:role="line"
+       id="tspan948"
+       x="173.79016"
+       y="954.60083">See reverse side/second page for student transcript</tspan></text>
 </svg>

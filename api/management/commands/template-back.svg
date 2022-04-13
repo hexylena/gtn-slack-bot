@@ -627,9 +627,7 @@
          width="717.47156"
          height="760.91913"
          x="42.273285"
-         y="164.32526" /></flowRegion>
-		 <flowPara id="COURSES">COURSES</flowPara>
-	   </flowRoot>  <text
+         y="164.32526" /></flowRegion><flowPara id="COURSES">COURSES</flowPara></flowRoot>  <text
      xml:space="preserve"
      style="font-style:normal;font-weight:normal;font-size:16px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none"
      x="160.87334"
