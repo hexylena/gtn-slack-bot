@@ -1,4 +1,5 @@
 from django.core.management.base import BaseCommand, CommandError
+import time
 import tqdm
 import shutil
 import subprocess
@@ -25,9 +26,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
-    def build_certificate_for_user(self, cert, slack=False):
+    def build_certificate_for_user(self, cert):
         if os.path.exists(f'certs/{cert.human_name}.pdf'):
-            return
+            return f'certs/{cert.human_name}.pdf'
 
         # cert = CertificateRequest.objects.get(slack_user_id=user_id)
         user_id = cert.slack_user_id
@@ -47,7 +48,15 @@ class Command(BaseCommand):
         # Generate our transcript text
         transcript_text = ""
         for i, t in enumerate(sorted(uniq_items.keys())):
-            transcript_text += f'<flowPara id="courses.{i}">{t} - {uniq_items[t]}</flowPara>'
+            formatted_time = str(uniq_items[t])
+            parts = formatted_time.split(':')
+            final_parts = ""
+            if int(parts[0]) != 0:
+                final_parts += f'{parts[0]}h'
+            if int(parts[1]) != 0:
+                final_parts += f'{parts[1]}m'
+
+            transcript_text += f'<flowPara id="courses.{i}">{t} ({final_parts})</flowPara>'
 
         # Front side of cert
         cert_svg.write(TEMPLATE.replace('NAME', cert.human_name).encode())
@@ -78,24 +87,54 @@ class Command(BaseCommand):
         # Upload
         shutil.copyfile(final_pdf.name, f'certs/{cert.human_name}.pdf')
 
-        if slack:
-            upload = app.client.files_upload(file=final_pdf.name, filename=f'certificate-{user_id}.pdf')
-            message = "Congratulations on attending GTN Tapas! Please find your certificate below."
-            message += "<"+upload['file']['permalink']+"| >"
-            message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in #general."
-            print(app.client.chat_postMessage(channel=user_id, text=message))
-
         # Final cleanup
         final_pdf.close()
         os.unlink(final_pdf.name)
 
-        # Mark it as sent, successful.
-        cert.approved = 'S/S'
-        cert.save()
+        return f'certs/{cert.human_name}.pdf'
+
+    def generate_rejection_text(self, cert):
+        text = f"""Hello <@{cert.slack_user_id}>! Unfortunately we could not verify your certificate submissions, they may be inaccessible or deleted. If you think this is in error, please contact us\n\nHere is a list of the submissions you provided which we could not verify:\n"""
+        transcript = Transcript.objects.filter(slack_user_id=cert.slack_user_id)
+        for t in transcript:
+            text += f"- {t.proof} ({t.channel})\n"
+        text += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
+        return text
 
     def handle(self, *args, **options):
-        # Hardcode for now
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='REJ').order_by('slack_user_id')):
+            text = self.generate_rejection_text(cert)
+            print(f"=== Rejecting {cert} ===")
+            print(text)
+
+            if options['slack']:
+                try:
+                    print(app.client.chat_postMessage(channel=cert.slack_user_id, text=text))
+                    cert.approved = 'R/S'
+                    cert.save()
+                    time.sleep(1)
+                except Exception as e:
+                    print(e)
+                    print("Error sending message")
+
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='S/S').order_by('slack_user_id')):
             print(cert.slack_user_id)
             # user_id = 'U01F7TAQXNG'
-            self.build_certificate_for_user(cert, slack=options['slack'])
+            file_path = self.build_certificate_for_user(cert)
+
+            if options['slack']:
+                try:
+                    upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
+                    message = "Congratulations on attending GTN Tapas! Please find your certificate below."
+                    message += "<"+upload['file']['permalink']+"| >"
+                    message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
+                    print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
+                    time.sleep(2)
+
+                    # Mark it as sent, successful.
+                    cert.approved = 'S/S'
+                    cert.save()
+
+                except Exception as e:
+                    print(e)
+                    print("Error sending message")
