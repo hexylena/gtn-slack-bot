@@ -117,7 +117,7 @@ class Command(BaseCommand):
                     print(e)
                     print("Error sending message")
 
-        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACK').order_by('slack_user_id')):
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACC').order_by('slack_user_id')):
             print(cert.slack_user_id)
             # user_id = 'U01F7TAQXNG'
             file_path = self.build_certificate_for_user(cert)
