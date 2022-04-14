@@ -11,3 +11,4 @@ slack-sdk==3.11.0
 sqlparse==0.4.2
 whitenoise==6.0.0
 bleach
+isodate

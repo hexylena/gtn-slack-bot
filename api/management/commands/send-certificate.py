@@ -117,7 +117,7 @@ class Command(BaseCommand):
                     print(e)
                     print("Error sending message")
 
-        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='S/S').order_by('slack_user_id')):
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACK').order_by('slack_user_id')):
             print(cert.slack_user_id)
             # user_id = 'U01F7TAQXNG'
             file_path = self.build_certificate_for_user(cert)
@@ -128,6 +128,7 @@ class Command(BaseCommand):
                     message = "Congratulations on attending GTN Tapas! Please find your certificate below."
                     message += "<"+upload['file']['permalink']+"| >"
                     message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
+                    message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1J2gY8xgYMceUkcpouZeNYqnAr0XvEBvt?usp=sharing|Google Drive>"
                     print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
                     time.sleep(2)
 
