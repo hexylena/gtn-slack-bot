@@ -1,4 +1,4 @@
-from django.shortcuts import render
+import json
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -6,8 +6,6 @@ import bleach
 from api.models import Transcript, CertificateRequest
 from django.http import JsonResponse
 from api.videolibrary import CHANNEL_MAPPING
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
 from slack_bolt import App
 import os
 import logging
@@ -20,13 +18,15 @@ app = App(
     token_verification_enabled=True,
 )
 
+
 def probably_hist(text):
     return '/u/' in text and ('/h/' in text or '/w/' in text)
 
-# Create your views here.
+
 def index(request):
     template = loader.get_template('index.html')
     return HttpResponse(template.render({}, request))
+
 
 def transcript_list(request):
     trans = CertificateRequest.objects.all().order_by('slack_user_id')
@@ -36,6 +36,27 @@ def transcript_list(request):
         'done': 100 * len([x.approved for x in trans if x.approved != 'UNK']) / len(trans),
     }
     return HttpResponse(template.render(context, request))
+
+
+def send_message_to_channel(request, channel_id):
+    if channel_id != 'C01PQ3P2TTL':
+        return HttpResponse("Testing only.", status=403)
+
+    if request.method != 'POST':
+        return
+
+    blocks = json.loads(request.body)
+    try:
+        app.client.conversations_join(channel=channel_id)
+    except:
+        return HttpResponse("Could not join conversation", status=500)
+
+    app.client.chat_postMessage(
+        channel=channel_id,
+        blocks=blocks
+    )
+    return HttpResponse("Done")
+
 
 def transcript(request, slack_user_id):
     if request.method == 'POST':

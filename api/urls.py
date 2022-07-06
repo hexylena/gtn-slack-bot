@@ -21,4 +21,5 @@ urlpatterns = [
     path('transcript/', views.transcript_list, name='transcript_list'),
     path('transcript/<str:slack_user_id>/', views.transcript, name='transcript'),
     path("slack/events", slack_events_handler, name="slack_events"),
+    path('send-message/<str:channel_id>/', views.send_message_to_channel, name='message'),
 ]
