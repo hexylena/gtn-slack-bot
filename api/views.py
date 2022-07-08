@@ -1,4 +1,5 @@
 import json
+from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
@@ -24,19 +25,28 @@ def probably_hist(text):
     return '/u/' in text and ('/h/' in text or '/w/' in text)
 
 
+def template(name, request, context=None):
+    if context is None:
+        context = {}
+
+    template = loader.get_template(name)
+    context.update({
+        'GIT_REVISION': settings.GIT_REVISION,
+    })
+    return HttpResponse(template.render(context, request))
+
+
 def index(request):
-    template = loader.get_template('index.html')
-    return HttpResponse(template.render({}, request))
+    return template('index.html', request)
 
 
 def transcript_list(request):
     trans = CertificateRequest.objects.all().order_by('slack_user_id')
-    template = loader.get_template('transcript_list.html')
     context = {
         'users': trans,
         'done': 100 * len([x.approved for x in trans if x.approved != 'UNK']) / len(trans),
     }
-    return HttpResponse(template.render(context, request))
+    return template('transcript_list.html', request, context)
 
 
 @csrf_exempt
@@ -105,14 +115,13 @@ def transcript(request, slack_user_id):
         (x.time, x.channel, bleach.clean('<br>'.join([f'<a href="{x}">{x}</a>' for x in bleach.clean(x.proof).split()])) , x.id, probably_hist(x.proof), x.valid)
         for x in trans
     ]
-    template = loader.get_template('transcript.html')
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
         'channel_mapping': sorted(list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist])))),
         'message': None,
     }
-    return HttpResponse(template.render(context, request))
+    return template('transcript.html', request, context)
 
 def mapping(request):
     return JsonResponse(CHANNEL_MAPPING, json_dumps_params={'indent': 2})
