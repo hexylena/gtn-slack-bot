@@ -7,6 +7,7 @@ from api.models import Transcript, CertificateRequest
 from django.http import JsonResponse
 from api.videolibrary import CHANNEL_MAPPING
 from slack_bolt import App
+from django.views.decorators.csrf import csrf_exempt
 import os
 import logging
 
@@ -38,6 +39,7 @@ def transcript_list(request):
     return HttpResponse(template.render(context, request))
 
 
+@csrf_exempt
 def send_message_to_channel(request, channel_id):
     if channel_id != 'C01PQ3P2TTL':
         return HttpResponse("Testing only.", status=403)
