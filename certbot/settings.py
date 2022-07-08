@@ -122,6 +122,12 @@ USE_I18N = True
 
 USE_TZ = True
 
+try:
+    with open(os.path.join('.git', 'refs', 'heads', 'main')) as git_head:
+        GIT_REVISION = git_head.read().strip()
+except Exception:
+    GIT_REVISION = "Unknown Revision"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.0/howto/static-files/
