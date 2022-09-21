@@ -140,7 +140,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 LOGGING = {
     'version': 1,
@@ -163,7 +163,7 @@ LOGGING = {
 django_heroku.settings(locals(), logging=False)
 
 if "DYNO" in os.environ:
-    STATIC_ROOT = 'static'
+    STATIC_ROOT = 'staticfiles'
     ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
     DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
