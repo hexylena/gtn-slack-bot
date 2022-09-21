@@ -42,9 +42,12 @@ def index(request):
 
 def transcript_list(request):
     trans = CertificateRequest.objects.all().order_by('slack_user_id')
+    done = 0
+    if len(trans) > 0:
+        done = 100 * len([x.approved for x in trans if x.approved != 'UNK']) / len(trans)
     context = {
         'users': trans,
-        'done': 100 * len([x.approved for x in trans if x.approved != 'UNK']) / len(trans),
+        'done': done
     }
     return template('transcript_list.html', request, context)
 
