@@ -21,7 +21,15 @@ jobs:
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}
+          known_hosts: |
+            apps.galaxyproject.eu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDtXs+B394gan2Zwp+SL0TFFTJP++f6g4w7vkfyeY+ocgiLlW1SWDY9oqfN5GbiVqqLBRQbYL1b/wgEuuQg/thD7jel2crkkO1W2oJCSUaqIuDi2AbNkPK3mIyDLFGxBuqMUXbc71UHVr4WeUuUP5ocLRvif9k6+hEOseBLxYvlenLTWAtkvBfIW+8D1bqWJoEtsbv26jqmH2+GNtVo7mgNAqnxF3sB8YdMwtLfjyCQxpMA2lodU1Uab8Hpk/4nq6sMHb/HIMax1w47bGSHfCkaZUuWdXU+yIJCON8nCXKmC5eBHeSu5VfzpmoOjdA3MBsEirkjTpyIicb8MRE0NclGVu6UhDYiYXC1V8n0vf9+o/joU/uu8WPL2opq4vnpuAkD9xyAVQGU3VdPv5NEmLalRLIiGdeG0kP+cTeGY+4SJagqankYW5VJsxto9K4tK2xtIGkQMmxOs0aZtJrGJHewhl9+HS1tbeCw4QNLdWw3SE9U9c7JGo5rXAkvUMAdfc8=
+            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+            apps.galaxyproject.eu ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBO95VDauWDMdJ7LETBPZ7F4lS03JVvB1GDtOjQ7LOE81TpQmIZ6ugt1gHC+qkK7jdpRcS72YuaybPpjiYvJ6PuA=
+            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+            apps.galaxyproject.eu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlDhUIg9pegjGgnF5+aNuDvsamBTDtvkEbei6EwYcrE
+            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+
           config: |
             Host apps.galaxyproject.eu
                 User dokku
