@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-i7mh$l^v%!@1r4r7w7@k5!15o3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -163,11 +163,9 @@ django_heroku.settings(locals(), logging=False)
 
 if "DYNO" in os.environ:
     STATIC_ROOT = 'static'
-    ALLOWED_HOSTS = ['gtn-slack-bot.herokuapp.com']
+    ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
     DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
-
-
