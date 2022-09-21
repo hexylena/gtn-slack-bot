@@ -165,6 +165,7 @@ django_heroku.settings(locals(), logging=False)
 if "DYNO" in os.environ:
     STATIC_ROOT = 'staticfiles'
     ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
+    CSRF_TRUSTED_ORIGINS = ['https://gtn-slack-bot.apps.galaxyproject.eu']
     # DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
