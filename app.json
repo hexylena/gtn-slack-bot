@@ -4,5 +4,10 @@
   "image": "heroku/python",
   "repository": "https://github.com/hexylena/gtn-slack-bot",
   "keywords": ["python", "django" ],
-  "addons": [ "heroku-postgresql" ]
+  "addons": [ "heroku-postgresql" ],
+  "scripts": {
+    "dokku": {
+      "predeploy": "bash prep.sh"
+    }
+  }
 }
