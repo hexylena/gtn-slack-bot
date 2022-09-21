@@ -27,7 +27,7 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-i7mh$l^v%!@1r4r7w7@k5!15o3
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
 
 
 # Application definition
