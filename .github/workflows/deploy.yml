@@ -23,13 +23,12 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: |
             @cert-authority *.galaxyproject.eu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDLQD6fG38uwFj91GSe6YnRnBuTjXWZN6Pck1JRCTWtufwKV0SZNczD+qUdnFfZrCx/wBVK8R6zL2VWS9hcFK1LuE8HK86f8qG/gcB6yFt/0I/PWoSjcbUMPQTzFIy8yxvdIoPTlj/P6+uNgweTvMFI4+UOuCI71IhB/liTHn1/2dXQM94SFd4VQeg+3Tc6gDxEqRSS6dLIq0uvR8//luIpoW38yh2ozwHmjMKTvHnbduGqHlES4qz9cU9iZkWoPzSp+qoxCOijHvwzL5vD0/k4hZ/iJyTzDHQLDra3Kaa8ykWdERCxjpMp1y9dVQ23lVxp+UUAt3RHOCU1/KuNM9Pr hxr@mk
-            apps.galaxyproject.eu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDtXs+B394gan2Zwp+SL0TFFTJP++f6g4w7vkfyeY+ocgiLlW1SWDY9oqfN5GbiVqqLBRQbYL1b/wgEuuQg/thD7jel2crkkO1W2oJCSUaqIuDi2AbNkPK3mIyDLFGxBuqMUXbc71UHVr4WeUuUP5ocLRvif9k6+hEOseBLxYvlenLTWAtkvBfIW+8D1bqWJoEtsbv26jqmH2+GNtVo7mgNAqnxF3sB8YdMwtLfjyCQxpMA2lodU1Uab8Hpk/4nq6sMHb/HIMax1w47bGSHfCkaZUuWdXU+yIJCON8nCXKmC5eBHeSu5VfzpmoOjdA3MBsEirkjTpyIicb8MRE0NclGVu6UhDYiYXC1V8n0vf9+o/joU/uu8WPL2opq4vnpuAkD9xyAVQGU3VdPv5NEmLalRLIiGdeG0kP+cTeGY+4SJagqankYW5VJsxto9K4tK2xtIGkQMmxOs0aZtJrGJHewhl9+HS1tbeCw4QNLdWw3SE9U9c7JGo5rXAkvUMAdfc8=
-            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+            [apps.galaxyproject.eu]:8080 ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBIw/QRLm5M7GYtnxxscUrM3a0ow+iq1N9CoSC6QwEuO1giZKfrbQr9mUeM9asiSOizg3Zidv8W8zJw70pb7EA2A=
+            [apps.galaxyproject.eu]:8080 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJ0x/aR8hHu9/c6VwvMp/A73ryXd/owwaLr22hpU3sgS
+            [apps.galaxyproject.eu]:8080 ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC4j7LDyQXaX/8ZWGoCMzY7LqtFP1ALJMa0h4AW8nItOU5CLWHrATOCNh5YjNOezsQHfuLZbxDC1AsVdXrOPEbuH0bI18bK+99LTBvPxAFvJce/fepMtV+o0Pb+YbS6+o5MT0DDrSl+L9WRHaBFp3aPTHWYjCLiZwLXyU8ZBlah1kCyHDSPrar01JCmncs97DWMwDueOA6WNqmLUWJ1FUMGBD/QyaqjuDyQJTVZ5ayb2UrVnG7WiRmY19uJxTwQsLLz3jvp58LXHOXpLXJX1dQZ55F1io8mKAQx1v1dRxUxm8wVJkVe7/xtXlyTArbAoMi2/udqz5A8qxHtEG7W8O3026hWMfaSPQQ8QEVrCGpAibVDte18zzVdrM49bFHL40wahwpRhmp7Zytqx+iMu7zPJHDKUij36NvvKaun1DamdDBzttun80h859JSzO7ZK+/sIH2jhSDQTk2A4Pwuqw/ACXjuEHwgc+/goqb9aQz+EJnbLouZl4UkOFMtV4Txsu8=
             apps.galaxyproject.eu ecdsa-sha2-nistp256 AAAAE2VjZHNhLXNoYTItbmlzdHAyNTYAAAAIbmlzdHAyNTYAAABBBO95VDauWDMdJ7LETBPZ7F4lS03JVvB1GDtOjQ7LOE81TpQmIZ6ugt1gHC+qkK7jdpRcS72YuaybPpjiYvJ6PuA=
-            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
             apps.galaxyproject.eu ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIDlDhUIg9pegjGgnF5+aNuDvsamBTDtvkEbei6EwYcrE
-            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
-            # apps.galaxyproject.eu:22 SSH-2.0-OpenSSH_8.0
+            apps.galaxyproject.eu ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDtXs+B394gan2Zwp+SL0TFFTJP++f6g4w7vkfyeY+ocgiLlW1SWDY9oqfN5GbiVqqLBRQbYL1b/wgEuuQg/thD7jel2crkkO1W2oJCSUaqIuDi2AbNkPK3mIyDLFGxBuqMUXbc71UHVr4WeUuUP5ocLRvif9k6+hEOseBLxYvlenLTWAtkvBfIW+8D1bqWJoEtsbv26jqmH2+GNtVo7mgNAqnxF3sB8YdMwtLfjyCQxpMA2lodU1Uab8Hpk/4nq6sMHb/HIMax1w47bGSHfCkaZUuWdXU+yIJCON8nCXKmC5eBHeSu5VfzpmoOjdA3MBsEirkjTpyIicb8MRE0NclGVu6UhDYiYXC1V8n0vf9+o/joU/uu8WPL2opq4vnpuAkD9xyAVQGU3VdPv5NEmLalRLIiGdeG0kP+cTeGY+4SJagqankYW5VJsxto9K4tK2xtIGkQMmxOs0aZtJrGJHewhl9+HS1tbeCw4QNLdWw3SE9U9c7JGo5rXAkvUMAdfc8=
 
           config: |
             Host apps.galaxyproject.eu
