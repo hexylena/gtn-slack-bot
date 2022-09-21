@@ -166,7 +166,7 @@ if "DYNO" in os.environ:
     STATIC_ROOT = 'staticfiles'
     ALLOWED_HOSTS = ["gtn-slack-bot.apps.galaxyproject.eu"]
     CSRF_TRUSTED_ORIGINS = ['https://gtn-slack-bot.apps.galaxyproject.eu']
-    # DEBUG = False
+    DEBUG = False
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
     # SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
