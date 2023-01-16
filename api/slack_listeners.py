@@ -2,6 +2,8 @@ import logging
 from django.db.models import Count
 from django.db.models import DateField
 from django.db.models.functions import Cast
+import time
+import datetime
 import traceback
 import re
 import requests
@@ -20,7 +22,7 @@ import os
 print(ENCOURAGEMENT)
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
-
+START_TIME = time.time()
 JOINED = []
 
 # conversations = app.client.conversations_list(limit=400).data
@@ -108,6 +110,37 @@ def easter_egg(client, body):
 def handle_app_mentions(logger, event, say):
     logger.info(event)
     say(f"Hi there, <@{event['user']}>\n\n<https://gallantries.github.io/video-library/certbot|Were you trying to submit a certificate?> You must put /certificate at the start of your message. Please try again!")
+
+
+@csrf_exempt
+@app.command("/info")
+def certify(ack, client, body, logger, say):
+    ack()
+
+    r = requests.get('https://ipinfo.io/json').json()
+    org = r['org']
+    ip = r['ip']
+
+    if 'GIT_REV' in os.environ:
+        url = f"https://github.com/hexylena/gtn-slack-bot/commit/{os.environ['GIT_REV']}"
+    else:
+        url = "https://github.com/hexylena/gtn-slack-bot/"
+
+    data = {
+        ':classical_building: Org': org,
+        ':computer: IP': ip,
+        ':robot_face: Deployment': url,
+        ':clock330: Execution Time': datetime.timedelta(seconds=time.process_time()),
+        ':alarm_clock: Uptime': datetime.timedelta(seconds=time.time() - START_TIME),
+    }
+
+    fmt_msg = "\n".join([f"{k}: {v}" for (k, v) in data.items()])
+
+    ephemeral(
+        client,
+        body,
+        fmt_msg,
+    )
 
 
 @csrf_exempt
