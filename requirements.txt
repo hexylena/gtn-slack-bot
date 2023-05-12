@@ -12,3 +12,4 @@ sqlparse==0.4.2
 whitenoise==6.0.0
 bleach
 isodate
+sentry-sdk==1.21.1
