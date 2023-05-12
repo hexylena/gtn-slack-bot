@@ -1,6 +1,19 @@
 from django.db import models
 
 
+#class Event(models.Model):
+#    id = models.CharField(max_length=32)
+#
+#class Registration(models.Model):
+#    event = models.ForeignKey('Event')
+#    name = models.TextField()
+#    email = models.TextField()
+#
+#class Statistics(models.Model):
+#    name = models.CharField(max_length=32)
+#    added = models.DateTimeField(auto_now_add=True)
+
+
 class Transcript(models.Model):
     slack_user_id = models.CharField(max_length=32)
     time = models.DateTimeField(auto_now_add=True)
