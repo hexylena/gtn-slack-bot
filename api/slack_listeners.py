@@ -42,6 +42,16 @@ app = App(
 )
 
 
+# I'm alive
+try:
+    result = client.chat_postMessage(
+        channel="C01PQ3P2TTL",
+        text="I'm alive"
+    )
+except SlackApiError as e:
+    print(f"Error: {e}")
+
+
 def ephemeral(client, body, message):
     client.chat_postEphemeral(
         channel=body["channel_id"],
