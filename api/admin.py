@@ -16,5 +16,5 @@ class CertificateRequestAdmin(admin.ModelAdmin):
 
 @admin.register(ScheduledMessage)
 class ScheduledMessageAdmin(admin.ModelAdmin):
-    list_display = ("slack_channel_id", "message", "sent")
-    list_filter = ["slack_channel_id", "sent"]
+    list_display = ("slack_channel_id", "scheduled_for", "sent")
+    list_filter = ["slack_channel_id", "sent", "scheduled_for"]
