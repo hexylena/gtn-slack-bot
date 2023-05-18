@@ -36,3 +36,9 @@ class CertificateRequest(models.Model):
         ('R/S', 'Rejection Sent'),
     ]
     approved = models.CharField(max_length=3, choices=CertificateStates, default='UNK')
+
+class ScheduledMessage(models.Model):
+    slack_channel_id = models.CharField(max_length=32)
+    message = models.TextField()
+    scheduled_for = models.DateTimeField()
+    sent = models.DateTimeField(null=True, blank=True)
