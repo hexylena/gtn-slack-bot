@@ -16,10 +16,10 @@ from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, a
 from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
+
+logger = logging.getLogger(__name__)
+from .slack import app
 import os
-
-
-print(ENCOURAGEMENT)
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
 START_TIME = time.time()
@@ -30,16 +30,6 @@ JOINED = []
 #    if convo['is_member'] is True:
 #        JOINED.append(convo['name'])
 
-from slack_bolt import App
-
-logger = logging.getLogger(__name__)
-
-app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN", ""),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
-    # disable eagerly verifying the given SLACK_BOT_TOKEN value
-    token_verification_enabled=True,
-)
 
 
 # I'm alive

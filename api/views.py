@@ -13,12 +13,7 @@ import os
 import logging
 
 logger = logging.getLogger(__name__)
-
-app = App(
-    token=os.environ["SLACK_BOT_TOKEN"],
-    signing_secret=os.environ["SLACK_SIGNING_SECRET"],
-    token_verification_enabled=True,
-)
+from .slack import app
 
 
 def probably_hist(text):

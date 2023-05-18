@@ -1,8 +1,12 @@
 from django.urls import path
 from slack_bolt.adapter.django import SlackRequestHandler
 from .slack_listeners import app
+import os
 
-handler = SlackRequestHandler(app=app)
+if 'SLACK_BOT_TOKEN' in os.environ:
+    handler = SlackRequestHandler(app=app)
+else:
+    handler = lambda *a, **kw: print(a, kw)
 
 from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
