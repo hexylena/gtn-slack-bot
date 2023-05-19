@@ -212,8 +212,8 @@ def addCertificateRequest(user_id, human_name):
         q = CertificateRequest(
             slack_user_id=user_id,
             human_name=human_name,
-            course="GTN Tapas",
-            approved=False,
+            course="GTN Smörgåsbord 3",
+            approved="UNK",
         )
         q.save()
     else:
