@@ -102,9 +102,9 @@ def easter_egg(client, body):
     info = get_user_info_cached(body['user_id'])
     emoji = info['user']['profile']['status_emoji']
     if emoji == ':transgender_flag:':
-        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the trans agenda by taking over science! :test_tube::transgender_flag:")
+        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the trans agenda by taking over science! :test_tube::transgender_flag: (this message appears to you due to your chosen Slack status emoji.)")
     elif emoji == ':rainbow-flag':
-        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag:")
+        ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
 
 @app.event("app_mention")
