@@ -8,6 +8,13 @@ from api.utils import convert_text
 from django.utils import timezone
 
 
+if 'SENTRY_DSN' in os.environ:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn=os.environ['SENTRY_DSN'],
+        traces_sample_rate=1.0,
+    )
+
 class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--dry-run', action='store_true')

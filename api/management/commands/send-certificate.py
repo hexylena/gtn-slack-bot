@@ -15,6 +15,14 @@ TEMPLATE = open(TEMPLATE_SVG, 'r').read()
 TEMPLATE_BACK_SVG = os.path.join(os.path.dirname(__file__), 'template-back.svg')
 TEMPLATE_BACK = open(TEMPLATE_BACK_SVG, 'r').read()
 
+
+if 'SENTRY_DSN' in os.environ:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn=os.environ['SENTRY_DSN'],
+        traces_sample_rate=1.0,
+    )
+
 app = App(
     token=os.environ.get("SLACK_BOT_TOKEN", ""),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),

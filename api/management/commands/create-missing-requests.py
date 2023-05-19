@@ -4,6 +4,13 @@ import os
 from api.models import Transcript, CertificateRequest
 from slack_bolt import App
 
+if 'SENTRY_DSN' in os.environ:
+    import sentry_sdk
+    sentry_sdk.init(
+        dsn=os.environ['SENTRY_DSN'],
+        traces_sample_rate=1.0,
+    )
+
 app = App(
     token=os.environ.get("SLACK_BOT_TOKEN", ""),
     signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
