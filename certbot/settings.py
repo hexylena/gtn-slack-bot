@@ -172,7 +172,7 @@ if 'SENTRY_DSN' in os.environ:
             DjangoIntegration(),
         ],
         traces_sample_rate=1.0,
-        send_default_pii=False
+        send_default_pii=True
     )
 
 if "DYNO" in os.environ:
