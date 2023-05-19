@@ -16,5 +16,5 @@ class ScheduleMessageForm(forms.Form):
 
 class ScheduleMessageSingleForm(forms.Form):
     slack_channel_id = forms.CharField(label="Slack Channel ID Or Name", max_length=100, initial="#testing")
-    message = forms.CharField(label="Message", initial="Hello, World", help_text="Message contents in GFM markdown")
+    message = forms.CharField(label="Message", initial="Hello, World", help_text="Message contents in GFM markdown", widget=forms.Textarea())
     scheduled_for = forms.DateTimeField(help_text="When should this message be sent out. Time is in UTC (server time), and the form defaults to the current time on page load.")
