@@ -60,9 +60,6 @@ def message(client, channel, message):
 
 def error_handler(client, body, e):
     error_id = str(uuid.uuid4())
-    logger.error(error_id)
-    logger.error(e)
-    traceback.print_exc()
     ephemeral(
         client,
         body,
