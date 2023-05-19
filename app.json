@@ -9,5 +9,13 @@
     "dokku": {
       "predeploy": "bash prep.sh"
     }
+  },
+  {
+    "cron": [
+      {
+        "command": "python manage.py message",
+        "schedule": "* * * * *"
+      }
+    ]
   }
 }
