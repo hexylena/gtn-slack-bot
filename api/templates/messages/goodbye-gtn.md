@@ -28,7 +28,7 @@ Instructors might be around, but, less so than before. Feel free to keep using S
 **Continute your Galaxy adventure**
 All the materials from this week will stay online. Forever. You can keep learning, and keep asking your questions (here or in [Gitter](https://gitter.im/Galaxy-Training-Network/Lobby)).
 
-Please also consider joining the [Galaxy Community Conference](https://galaxyproject.org/events/gcc2022/) this summer (with lots of training!), or signing up for the [Galaxy Mentoring Program](https://galaxy-mentor-network.netlify.app/) to get personalized guidance around Galaxy!
+Please also consider joining the [Galaxy Community Conference](<GCC_CTA>) this summer (with lots of training!), or signing up for the [Galaxy Mentoring Program](https://galaxy-mentor-network.netlify.app/) to get personalized guidance around Galaxy!
 
 
 **Community**

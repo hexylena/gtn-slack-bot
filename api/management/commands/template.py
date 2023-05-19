@@ -19,4 +19,5 @@ class Command(BaseCommand):
         parser.add_argument('--channel', type=str, help="Channel to send a message to, can be human readable with # or C....", default="#testing")
 
     def handle(self, *args, **options):
-        template_messages(options['channel'], options['zones'], options['start'], days=options['days'], dry_run=options['dry_run'])
+        start = datetime.strptime(options['start'], '%Y-%m-%dT%H:%M:%S')
+        template_messages(options['channel'], options['zones'], start, days=options['days'], dry_run=options['dry_run'])

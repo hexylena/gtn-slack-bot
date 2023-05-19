@@ -22,27 +22,28 @@ replacements = {
         'REGION': 'Americas :earth_americas:',
         'BYE_REGION': 'Europe/Middle East/Africa :earth_africa:'
     },
-    'gat': {
-        'SOCIAL_CHANNEL': '#event-gat',
-        'EVENT': 'GTN Tapas: Galaxy Admin Training',
-        'COURSE_WEBSITE': 'https://gallantries.github.io/video-library/events/smorgasbord2/gat.html',
-    },
+    #'gat': {
+    #    'SOCIAL_CHANNEL': '#event-gat',
+    #    'EVENT': 'GTN Tapas: Galaxy Admin Training',
+    #    'COURSE_WEBSITE': 'https://gallantries.github.io/video-library/events/smorgasbord2/gat.html',
+    #},
     'gtn': {
         'SOCIAL_CHANNEL': '#social',
         'EVENT': 'GTN Smörgåsbord 3',
         'COURSE_WEBSITE': 'https://gallantries.github.io/video-library/events/smorgasbord3/',
-        'GCC_CTA': 'https://galaxyproject.org/events/gcc2023/'
+        'GCC_CTA': 'https://galaxyproject.org/events/gcc2023/',
+        'COC': 'https://gxy.io/coc'
     }
 }
 
 
-def template_messages(channel, zones, start, days=5, dry_run=True):
+def template_messages(channel_id=None, zones=None, start=None, days=5, dry_run=True,
+                      **kwargs):
     course = 'gtn'
     zones = [timezone(x) for x in zones]
     # Meh, lazy
     earliest_zone = zones[0]
-    print(channel, zones, start, days, dry_run)
-    start = datetime.strptime(start, '%Y-%m-%dT%H:%M:%S')
+    print(channel_id, zones, start, days, dry_run)
 
     if days > 2:
         posts = []
@@ -83,15 +84,17 @@ def template_messages(channel, zones, start, days=5, dry_run=True):
         for k, v in replacements[str(tz)].items():
             data = data.replace(f'<{k}>', v)
 
+        print(kwargs)
         for k, v in replacements[course].items():
-            data = data.replace(f'<{k}>', v)
+            data = data.replace(f'<{k.upper()}>', v)
 
         if dry_run:
-            print(f"Creating ScheduledMessage for {channel} {localised_time}")
+            print(f"Creating ScheduledMessage for {channel_id} {localised_time}")
+            print(data)
             continue
 
         ScheduledMessage.objects.create(
-            slack_channel_id=channel,
+            slack_channel_id=channel_id,
             message=data,
             scheduled_for=localised_time,
         )

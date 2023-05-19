@@ -1,10 +1,16 @@
 import json
+import pytz
+from django.utils import timezone
+from django.http import HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from api.forms import ScheduleMessageForm, ScheduleMessageSingleForm
 from django.conf import settings
 from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
 import bleach
-from api.models import Transcript, CertificateRequest
+from api.models import Transcript, CertificateRequest, ScheduledMessage
 from django.http import JsonResponse
 from api.videolibrary import CHANNEL_MAPPING
 from slack_bolt import App
@@ -14,6 +20,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 from .slack import app
+from .build import template_messages
 
 
 def probably_hist(text):
@@ -66,6 +73,59 @@ def send_message_to_channel(request, channel_id):
         blocks=blocks
     )
     return HttpResponse("Done")
+
+
+@login_required
+def schedule_message_single(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        print("RECV SCHEDULE SINGLE")
+        # create a form instance and populate it with data from the request:
+        form = ScheduleMessageSingleForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            print("VALID FORM")
+            ScheduledMessage.objects.create(**form.cleaned_data)
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect("/schedule-single/")
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ScheduleMessageSingleForm(initial={"scheduled_for": timezone.now()})
+
+    messages = ScheduledMessage.objects.all()
+    return render(request, "schedule.html", {"form": form, "type": "Single", "action": "schedule-single", "messages": messages})
+
+
+@login_required
+def schedule_message(request):
+    # if this is a POST request we need to process the form data
+    if request.method == "POST":
+        print("RECV SCHEDULE")
+        # create a form instance and populate it with data from the request:
+        form = ScheduleMessageForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            print("VALID FORM")
+            options = form.cleaned_data
+            options['start'] = options['start'].astimezone().replace(tzinfo=None)
+            template_messages(
+                    zones=['Pacific/Auckland', 'Europe/Amsterdam', 'America/New_York'],
+                    dry_run=False,
+                    **options)
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            return HttpResponseRedirect("/schedule")
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        form = ScheduleMessageForm(initial={"start": timezone.now()})
+
+    messages = ScheduledMessage.objects.all()
+    return render(request, "schedule.html", {"form": form, "type": "Batch", "action": "schedule", "messages": messages})
 
 
 def transcript(request, slack_user_id):
