@@ -1,6 +1,6 @@
 {
   "name": "GTN Slack Bot",
-  "description": "A barebones Python app, which can easily be deployed to Heroku.",
+  "description": "GTN Certificate Bot management app",
   "image": "heroku/python",
   "repository": "https://github.com/hexylena/gtn-slack-bot",
   "keywords": ["python", "django" ],
@@ -10,12 +10,10 @@
       "predeploy": "bash prep.sh"
     }
   },
-  {
-    "cron": [
-      {
-        "command": "python manage.py message",
-        "schedule": "* * * * *"
-      }
-    ]
-  }
+  "cron": [
+    {
+      "command": "python manage.py message",
+      "schedule": "* * * * *"
+    }
+  ]
 }
