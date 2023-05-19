@@ -33,13 +33,14 @@ JOINED = []
 
 
 # I'm alive
-try:
-    result = app.client.chat_postMessage(
-        channel="C01PQ3P2TTL",
-        text="I'm alive"
-    )
-except Exception as e:
-    print(f"Error: {e}")
+# Disabled because of cron jobs
+#try:
+#    result = app.client.chat_postMessage(
+#        channel="C01PQ3P2TTL",
+#        text="I'm alive"
+#    )
+#except Exception as e:
+#    print(f"Error: {e}")
 
 
 def ephemeral(client, body, message):
