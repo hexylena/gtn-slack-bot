@@ -20,7 +20,7 @@ SERVERS = [
     ("https://usegalaxy.org/", "Galaxy US :earth_americas:"),
     ("https://usegalaxy.org.au/", "Galaxy Australia :earth_asia:"),
     # ("https://usegalaxy.be/", "Galaxy Belgium :flag-be:"),
-    # ("https://usegalaxy.fr/", "Galaxy France :flag-fr:"),
+    ("https://usegalaxy.fr/", "Galaxy France :flag-fr:"),
 ]
 
 TIAAS = [
@@ -30,7 +30,7 @@ TIAAS = [
         "Join US TIaaS :earth_americas:",
     ),
     ("https://usegalaxy.org.au/join-training/smorgasbord3/", "Join AU TIaaS :earth_asia:"),
-    # ("https://usegalaxy.fr/join-training/gcc2022/", "Join FR TIaaS :flag-fr:"),
+    ("https://usegalaxy.fr/join-training/smorg3/", "Join FR TIaaS :flag-fr:"),
 ]
 
 
