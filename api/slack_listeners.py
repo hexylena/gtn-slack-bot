@@ -204,13 +204,14 @@ def completed(ack, body, logger, say, client):
         )
         return HttpResponse(status=200)
 
-    if body["channel_name"] not in CHANNEL_MAPPING:
-        ephemeral(
-            client,
-            body,
-            f"This channel is not associated with a course module. If you believe this is an error, please contact <@U01F7TAQXNG>",
-        )
-        return HttpResponse(status=200)
+    #if body["channel_name"] not in CHANNEL_MAPPING:
+        # This is potentially a self-study or other weird one.
+        #ephemeral(
+        #    client,
+        #    body,
+        #    f"This channel is not associated with a course module. If you believe this is an error, please contact <@U01F7TAQXNG>",
+        #)
+        #return HttpResponse(status=200)
 
     module = channel2module(body)
 

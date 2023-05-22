@@ -9,6 +9,15 @@
       "webinar/admins"
     ]
   },
+  "tb-webinars": {
+    "title": "Webinar series: Concepts of drug-resistance prediction and mutation-based clustering",
+    "videos": [
+      "webinar/tb-drug-resistance",
+      "webinar/tb-phylogenetic-mutations",
+      "webinar/tb-clustering",
+      "webinar/tb-genetic-distance"
+    ]
+  },
   "sequence-analysis/quality-control": {
     "title": "Quality Control",
     "description": "In this sesssion, we will walk you through the basics of quality checking your sequencing data. This session consists of a lecture followed by a hands-on tutorial.",
@@ -49,12 +58,12 @@
       "epigenetics/atac-seq/tutorial"
     ]
   },
-  "transcriptomics/scrna-intro": {
+  "single-cell/scrna-intro": {
     "title": "Introduction to Single-Cell RNA-seq Data Analysis",
     "description": "Single-cell RNA-seq analysis is a rapidly evolving field at the forefront\nof transcriptomic research, used in high-throughput developmental studies\n",
     "videos": [
-      "transcriptomics/scrna-intro/slides",
-      "transcriptomics/scrna-seq-basic-pipeline/tutorial"
+      "single-cell/scrna-intro/slides",
+      "single-cell/scrna-case_basic-pipeline/tutorial"
     ]
   },
   "transcriptomics/mirna-target-finder": {
