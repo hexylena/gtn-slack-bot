@@ -24,12 +24,12 @@ SERVERS = [
 ]
 
 TIAAS = [
-    ("https://usegalaxy.eu/join-training/gcc2022/", "Join EU TIaaS :earth_africa:"),
+    ("https://usegalaxy.eu/join-training/smorgasbord3/", "Join EU TIaaS :earth_africa:"),
     (
-        "https://usegalaxy.org/join-training/gcc2022/",
+        "https://usegalaxy.org/join-training/smorgasbord3/",
         "Join US TIaaS :earth_americas:",
     ),
-    ("https://usegalaxy.org.au/join-training/gcc2022/", "Join AU TIaaS :earth_asia:"),
+    ("https://usegalaxy.org.au/join-training/smorgasbord3/", "Join AU TIaaS :earth_asia:"),
     # ("https://usegalaxy.fr/join-training/gcc2022/", "Join FR TIaaS :flag-fr:"),
 ]
 
