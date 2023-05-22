@@ -24,6 +24,7 @@ Schedule Messages
 			<th>Channel</th>
 			<th>Message</th>
 			<th>Scheduled For</th>
+			<th>Time Until</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,6 +34,7 @@ Schedule Messages
 			<td>{{ m.slack_channel_id }}</td>
 			<td>{{ m.message }}</td>
 			<td>{{ m.scheduled_for }}</td>
+			<td>{{ m.time_until }}</td>
 		</tr>
 		{% endif %}
 		{% endfor %}

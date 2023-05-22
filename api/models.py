@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 #class Event(models.Model):
@@ -42,3 +43,8 @@ class ScheduledMessage(models.Model):
     message = models.TextField()
     scheduled_for = models.DateTimeField()
     sent = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def time_until(self):
+        return timezone.now() - self.scheduled_for
+
