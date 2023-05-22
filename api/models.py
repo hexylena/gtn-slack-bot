@@ -46,5 +46,4 @@ class ScheduledMessage(models.Model):
 
     @property
     def time_until(self):
-        return timezone.now() - self.scheduled_for
-
+        return self.scheduled_for - timezone.now()
