@@ -77,6 +77,10 @@ for k, v in list(CHANNEL_MAPPING.items()):
 
 
 def channel2module(body):
+    # Just a safe fail condition that doesn't disturb students
+    if body["channel_name"] not in CHANNEL_MAPPING:
+        return "channel:" + body["channel_name"]
+
     real_module = CHANNEL_MAPPING[body["channel_name"]]
     if len(real_module) == 1:
         module = real_module[0]
