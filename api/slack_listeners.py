@@ -112,9 +112,8 @@ def easter_egg(client, body):
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
 
-@app.event("app_home_opened")
-def update_home_tab(client, event, logger):
-    results = Transcript.objects.filter(slack_user_id=event["user"]).order_by("-time")
+def get_transcript_mkrdwn(slack_user_id):
+    results = Transcript.objects.filter(slack_user_id=slack_user_id).order_by("-time")
 
     courses_seen = {}
     output = []
@@ -135,6 +134,12 @@ def update_home_tab(client, event, logger):
         text += f"\n*{d}*\n\n"
         for o in dates[d]:
             text += f"{o}\n"
+    return text
+
+
+@app.event("app_home_opened")
+def update_home_tab(client, event, logger):
+    text = get_transcript_mkrdwn(event['user'])
 
     home = [
         {
@@ -397,21 +402,7 @@ def transcript(ack, body, client):
     auto_join_channel(body, ack)
     ack()
 
-    results = Transcript.objects.filter(slack_user_id=body["user_id"]).order_by("-time")
-
-    courses_seen = {}
-    output = []
-    for x in results:
-        if x.channel in courses_seen:
-            continue
-        output.append(f"{x.time.strftime('%A, %B %d %H:%M %Z')} | {x.channel} ")
-        courses_seen[x.channel] = True
-
-    congrats = random.choice(TRANSCRIPT_ENCOURAGEMENT)
-    text = f"*{congrats}*\n"
-    for o in output:
-        text += f"{o}\n"
-
+    text = get_transcript_mkrdwn(body["user_id"])
     ephemeral(client, body, text)
 
 
