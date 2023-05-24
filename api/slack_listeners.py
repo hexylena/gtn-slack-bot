@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__, level=logging.INFO)
 from .slack import app
 import os
 
@@ -135,14 +135,20 @@ def update_home_tab(client, event, logger):
     except Exception as e:
         logger.error(f"Error publishing home tab: {e}")
 
+
+@app.message(re.compile("*"))
+def handle_messages2(message, say, logger):
+    print('messages2', event)
+    logger.info(event)
+
 @app.event("message")
-def handle_messages(logger, event):
-    print(event)
+def handle_messages(event, logger):
+    print('messages', event)
     logger.info(event)
 
 
 @app.event("reaction_added")
-def handle_reactions(logger, event):
+def handle_reactions(event, logger):
     print(event)
     logger.info(event)
 
