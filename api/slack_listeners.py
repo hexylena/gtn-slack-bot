@@ -104,14 +104,45 @@ def easter_egg(client, body):
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
 
+@app.event("app_home_opened")
+def update_home_tab(client, event, logger):
+    try:
+        # views.publish is the method that your app uses to push a view to the Home tab
+        client.views_publish(
+            # the user that opened your app's app home
+            user_id=event["user"],
+            # the view object that appears in the app home
+            view={
+                "type": "home",
+                "callback_id": "home_view",
+
+                # body of the view
+                "blocks": [
+                    {
+                        "type": "section",
+                        "text": {
+                            "type": "mrkdwn",
+                            "text": "*Welcome to the _GTN Certificate Bot_* :tada:"
+                        }
+                    },
+                    {
+                        "type": "divider"
+                    },
+                ]
+            }
+        )
+
+    except Exception as e:
+        logger.error(f"Error publishing home tab: {e}")
+
 @app.event("message")
-def handle_app_mentions(logger, event):
+def handle_messages(logger, event):
     print(event)
     logger.info(event)
 
 
 @app.event("reaction_added")
-def handle_app_mentions(logger, event):
+def handle_reactions(logger, event):
     print(event)
     logger.info(event)
 
