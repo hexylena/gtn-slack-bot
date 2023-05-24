@@ -183,10 +183,10 @@ def handle_messages(event, logger):
     logger.info(event)
 
 
-SEEN_GRATITUDE = []
-SEEN_SUPPORT_AU = []
-SEEN_SUPPORT_US = []
-SEEN_SUPPORT_EU = []
+SEEN_GRATITUDE = {}
+SEEN_SUPPORT_AU = {}
+SEEN_SUPPORT_US = {}
+SEEN_SUPPORT_EU = {}
 
 @app.event("reaction_added")
 def handle_reactions(client, event, logger):
