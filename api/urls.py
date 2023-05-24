@@ -16,7 +16,6 @@ from . import views
 
 @csrf_exempt
 def slack_events_handler(request: HttpRequest):
-    print(request.body)
     return handler.handle(request)
 
 
