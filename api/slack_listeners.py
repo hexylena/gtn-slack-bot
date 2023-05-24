@@ -103,6 +103,30 @@ def easter_egg(client, body):
     elif emoji == ':rainbow-flag':
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
+
+@app.event("message.groups")
+def handle_app_mentions(logger, event):
+    print(event)
+    logger.info(event)
+
+@app.event("message.channels")
+def handle_app_mentions(logger, event):
+    print(event)
+    logger.info(event)
+
+
+
+@app.event("message.mpim")
+def handle_app_mentions(logger, event):
+    print(event)
+    logger.info(event)
+
+@app.event("message.im")
+def handle_app_mentions(logger, event):
+    print(event)
+    logger.info(event)
+
+
 @app.event("reaction_added")
 def handle_app_mentions(logger, event):
     print(event)
