@@ -104,6 +104,7 @@ def easter_egg(client, body):
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
 
+@csrf_exempt
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
     try:
@@ -136,23 +137,27 @@ def update_home_tab(client, event, logger):
         logger.error(f"Error publishing home tab: {e}")
 
 
+@csrf_exempt
 @app.message(re.compile(".*"))
 def handle_messages2(message, say, logger):
     print('messages2', event)
     logger.info(event)
 
+@csrf_exempt
 @app.event("message")
 def handle_messages(event, logger):
     print('messages', event)
     logger.info(event)
 
 
+@csrf_exempt
 @app.event("reaction_added")
 def handle_reactions(event, logger):
     print(event)
     logger.info(event)
 
 
+@csrf_exempt
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
     logger.info(event)
