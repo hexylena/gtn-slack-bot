@@ -18,7 +18,13 @@ from .i18n import ENCOURAGEMENT
 import json
 
 logger = logging.getLogger(__name__)
-from .slack import app
+#from .slack import app
+app = App(
+    token=os.environ.get("SLACK_BOT_TOKEN", ""),
+    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
+    # disable eagerly verifying the given SLACK_BOT_TOKEN value
+    token_verification_enabled=True,
+)
 import os
 
 TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
@@ -104,7 +110,6 @@ def easter_egg(client, body):
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
 
-@csrf_exempt
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
     try:
@@ -137,34 +142,29 @@ def update_home_tab(client, event, logger):
         logger.error(f"Error publishing home tab: {e}")
 
 
-@csrf_exempt
 @app.message(re.compile(".*"))
 def handle_messages2(message, say, logger):
     print('messages2', event)
     logger.info(event)
 
-@csrf_exempt
 @app.event("message")
 def handle_messages(event, logger):
     print('messages', event)
     logger.info(event)
 
 
-@csrf_exempt
 @app.event("reaction_added")
 def handle_reactions(event, logger):
     print(event)
     logger.info(event)
 
 
-@csrf_exempt
 @app.event("app_mention")
 def handle_app_mentions(logger, event, say):
     logger.info(event)
     say(f"Hi there, <@{event['user']}>\n\n<https://gallantries.github.io/video-library/certbot|Were you trying to submit a certificate?> You must put /certificate at the start of your message. Please try again!")
 
 
-@csrf_exempt
 @app.command("/info")
 def certify(ack, client, body, logger, say):
     ack()
@@ -195,7 +195,6 @@ def certify(ack, client, body, logger, say):
     )
 
 
-@csrf_exempt
 @app.command("/request-certificate")
 def certify(ack, client, body, logger, say):
     logReq(body)
@@ -232,7 +231,6 @@ def certify(ack, client, body, logger, say):
     )
 
 
-@csrf_exempt
 @app.command("/completed")
 def completed(ack, body, logger, say, client):
     logReq(body)
@@ -353,7 +351,6 @@ def completed(ack, body, logger, say, client):
     return HttpResponse(status=200)
 
 
-@csrf_exempt
 @app.command("/transcript")
 def transcript(ack, body, client):
     logReq(body)
@@ -378,7 +375,6 @@ def transcript(ack, body, client):
     ephemeral(client, body, text)
 
 
-@csrf_exempt
 @app.command("/stats-all")
 def statsall(ack, body, client):
     logReq(body)
@@ -397,7 +393,6 @@ def statsall(ack, body, client):
     ephemeral(client, body, output)
 
 
-@csrf_exempt
 @app.command("/stats")
 def stats(ack, body, client):
     logReq(body)
