@@ -6,7 +6,7 @@ Thank you, everyone for joining. This event would not have been possible without
 
 Head over to <SOCIAL_CHANNEL> and let us know the answer to this important question:
 
->  **ICEBREAKER**
+> What is your favourite book, film, TV show or game you've enjoyed recently?
 
 ---
 
