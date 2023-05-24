@@ -184,17 +184,53 @@ def handle_messages(event, logger):
 
 
 SEEN_GRATITUDE = []
+SEEN_SUPPORT_AU = []
+SEEN_SUPPORT_US = []
+SEEN_SUPPORT_EU = []
 
 @app.event("reaction_added")
 def handle_reactions(client, event, logger):
     #{'type': 'reaction_added', 'user': 'U058SE9GY8P', 'reaction': 'yellow_heart', 'item': {'type': 'message', 'channel': 'C01ES8R0RNG', 'ts': '1684920076.690419'}, 'item_user': 'U01EDBVM04W', 'event_ts': '1684926148.066100'}
+    key = event['item']['channel'] + event['item']['ts']
+    url = f"https://gtnsmrgsbord.slack.com/archives/{event['item']['channel']}/p{event['item']['ts'].replace('.', '')}"
+
+    if 'gtn-support-' in event['reaction']:
+        logger.info(event)
+
+        if event['reaction'] == 'gtn-support-au':
+            if key in SEEN_SUPPORT_AU:
+                return
+            message(
+                client,
+                "#support-au",
+                url
+            )
+            SEEN_SUPPORT_AU[key] = True
+        elif event['reaction'] == 'gtn-support-us':
+            if key in SEEN_SUPPORT_US:
+                return
+            message(
+                client,
+                "#support-us",
+                url
+            )
+            SEEN_SUPPORT_US[key] = True
+        elif event['reaction'] == 'gtn-support-eu':
+            if key in SEEN_SUPPORT_EU:
+                return
+            message(
+                client,
+                "#support-eu",
+                url
+            )
+            SEEN_SUPPORT_EU[key] = True
+        return
+
     if 'gratitude-' in event['reaction']:
-        key = event['item']['channel'] + event['item']['ts']
         if key in SEEN_GRATITUDE:
             return
 
         logger.info(event)
-        url = f"https://gtnsmrgsbord.slack.com/archives/{event['item']['channel']}/p{event['item']['ts'].replace('.', '')}"
         message(
             client,
             "#gratitude",
