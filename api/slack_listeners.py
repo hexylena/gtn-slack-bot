@@ -17,7 +17,7 @@ from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
 
-logger = logging.getLogger(__name__, level=logging.INFO)
+logger = logging.getLogger(__name__)
 from .slack import app
 import os
 
