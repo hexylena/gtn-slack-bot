@@ -114,29 +114,57 @@ def easter_egg(client, body):
 
 @app.event("app_home_opened")
 def update_home_tab(client, event, logger):
+    results = Transcript.objects.filter(slack_user_id=event["user"]).order_by("-time")
+
+    courses_seen = {}
+    output = []
+    dates = {}
+    for x in results:
+        if x.channel in courses_seen:
+            continue
+        day = x.time.strftime('%B %d, %A')
+        if day not in dates:
+            dates[day] = []
+
+        dates[day].append(f"{x.time.strftime('%H:%M %Z')} | {x.channel} ")
+        courses_seen[x.channel] = True
+
+    congrats = random.choice(TRANSCRIPT_ENCOURAGEMENT)
+    text = f"*{congrats}*\n"
+    for d in sorted(dates.keys()):
+        text += f"\n*{d}*\n\n"
+        for o in dates[d]:
+            text += f"{o}\n"
+
+    home = [
+        {
+            "type": "header",
+            "text": {
+                "type": "plain_text",
+                "text": "Welcome to the GTN Certificate Bot :gtn:",
+                "emoji": true
+            }
+        }
+        {
+            "type": "divider"
+        },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Here is your current *transcript*:\n\n" + text
+            }
+        },
+    ]
+
     try:
-        # views.publish is the method that your app uses to push a view to the Home tab
         client.views_publish(
             # the user that opened your app's app home
             user_id=event["user"],
-            # the view object that appears in the app home
             view={
                 "type": "home",
                 "callback_id": "home_view",
-
-                # body of the view
-                "blocks": [
-                    {
-                        "type": "section",
-                        "text": {
-                            "type": "mrkdwn",
-                            "text": "*Welcome to the _GTN Certificate Bot_* :tada:"
-                        }
-                    },
-                    {
-                        "type": "divider"
-                    },
-                ]
+                "blocks": home
             }
         )
 
