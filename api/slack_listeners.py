@@ -136,7 +136,7 @@ def update_home_tab(client, event, logger):
         logger.error(f"Error publishing home tab: {e}")
 
 
-@app.message(re.compile("*"))
+@app.message(re.compile(".*"))
 def handle_messages2(message, say, logger):
     print('messages2', event)
     logger.info(event)
