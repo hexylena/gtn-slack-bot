@@ -144,7 +144,7 @@ def update_home_tab(client, event, logger):
                 "text": "Welcome to the GTN Certificate Bot :gtn:",
                 "emoji": true
             }
-        }
+        },
         {
             "type": "divider"
         },
