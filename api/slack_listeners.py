@@ -155,7 +155,7 @@ def handle_reactions(client, event, logger):
     #{'type': 'reaction_added', 'user': 'U058SE9GY8P', 'reaction': 'yellow_heart', 'item': {'type': 'message', 'channel': 'C01ES8R0RNG', 'ts': '1684920076.690419'}, 'item_user': 'U01EDBVM04W', 'event_ts': '1684926148.066100'}
     if 'gratitude-' in event['reaction']:
         logger.info(event)
-        url = f"https://gtnsmrgsbord.slack.com/archives/#{event['item']['channel']}/p#{event['item']['ts'].replace('.', '')}"
+        url = f"https://gtnsmrgsbord.slack.com/archives/{event['item']['channel']}/p{event['item']['ts'].replace('.', '')}"
         message(
             client,
             "#gratitude",
