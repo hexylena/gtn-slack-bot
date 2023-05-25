@@ -117,13 +117,14 @@ def send_message_to_channel(request, channel_id):
 
 @csrf_exempt
 def slack_button(request):
-    print(request.method)
-    print(request.body)
+    body = request.body
 
     if request.method != 'POST':
         return
 
-    blocks = json.loads(request.body)
+    data = request.POST
+
+    blocks = json.loads(data)
     print(blocks)
     return HttpResponse("Done")
 
