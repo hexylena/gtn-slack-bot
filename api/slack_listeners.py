@@ -268,7 +268,7 @@ def batch(iterable, n=1):
 def bulk_join(ack, client, body, logger, say):
     ack()
 
-    for group in batch(sorted(CHANNEL_GROUPS), n=5):
+    for groups in batch(sorted(CHANNEL_GROUPS), n=5):
 
         blocks = []
         # For instructors, add a series of buttons
@@ -278,16 +278,17 @@ def bulk_join(ack, client, body, logger, say):
             #"callback_id": "join_channel_auto",
             "elements": [ ]
         }
-        actions['elements'].append({
-            'type': 'button',
-            'text': {
-                'type': 'plain_text',
-                'text': group,
-                'emoji': True,
-            },
-            'value': f'{group}',
-            'action_id': f'join_action_{group}'
-        })
+        for group in groups:
+            actions['elements'].append({
+                'type': 'button',
+                'text': {
+                    'type': 'plain_text',
+                    'text': group,
+                    'emoji': True,
+                },
+                'value': f'{group}',
+                'action_id': f'join_action_{group}'
+            })
         blocks.append({
             "type": "section",
             "text": {
