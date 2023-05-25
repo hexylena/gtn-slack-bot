@@ -266,8 +266,8 @@ def bulk_join(ack, client, body, logger, say):
     # For instructors, add a series of buttons
     actions = {
         "type": "actions",
-        "fallback": "You are unable to choose a channel",
-        "callback_id": "join_channel_auto",
+        #"fallback": "You are unable to choose a channel",
+        #"callback_id": "join_channel_auto",
         "elements": [ ]
     }
 
@@ -280,7 +280,7 @@ def bulk_join(ack, client, body, logger, say):
                 'emoji': True,
             },
             'value': f'{group}',
-            'action_id': 'join_action_{group}'
+            'action_id': f'join_action_{group}'
         })
     blocks.append({
         "type": "section",
@@ -290,8 +290,8 @@ def bulk_join(ack, client, body, logger, say):
         }
     })
     blocks.append(actions)
-    import pprint
-    pprint.pprint(blocks)
+    import json
+    print(json.dumps(blocks))
 
     client.chat_postEphemeral(
         channel=body["channel_id"],
