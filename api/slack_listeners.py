@@ -268,6 +268,7 @@ def batch(iterable, n=1):
 def bulk_join(ack, client, body, logger, say):
     ack()
 
+    header = False
     for groups in batch(sorted(CHANNEL_GROUPS), n=5):
 
         blocks = []
@@ -289,13 +290,17 @@ def bulk_join(ack, client, body, logger, say):
                 'value': f'{group}',
                 'action_id': f'join_action_{group}'
             })
-        blocks.append({
-            "type": "section",
-            "text": {
-                "type": "mrkdwn",
-                "text": "Join groups of channels by clicking these buttons"
-            }
-        })
+
+        if header is False:
+            blocks.append({
+                "type": "section",
+                "text": {
+                    "type": "mrkdwn",
+                    "text": "Join groups of channels by clicking these buttons"
+                }
+            })
+            header = True
+
         blocks.append(actions)
         import json
         print(json.dumps(blocks))
