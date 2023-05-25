@@ -13,7 +13,7 @@ import uuid
 
 from .models import Transcript, CertificateRequest
 from django.http import HttpResponse
-from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest
+from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS
 from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
