@@ -170,7 +170,7 @@ def update_home_tab(client, event, logger):
                 'text': group,
                 'emoji': True,
             },
-            'value': f'{group}'
+            'value': f'{group}',
             'action_id': 'join_action_{group}'
         })
     home.append({
