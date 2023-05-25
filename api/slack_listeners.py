@@ -258,20 +258,26 @@ def handle_app_mentions(logger, event, say):
     logger.info(event)
     say(f"Hi there, <@{event['user']}>\n\n<https://gallantries.github.io/video-library/certbot|Were you trying to submit a certificate?> You must put /certificate at the start of your message. Please try again!")
 
+
+def batch(iterable, n=1):
+    l = len(iterable)
+    for ndx in range(0, l, n):
+        yield iterable[ndx:min(ndx + n, l)]
+
 @app.command("/bulk-join")
 def bulk_join(ack, client, body, logger, say):
     ack()
 
-    blocks = []
-    # For instructors, add a series of buttons
-    actions = {
-        "type": "actions",
-        #"fallback": "You are unable to choose a channel",
-        #"callback_id": "join_channel_auto",
-        "elements": [ ]
-    }
+    for group in batch(sorted(CHANNEL_GROUPS), n=5):
 
-    for group in CHANNEL_GROUPS:
+        blocks = []
+        # For instructors, add a series of buttons
+        actions = {
+            "type": "actions",
+            #"fallback": "You are unable to choose a channel",
+            #"callback_id": "join_channel_auto",
+            "elements": [ ]
+        }
         actions['elements'].append({
             'type': 'button',
             'text': {
@@ -282,23 +288,23 @@ def bulk_join(ack, client, body, logger, say):
             'value': f'{group}',
             'action_id': f'join_action_{group}'
         })
-    blocks.append({
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Join groups of channels by clicking these buttons"
-        }
-    })
-    blocks.append(actions)
-    import json
-    print(json.dumps(blocks))
+        blocks.append({
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Join groups of channels by clicking these buttons"
+            }
+        })
+        blocks.append(actions)
+        import json
+        print(json.dumps(blocks))
 
-    client.chat_postEphemeral(
-        channel=body["channel_id"],
-        user=body["user_id"],
-        text="Select channels to join",
-        blocks=blocks
-    )
+        client.chat_postEphemeral(
+            channel=body["channel_id"],
+            user=body["user_id"],
+            text="Select channels to join",
+            blocks=blocks
+        )
 
 @app.command("/info")
 def certify(ack, client, body, logger, say):
