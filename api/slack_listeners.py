@@ -11,7 +11,7 @@ import requests
 import random
 import uuid
 
-from .models import Transcript, CertificateRequest
+from .models import Transcript, CertificateRequest, Gratitude
 from django.http import HttpResponse
 from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS
 from django.views.decorators.csrf import csrf_exempt
@@ -235,6 +235,20 @@ def handle_reactions(client, event, logger):
         )
 
         SEEN_GRATITUDE[key] = True
+
+        message_text = client.conversations_history(
+            channel=event['item']['channel'],
+            inclusive=True,
+            oldest=event['item']['ts'],
+            limit=1
+        )['messages']['text']
+
+        Gratitude.objects.create(
+            slack_channel_id=event['item']['channel'],
+            date=datetime.datetime.utcfromtimestamp(int(float(event['item']['ts']))),
+            message=message_text
+        )
+
 
 
 @app.event("app_mention")

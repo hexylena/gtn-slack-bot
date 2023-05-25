@@ -47,3 +47,8 @@ class ScheduledMessage(models.Model):
     @property
     def time_until(self):
         return self.scheduled_for - timezone.now()
+
+class Gratitude(models.Model):
+    message = models.TextField()
+    date = models.DateTimeField()
+    slack_channel_id = models.CharField(max_length=64)
