@@ -236,12 +236,14 @@ def handle_reactions(client, event, logger):
 
         SEEN_GRATITUDE[key] = True
 
-        message_text = client.conversations_history(
+        discovered_messages = client.conversations_history(
             channel=event['item']['channel'],
             inclusive=True,
             oldest=event['item']['ts'],
             limit=1
-        )['messages']['text']
+        )
+
+        message_text = discovered_messages['messages'][0]['text']
 
         Gratitude.objects.create(
             slack_channel_id=event['item']['channel'],
