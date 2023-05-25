@@ -75,11 +75,6 @@ CHANNEL_MAPPING = {k: list(set(v)) for k, v in CHANNEL_MAPPING.items()}
 for k, v in list(CHANNEL_MAPPING.items()):
     CHANNEL_MAPPING[k.lower()] = v
 
-CHANNEL_GROUPS = list(set([
-    x.split('_')[0] for x in
-    CHANNEL_MAPPING.keys()
-]))
-
 
 def channel2module(body):
     # Just a safe fail condition that doesn't disturb students

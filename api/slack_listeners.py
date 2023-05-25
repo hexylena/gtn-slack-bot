@@ -153,52 +153,28 @@ def update_home_tab(client, event, logger):
         {
             "type": "divider"
         },
+        {
+            "type": "section",
+            "text": {
+                "type": "mrkdwn",
+                "text": "Here is your current *transcript*:\n\n" + text
+            }
+        },
     ]
-    # For instructors, add a series of buttons
-    actions = {
-        "type": "actions",
-        "fallback": "You are unable to choose a channel",
-        "callback_id": "join_channel_auto",
-        "elements": [ ]
-    }
 
-    for group in CHANNEL_GROUPS:
-        actions['elements'].append({
-            'type': 'button',
-            'text': {
-                'type': 'plain_text',
-                'text': group,
-                'emoji': True,
-            },
-            'value': f'{group}'
-            'action_id': 'join_action_{group}'
-        })
-    home.append({
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Join groups of channels by clicking these buttons"
-        }
-    })
-    home.append(actions)
+    try:
+        client.views_publish(
+            # the user that opened your app's app home
+            user_id=event["user"],
+            view={
+                "type": "home",
+                "callback_id": "home_view",
+                "blocks": home
+            }
+        )
 
-    # For students, their transcript
-    home.append({
-        "type": "section",
-        "text": {
-            "type": "mrkdwn",
-            "text": "Here is your current *transcript*:\n\n" + text
-        }
-    })
-    client.views_publish(
-        # the user that opened your app's app home
-        user_id=event["user"],
-        view={
-            "type": "home",
-            "callback_id": "home_view",
-            "blocks": home
-        }
-    )
+    except Exception as e:
+        logger.error(f"Error publishing home tab: {e}")
 
 
 @app.event("message")
