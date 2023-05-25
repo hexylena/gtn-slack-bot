@@ -117,8 +117,8 @@ def send_message_to_channel(request, channel_id):
 
 @csrf_exempt
 def slack_button(request):
-    if channel_id != 'C01PQ3P2TTL':
-        return HttpResponse("Testing only.", status=403)
+    print(request.method)
+    print(request.body)
 
     if request.method != 'POST':
         return
