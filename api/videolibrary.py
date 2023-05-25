@@ -79,6 +79,10 @@ CHANNEL_GROUPS = list(set([
     x.split('_')[0] for x in
     CHANNEL_MAPPING.keys()
 ]))
+CHANNEL_GROUPS = [
+    x for x in CHANNEL_GROUPS
+    if not x.startswith('event')
+]
 
 
 def channel2module(body):
