@@ -27,5 +27,6 @@ urlpatterns = [
     path('schedule-single/', views.schedule_message_single, name='schedule_message_single'),
     path('transcript/<str:slack_user_id>/', views.transcript, name='transcript'),
     path("slack/events", slack_events_handler, name="slack_events"),
+    path("slack/button", views.slack_button, name="slack_button"),
     path('send-message/<str:channel_id>/', views.send_message_to_channel, name='message'),
 ]

@@ -74,6 +74,18 @@ def send_message_to_channel(request, channel_id):
     )
     return HttpResponse("Done")
 
+@csrf_exempt
+def slack_button(request):
+    if channel_id != 'C01PQ3P2TTL':
+        return HttpResponse("Testing only.", status=403)
+
+    if request.method != 'POST':
+        return
+
+    blocks = json.loads(request.body)
+    print(blocks)
+    return HttpResponse("Done")
+
 
 @login_required
 def schedule_message_single(request):
