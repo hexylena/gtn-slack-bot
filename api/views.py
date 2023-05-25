@@ -10,7 +10,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
 import bleach
-from api.models import Transcript, CertificateRequest, ScheduledMessage
+from api.models import Transcript, CertificateRequest, ScheduledMessage, Gratitude
 from django.http import JsonResponse
 from api.videolibrary import CHANNEL_MAPPING
 from slack_bolt import App
@@ -22,6 +22,22 @@ logger = logging.getLogger(__name__)
 from .slack import app
 from .build import template_messages
 
+
+def _list_channels():
+    print("Listing Chanenls")
+    channels = []
+    cid = None
+    while True:
+        try:
+            r = app.client.conversations_list(limit=500, cursor=cid)
+            channels += r.data["channels"]
+            cid = r.data["response_metadata"]["next_cursor"]
+            if cid == "" or cid is None:
+                break
+
+        except KeyError:
+            break
+    return channels
 
 def probably_hist(text):
     return '/u/' in text and ('/h/' in text or '/w/' in text)
@@ -40,6 +56,31 @@ def template(name, request, context=None):
 
 def index(request):
     return template('index.html', request)
+
+
+global CACHED_CHANNELS
+CACHED_CHANNELS = None # _list_channels()
+
+def gratitude_list(request):
+    global CACHED_CHANNELS
+    if CACHED_CHANNELS is None:
+        CACHED_CHANNELS = _list_channels()
+
+    trans = Gratitude.objects.all().order_by('slack_channel_id')
+    # {'id': 'C059LBKSNQY', 'name': 'single-cell_bulk-music-4-compare', 'is_channel': True, 'is_group': False, 'is_im': False, 'is_mpim': False, 'is_private': False, 'created': 1684768720, 'is_archived': False, 'is_general': False, 'unlinked': 0, 'name_normalized': 'single-cell_bulk-music-4-compare', 'is_shared': False, 'is_org_shared': False, 'is_pending_ext_shared': False, 'pending_shared': [], 'context_team_id': 'T01EL3YJPC2', 'updated': 1684768720150, 'parent_conversation': None, 'creator': 'U01MM8XBJ7R', 'is_ext_shared': False, 'shared_team_ids': ['T01EL3YJPC2'], 'pending_connected_team_ids': [], 'is_member': True, 'topic': {'value': '', 'creator': '', 'last_set': 0}, 'purpose': {'value': '', 'creator': '', 'last_set': 0}, 'previous_names': [], 'num_members': 10}]
+    channels = {
+        x['id']: x
+        for x in CACHED_CHANNELS
+    }
+    distinct_channels = Gratitude.objects.order_by().values_list('slack_channel_id', flat=True).distinct()
+    distinct_channels = [(x, channels[x]['name']) for x in distinct_channels]
+    import pprint; pprint.pprint(distinct_channels)
+    context = {
+        'messages': trans,
+        'channels': channels,
+        'distinct': distinct_channels,
+    }
+    return template('gratitude_list.html', request, context)
 
 
 def transcript_list(request):

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Galaxy Training Gratitude
+{% endblock %}
+
+{% block content %}
+<h1>Galaxy Training Gratitude</h1>
+
+{% for cx in distinct %}
+<h2>{{ cx.1 }}</h2>
+<table>
+	{% for message in messages %}
+	{% if message.slack_channel_id == cx.0 %}
+	<tr>
+		<td>{{ message.date }}</td>
+		<td>{{ message.message }}</td>
+	</tr>
+	{% endif %}
+	{% endfor %}
+</table>
+{% endfor %}
+
+
+{% endblock %}

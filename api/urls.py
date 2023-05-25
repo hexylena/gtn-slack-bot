@@ -23,6 +23,7 @@ urlpatterns = [
     path("", views.index, name="index"),
     path('mapping.json', views.mapping, name='mapping'),
     path('transcript/', views.transcript_list, name='transcript_list'),
+    path('gratitude/', views.gratitude_list, name='gratitude_list'),
     path('schedule/', views.schedule_message, name='schedule_message'),
     path('schedule-single/', views.schedule_message_single, name='schedule_message_single'),
     path('transcript/<str:slack_user_id>/', views.transcript, name='transcript'),
