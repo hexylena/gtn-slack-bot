@@ -37,6 +37,7 @@ TIAAS = [
 def render_paragraph(children):
     text = ""
     for kid in children:
+        print(f"\t{kid}")
         if kid["element"] == "raw_text":
             text += kid["children"]
         elif kid["element"] == "link":
@@ -61,6 +62,7 @@ def convert_markodoc(doc):
     blocks_obj = {"blocks": blocks}
 
     for kid in doc["children"]:
+        print(kid)
         if kid["element"] == "heading":
             blocks.append(
                 {
@@ -128,3 +130,8 @@ def convert_markodoc(doc):
             raise Exception(f"Cannot handle {kid}")
 
     return blocks_obj
+
+
+if __name__ == '__main__':
+    with open(sys.argv[1], 'r') as handle:
+        print(convert_text(handle.read()))
