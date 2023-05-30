@@ -173,11 +173,32 @@ def update_home_tab(client, event, logger):
         }
     )
 
+# Match all the ways users screw up the /completed command:
+# / completed
+# \completed
+# completed /
+# completed/
+# ... /completed
+BAD_COMPLETED = re.compile(r"(^`/completed|^ /completed|/ completed|\\completed|completed\s*/|^completed|[^/]completed\s+)")
+
 
 @app.event("message")
-def handle_messages(event, logger):
+def handle_messages(event, logger, client):
     print('messages', event)
-    logger.info(event)
+    # {'client_msg_id': '816539f7-a2af-4737-8c46-f8fa65c50064', 'type': 'message', 'text': 'Thanks Saskia for your reply, I will try this tools', 'user': 'U059H56UFFA', 'ts': '1685436611.427609', 'blocks': [{'type': 'rich_text', 'block_id': 'XsLx', 'elements': [{'type': 'rich_text_section', 'elements': [{'type': 'text', 'text': 'Thanks Saskia for your reply, I will try this tools'}]}]}], 'team': 'T01EL3YJPC2', 'thread_ts': '1685435549.297769', 'parent_user_id': 'U059H56UFFA', 'channel': 'C01FQ92MB7A', 'event_ts': '1685436611.427609', 'channel_type': 'channel'}
+
+    # Ignore messages in threads
+    if 'thread_ts' in event:
+        return
+
+    if BAD_COMPLETED.match(event['text']):
+        message(
+            client,
+    # Only in channels
+            event["channel_id"],
+            f"Hey <@{event['user_id']}>, it looks like you're trying to use the completed command. This didn't quite work, so please try again with /completed at the *start* of your message, nothing before it.",
+        )
+
 
 
 SEEN_GRATITUDE = {}
