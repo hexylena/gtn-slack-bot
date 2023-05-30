@@ -239,4 +239,4 @@ def addCertificateRequest(user_id, human_name):
 # completed /
 # completed/
 # ... /completed
-BAD_COMPLETED = re.compile(r"(^`/completed|^ /completed|/ completed|\\completed|completed\s*/|^completed|[^/]completed\s+|^.+/completed|/<[^>]*\|completed>)")
+BAD_COMPLETED = re.compile(r"(^`/completed|^ /completed|/ completed|\\completed|completed\s*/|^completed|[^/]completed\s+|^.+/completed|/<[^>]*\|completed>|^completed$)")

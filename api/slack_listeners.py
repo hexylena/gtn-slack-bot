@@ -191,7 +191,7 @@ def handle_messages(event, logger, client):
         message(
             client,
     # Only in channels
-            event["channel_id"],
+            event["channel"],
             f"Hey <@{event['user_id']}>, it looks like you're trying to use the completed command. This didn't quite work, so please try again with /completed at the *start* of your message, nothing before it.",
         )
 

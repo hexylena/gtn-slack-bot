@@ -11,6 +11,7 @@ class BasicTestCase(TestCase):
             'I just /completed Introduction to transcriptomics',
             '\completed https://usegalaxy.eu/u/user/h/history',
             '/<https://usegalaxy.eu/u/user/h/history|completed>',
+            'completed',
         ]
 
         good = [
