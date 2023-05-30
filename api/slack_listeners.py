@@ -191,6 +191,10 @@ def handle_messages(event, logger, client):
     if 'thread_ts' in event:
         return
 
+    if 'text' not in event:
+        print("Missing text field")
+        return
+
     if BAD_COMPLETED.match(event['text']):
         message(
             client,
