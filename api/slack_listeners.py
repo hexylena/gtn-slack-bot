@@ -476,7 +476,7 @@ def completed(ack, body, logger, say, client):
             f"You submitted proof for *{module}* in <#{body['channel_id']}>. Congrats!\n"
             "• Did you mean to register completion of another tutorial? That's fine, go do it in that channel!\n"
             "• You can use the command /transcript to list all of your completed tutorials.\n"
-            "• Remember to submit a certificate request with /request-certificate before April 1st, 2022\n"
+            "• Remember to submit a certificate request with /request-certificate before June 4, 2023\n"
             "\n"
             ":pray: If you liked the tutorial tell the instructor thanks! Write a message in this channel!\n"
             f":speaking_head_in_silhouette: {prompt} Write it here and let us know!"
