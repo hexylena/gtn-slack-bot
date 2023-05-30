@@ -374,7 +374,7 @@ def certify(ack, client, body, logger, say):
     ephemeral(
         client,
         body,
-        f":warning: As a final requirement for your certificate, please fill in the feedback <https://docs.google.com/forms/d/e/1FAIpQLSeZ6hCdXNsurYs6Oa9AWoAf4ifwzQK_FAY4RQ8TomnlqJW9Kg/viewform?usp=sf_link|via our feedback survey>, if you have not done so already!",
+        f":warning: As a final requirement for your certificate, please fill in the feedback <https://docs.google.com/forms/d/e/1FAIpQLSdth4MopsMalwye3jMl1xUhL-P-ZPOC6QYnzbDAxEhTTi1QkA/viewform?usp=sf_link|via our feedback survey>, if you have not done so already!",
     )
 
 
