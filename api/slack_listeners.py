@@ -13,7 +13,7 @@ import uuid
 
 from .models import Transcript, CertificateRequest, Gratitude
 from django.http import HttpResponse
-from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS
+from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS, BAD_COMPLETED
 from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
@@ -172,14 +172,6 @@ def update_home_tab(client, event, logger):
             "blocks": home
         }
     )
-
-# Match all the ways users screw up the /completed command:
-# / completed
-# \completed
-# completed /
-# completed/
-# ... /completed
-BAD_COMPLETED = re.compile(r"(^`/completed|^ /completed|/ completed|\\completed|completed\s*/|^completed|[^/]completed\s+)")
 
 
 @app.event("message")

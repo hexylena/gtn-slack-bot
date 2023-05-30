@@ -232,3 +232,11 @@ def addCertificateRequest(user_id, human_name):
     else:
         existing_requests[0].human_name = human_name
         existing_requests[0].save()
+
+# Match all the ways users screw up the /completed command:
+# / completed
+# \completed
+# completed /
+# completed/
+# ... /completed
+BAD_COMPLETED = re.compile(r"(^`/completed|^ /completed|/ completed|\\completed|completed\s*/|^completed|[^/]completed\s+|^.+/completed|/<[^>]*\|completed>)")
