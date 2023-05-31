@@ -536,7 +536,12 @@ def statsall(ack, body, client):
     else:
         results = Transcript.objects.values('channel').annotate(Count('slack_user_id', distinct=True)).order_by('-slack_user_id__count')
 
-    output = ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
+    # Count total transcripts
+    total_users = CertificateRequest.objects.all().count()
+    total_transcripts = Transcript.objects.all().count()
+
+    output = ":gtn-heart: *{total_users} trainees* have together completed *{total_transcripts} tutorials* :galaxy:\n\n"
+    output += ":trophy: *Top Completed Tutorials*\n\nCount - Channel\n"
     for x in results[0:20]:
         output += f"{x['slack_user_id__count']} - {x['channel']}\n"
 
