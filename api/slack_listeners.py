@@ -39,6 +39,9 @@ JOINED = []
 #        JOINED.append(convo['name'])
 
 
+# TODO: add tags for message type (channel, direct, etc), channel, user?
+# https://docs.sentry.io/platforms/python/enriching-events/tags/
+
 
 # I'm alive
 # Disabled because of cron jobs
@@ -192,7 +195,7 @@ def handle_messages(event, logger, client):
             client,
     # Only in channels
             event["channel"],
-            f"Hey <@{event['user_id']}>, it looks like you're trying to use the completed command. This didn't quite work, so please try again with /completed at the *start* of your message, nothing before it. See https://gallantries.github.io/video-library/certbot for more details including a video!",
+            f"Hey <@{event['user']}>, it looks like you're trying to use the completed command. This didn't quite work, so please try again with /completed at the *start* of your message, nothing before it. See https://gallantries.github.io/video-library/certbot for more details including a video!",
         )
 
 
