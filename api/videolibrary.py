@@ -144,6 +144,8 @@ def validateGalaxyURLs(text):
     print(f"urls: {urls}")
 
     for url in urls:
+        if url.startswith('https://https://'):
+            url = url.replace('https://https://', 'https://')
         try:
             resp = requests.get(url, timeout=10)
             if resp.status_code != 200:
