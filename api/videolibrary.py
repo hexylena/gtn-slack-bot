@@ -218,12 +218,13 @@ def get_course_name_and_time(module):
         raise Exception(f"Unknown module {module}")
 
 
-def addCertificateRequest(user_id, human_name):
+def addCertificateRequest(app, user_id):
     # Save to DB
     existing_requests = CertificateRequest.objects.filter(
         slack_user_id=user_id,
     )
     if len(existing_requests) == 0:
+        human_name = app.client.users_info(user=user_id)["user"]["real_name"]
         q = CertificateRequest(
             slack_user_id=user_id,
             human_name=human_name,
@@ -231,9 +232,10 @@ def addCertificateRequest(user_id, human_name):
             approved="UNK",
         )
         q.save()
+        return q
     else:
-        existing_requests[0].human_name = human_name
-        existing_requests[0].save()
+        return existing_requests[0]
+
 
 # Match all the ways users screw up the /completed command:
 # / completed

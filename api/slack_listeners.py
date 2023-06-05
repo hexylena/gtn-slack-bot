@@ -159,7 +159,16 @@ def update_home_tab(client, event, logger):
         },
     ]
 
+    certificate_request = addCertificateRequest(app, event['user'])
+
     # For students, their transcript
+    home.append({
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Your name will appear as *{certificate_request.human_name}* on your certificate. Use /request-certificate to update that name."
+        }
+    })
     home.append({
         "type": "section",
         "text": {
@@ -392,7 +401,9 @@ def certify(ack, client, body, logger, say):
 
     msg = ""
     try:
-        addCertificateRequest(body['user_id'], human_name)
+        cr = addCertificateRequest(app, body['user_id'])
+        cr.human_name = human_name
+        cr.save()
         ephemeral(client, body, f"Your request for a certificate was successful, it is pending review by a course organiser. Your name will appear as '{human_name}' on your certificate (exactly as it appears between the 'single quotes'.) If you need to correct this, just re-run the command with your corrected name.")
     except Exception as e:
         # Handle error
@@ -491,7 +502,7 @@ def completed(ack, body, logger, say, client):
         )
         q.save()
         # Ensure everyone has an automatic certificate request.
-        addCertificateRequest(body['user_id'], body['user_id'])
+        addCertificateRequest(app, body['user_id'])
 
         prompt = random.choice(
             [

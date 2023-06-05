@@ -21,6 +21,8 @@ class BasicTestCase(TestCase):
 
         for b in bad:
             m = videolibrary.BAD_COMPLETED.match(b)
+            if m is None:
+                print(b)
             self.assertNotEqual(m, None)
 
         for g in good:
