@@ -12,6 +12,7 @@ Transcript for {{ slack_user_id }}
 			<thead>
 				<tr>
 					<th style="width: 5em;">Valid</th>
+					<th>Submitted</th>
 					<th>Material</th>
 					<th>Proof</th>
 					<th style="width: 5em;">DB Validity</th>
@@ -25,6 +26,9 @@ Transcript for {{ slack_user_id }}
 							<input type="checkbox" name="valid.{{ row.3 }}" id="{{ row.3 }}" {% if row.4 %}checked{% endif %}/>
 							Valid
 						</label>
+					</td>
+					<td>
+						{{ row.0 }}
 					</td>
 					<td>
 						<select name="actual_course.{{ row.3 }}">
