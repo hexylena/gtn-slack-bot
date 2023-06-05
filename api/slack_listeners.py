@@ -164,10 +164,33 @@ def update_home_tab(client, event, logger):
 
     # For students, their transcript
     home.append({
+        "type": "header",
+        "text": {
+            "type": "plain_text",
+            "text": "Certificate Status",
+            "emoji": True
+        }
+    })
+    home.append({
         "type": "section",
         "text": {
             "type": "mrkdwn",
-            "text": f"Your name will appear as *{certificate_request.human_name}* on your certificate. Use /request-certificate to update that name."
+            "text": f"Name on Certificate: *{certificate_request.human_name}*"
+        }
+    })
+
+    CertificateStates = {
+        'ACC': 'Accepted',
+        'REJ': 'Rejected (No valid transcripts found)',
+        'UNK': 'Unknown',
+        'S/S': 'Certificate Sent',
+        'R/S': 'Rejection Sent',
+    }
+    home.append({
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Certificate Status: {CertificateStates[certificate_request.approved]}"
         }
     })
     home.append({
