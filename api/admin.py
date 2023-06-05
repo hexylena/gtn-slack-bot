@@ -11,7 +11,7 @@ class TranscriptAdmin(admin.ModelAdmin):
 
 @admin.register(CertificateRequest)
 class CertificateRequestAdmin(admin.ModelAdmin):
-    list_display = ("slack_user_id", "time", "human_name", "approved")
+    list_display = ("slack_user_id", "time", "human_name", "human_name_updated", "approved", "transcript_count")
 
 
 @admin.register(ScheduledMessage)

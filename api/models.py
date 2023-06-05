@@ -39,6 +39,10 @@ class CertificateRequest(models.Model):
     ]
     approved = models.CharField(max_length=3, choices=CertificateStates, default='UNK')
 
+    @property
+    def transcript_count(self):
+        return Transcript.objects.filter(slack_user_id=self.slack_user_id).count()
+
 class ScheduledMessage(models.Model):
     slack_channel_id = models.CharField(max_length=32)
     message = models.TextField()

@@ -12,6 +12,7 @@ Certificate Request List
 	<thead>
 		<tr>
 			<th>User</th>
+			<th>Tutorials</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -20,6 +21,9 @@ Certificate Request List
 		<tr>
 			<td>
 				<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
+			</td>
+			<td>
+				{{ user.transcript_count }}
 			</td>
 		</tr>
 		{% endif %}
