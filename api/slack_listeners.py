@@ -381,7 +381,13 @@ def certify(ack, client, body, logger, say):
         )
         return HttpResponse(status=200)
 
-    human_name = body["text"].strip()
+    human_name = body["text"].strip()#.lstrip('*').rstrip('*').lstrip('[').rstrip(']')
+    if re.match(r'\*.*\*', human_name):
+        human_name = human_name.lstrip('*').rstrip('*')
+    if re.match(r'\[.*\]', human_name):
+        human_name = human_name.lstrip('[').rstrip(']')
+    if re.match(r"'.*'", human_name):
+        human_name = human_name.lstrip("'").rstrip("'")
 
     msg = ""
     try:
