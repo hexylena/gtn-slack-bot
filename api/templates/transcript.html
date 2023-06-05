@@ -5,7 +5,8 @@ Transcript for {{ slack_user_id }}
 {% endblock %}
 
 {% block content %}
-	<h1>Transcript for {{ slack_user_id }}</h1>
+<h1>Transcript for {{ slack_user_id }} ({{ name }})</h1>
+	<a href="https://gtnsmrgsbord.slack.com/team/{{ slack_user_id }}">Open {{ slack_user_id }}'s profile</a>
 	<a class="btn" href="/transcript/">Return to transcript list</a>
 	<form method="POST">{% csrf_token %}
 		<table class='table table-striped'>
