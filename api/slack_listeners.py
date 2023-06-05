@@ -167,7 +167,7 @@ def update_home_tab(client, event, logger):
         "type": "header",
         "text": {
             "type": "plain_text",
-            "text": "Certificate Status",
+            "text": "Certificate Status :scroll:",
             "emoji": True
         }
     })
@@ -191,6 +191,14 @@ def update_home_tab(client, event, logger):
         "text": {
             "type": "mrkdwn",
             "text": f"Certificate Status: {CertificateStates[certificate_request.approved]}"
+        }
+    })
+    home.append({
+        "type": "header",
+        "text": {
+            "type": "plain_text",
+            "text": "Transcript :galaxy:",
+            "emoji": True
         }
     })
     home.append({
