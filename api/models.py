@@ -26,6 +26,7 @@ class Transcript(models.Model):
 class CertificateRequest(models.Model):
     slack_user_id = models.CharField(max_length=32)
     human_name = models.CharField(max_length=64)
+    human_name_updated = models.DateTimeField(null=True, blank=True)
     time = models.DateTimeField(auto_now_add=True)
     course = models.TextField()
 
