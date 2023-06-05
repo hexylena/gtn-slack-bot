@@ -12,6 +12,7 @@ class BasicTestCase(TestCase):
             '\completed https://usegalaxy.eu/u/user/h/history',
             '/<https://usegalaxy.eu/u/user/h/history|completed>',
             'completed',
+            '/ completehttps://usegalaxy.eu/u/monem-1177_/h/large-genome-assembly',
         ]
 
         good = [
