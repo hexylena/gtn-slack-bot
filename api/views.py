@@ -74,7 +74,7 @@ def gratitude_list(request):
     }
     distinct_channels = Gratitude.objects.order_by().values_list('slack_channel_id', flat=True).distinct()
     distinct_channels = [(x, channels[x]['name']) for x in distinct_channels]
-    import pprint; pprint.pprint(distinct_channels)
+    #import pprint; pprint.pprint(distinct_channels)
     context = {
         'messages': trans,
         'channels': channels,
@@ -262,9 +262,11 @@ def transcript(request, slack_user_id):
 
     trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
     safetrans = [
-        (x.time, x.channel, bleach.clean('<br>'.join([f'<a href="{x}">{x}</a>' for x in bleach.clean(x.proof).split()])) , x.id, probably_hist(x.proof), x.valid)
+        (x.time, x.channel, bleach.clean('\n'.join([f'<a href="{x}">{x}</a>' for x in bleach.clean(x.proof).split()])) , x.id, probably_hist(x.proof), x.valid)
         for x in trans
     ]
+    #print(sorted(list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist])))))
+
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,

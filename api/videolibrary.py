@@ -75,6 +75,21 @@ CHANNEL_MAPPING = {k: list(set(v)) for k, v in CHANNEL_MAPPING.items()}
 for k, v in list(CHANNEL_MAPPING.items()):
     CHANNEL_MAPPING[k.lower()] = v
 
+# We'll now expand this based on the full GTN tutorials, in case people did
+# non-video tutorials.
+
+
+for k in gtndata.keys():
+    k2 = k.replace('/', '_')
+    if k2 in CHANNEL_MAPPING:
+        continue
+
+    CHANNEL_MAPPING[k2] = [f'gtn:{k}']
+
+#import pprint
+#pprint.pprint(gtndata)
+#pprint.pprint(CHANNEL_MAPPING)
+
 CHANNEL_GROUPS = list(set([
     x.split('_')[0] for x in
     CHANNEL_MAPPING.keys()

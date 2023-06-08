@@ -20,14 +20,7 @@ from .i18n import ENCOURAGEMENT
 import json
 
 logger = logging.getLogger(__name__)
-#from .slack import app
-from slack_bolt import App
-app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN", ""),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
-    # disable eagerly verifying the given SLACK_BOT_TOKEN value
-    token_verification_enabled=True,
-)
+from .slack import app
 import os
 
 ENABLED = False
