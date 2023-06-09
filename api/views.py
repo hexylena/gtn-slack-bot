@@ -84,6 +84,7 @@ def gratitude_list(request):
     return template('gratitude_list.html', request, context)
 
 
+@login_required
 def transcript_list(request):
     trans = CertificateRequest.objects.all().order_by('slack_user_id')
     done = 0
@@ -221,7 +222,7 @@ def schedule_message(request):
     return render(request, "schedule.html", {"form": form, "type": "Batch", "action": "schedule", "messages": messages})
 
 
-@csp_exempt
+@login_required
 def transcript(request, slack_user_id):
     if request.method == 'POST':
         results = {}

@@ -59,6 +59,16 @@ class CertificateRequest(models.Model):
         return Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True).count()
 
     @property
+    def transcript_items(self):
+        possible_final = Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True)
+        # Deduplicate
+        final_transcript = {
+            t.title: t.ects
+            for t in possible_final
+        }
+        return final_transcript
+
+    @property
     def total_ects(self):
         possible_final = Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True)
         # Deduplicate
