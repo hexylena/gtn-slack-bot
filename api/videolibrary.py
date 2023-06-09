@@ -231,6 +231,16 @@ def get_course_name_and_time(module):
             return ("Intro to Galaxy", parse_time('2H'))
         elif key == 'general':
             return ("General Galaxy Skills Module", parse_time('2H'))
+        elif key.replace('_', '/', 1) in gtndata:
+            return (
+                gtndata[key.replace('_', '/', 1)],
+                studyloaddata[key.replace('_', '/', 1)]
+            )
+        elif key == 'ro-crate':
+            return (
+                'FAIR data and provenance with RO-Crate and Galaxy',
+                '4:00:00',
+            )
         else:
             return ("UNKNOWN", 0)
     else:
