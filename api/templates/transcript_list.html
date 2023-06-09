@@ -13,6 +13,7 @@ Certificate Request List
 		<tr>
 			<th>User</th>
 			<th>Tutorials</th>
+			<th>ECTS</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -25,6 +26,9 @@ Certificate Request List
 			<td>
 				{{ user.transcript_count }}
 			</td>
+			<td>
+				{{ user.total_ects }}
+			</td>
 		</tr>
 		{% endif %}
 		{% endfor %}
@@ -36,6 +40,7 @@ Certificate Request List
 		<tr>
 			<th>User</th>
 			<th>Tutorials</th>
+			<th>ECTS</th>
 			<th>Approved</th>
 		</tr>
 	</thead>
@@ -48,6 +53,9 @@ Certificate Request List
 			</td>
 			<td>
 				{{ user.transcript_count }}
+			</td>
+			<td>
+				{{ user.total_ects }}
 			</td>
 			<td><img src="/static/admin/img/icon-yes.svg"></td>
 		</tr>

@@ -56,7 +56,14 @@ class CertificateRequest(models.Model):
 
     @property
     def transcript_count(self):
-        return Transcript.objects.filter(slack_user_id=self.slack_user_id).count()
+        return Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True).count()
+
+    @property
+    def total_ects(self):
+        return round(sum([
+            t.ects for t in
+            Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True)
+        ]), 2)
 
 class ScheduledMessage(models.Model):
     slack_channel_id = models.CharField(max_length=32)
