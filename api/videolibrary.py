@@ -177,8 +177,17 @@ def validateGalaxyURLs(text):
 
 def parse_time(timestr):
     if isinstance(timestr, str):
-        pt = f'PT{timestr}'.upper()
-        r = isodate.parse_duration(pt)
+        if ':' in timestr:
+            pt = 'PT0' + timestr.replace(':', 'H', 1).replace(':', 'M', 1) + 'S'
+        else:
+            pt = f'PT{timestr}'.upper()
+
+        try:
+            r = isodate.parse_duration(pt)
+        except:
+            print(timestr, type(timestr), pt)
+            print('error')
+            r = timedelta(hours=0)
     else:
         r = timestr
 
