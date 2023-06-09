@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from api.videolibrary import get_course_name_and_time
+from api.videolibrary import get_course_name_and_time, parse_time
 
 
 #class Event(models.Model):
@@ -29,7 +29,10 @@ class Transcript(models.Model):
 
     @property
     def ects(self):
-        return get_course_name_and_time(self.channel)[1]
+        t = parse_time(get_course_name_and_time(self.channel)[1])
+        hours = (t.seconds / 3600)
+        homework_factor = 1.2
+        return round((hours * homework_factor) / 28, 2)
 
 class CertificateRequest(models.Model):
     slack_user_id = models.CharField(max_length=32)

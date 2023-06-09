@@ -176,7 +176,13 @@ def validateGalaxyURLs(text):
 
 
 def parse_time(timestr):
-    return isodate.parse_duration(f'PT{timestr}'.upper())
+    if isinstance(timestr, str):
+        pt = f'PT{timestr}'.upper()
+        r = isodate.parse_duration(pt)
+    else:
+        r = timestr
+
+    return r
 
 def get_course_name_and_time(module):
     (mtype, key) = module.split(':', 1)
