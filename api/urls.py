@@ -12,8 +12,10 @@ from django.http import HttpRequest
 from django.views.decorators.csrf import csrf_exempt
 
 from . import views
+from csp.decorators import csp_exempt
 
 
+@csp_exempt
 @csrf_exempt
 def slack_events_handler(request: HttpRequest):
     return handler.handle(request)

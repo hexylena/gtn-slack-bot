@@ -1,5 +1,6 @@
 import json
 import pytz
+from csp.decorators import csp_exempt
 from django.utils import timezone
 from django.http import HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
@@ -220,6 +221,7 @@ def schedule_message(request):
     return render(request, "schedule.html", {"form": form, "type": "Batch", "action": "schedule", "messages": messages})
 
 
+@csp_exempt
 def transcript(request, slack_user_id):
     if request.method == 'POST':
         results = {}

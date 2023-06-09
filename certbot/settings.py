@@ -45,6 +45,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'csp.middleware.CSPMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     #'certbot.middleware.request_log.RequestLogMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -160,11 +161,16 @@ LOGGING = {
     },
 }
 
+CSP_REPORT_ONLY = True
 
 django_heroku.settings(locals(), logging=False)
 
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
+
+if 'SENTRY_CSP' in os.environ:
+    print("Enabling Sentry CSP")
+    CSP_REPORT_URI = os.environ['SENTRY_CSP']
 
 if 'SENTRY_DSN' in os.environ:
     sentry_sdk.init(
