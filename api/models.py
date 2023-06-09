@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from api.videolibrary import get_course_name_and_time
 
 
 #class Event(models.Model):
@@ -22,6 +23,13 @@ class Transcript(models.Model):
     proof = models.TextField()
     valid = models.BooleanField(default=False)
 
+    @property
+    def title(self):
+        return get_course_name_and_time(self.channel)[0]
+
+    @property
+    def ects(self):
+        return get_course_name_and_time(self.channel)[1]
 
 class CertificateRequest(models.Model):
     slack_user_id = models.CharField(max_length=32)

@@ -6,7 +6,7 @@ from .models import Transcript, CertificateRequest, ScheduledMessage, Gratitude
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ("slack_user_id", "time", "channel", "proof", "valid")
+    list_display = ("slack_user_id", "time", "channel", "proof", "valid", "title", "ects")
 
 
 @admin.register(CertificateRequest)

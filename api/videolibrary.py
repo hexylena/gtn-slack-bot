@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 import requests
 import re
 import json
-from .models import Transcript, CertificateRequest
 
 
 file_path = os.path.dirname(os.path.abspath(__file__))
@@ -180,7 +179,7 @@ def parse_time(timestr):
     return isodate.parse_duration(f'PT{timestr}'.upper())
 
 def get_course_name_and_time(module):
-    (type, key) = module.split(':', 1)
+    (mtype, key) = module.split(':', 1)
     key2 = "" + key
     if key2.endswith('/tutorial'):
         key2 = key2[0:len(key2) - len('/tutorial')]
@@ -193,7 +192,7 @@ def get_course_name_and_time(module):
     elif 'admin/object-store/exercise' == key:
         key = 'admin/object-store'
 
-    if type == 'session':
+    if mtype == 'session':
         sum_study = timedelta(seconds=0)
         for sk in sessions[key]['videos']:
             sk2 = "" + sk
@@ -205,7 +204,12 @@ def get_course_name_and_time(module):
             sum_study += parse_time(studyloaddata.get(key, studyloaddata.get(sk2, "00M")))
 
         return (sessions[key].get('title', key), sum_study)
-    elif type == 'video':
+    elif mtype == 'gtn':
+        return (
+            gtndata[key],
+            studyloaddata[key]
+        )
+    elif mtype == 'video':
         possible_titles = [
             videos.get(key, {}).get('title', None),
             gtndata.get(key, None),
@@ -222,18 +226,19 @@ def get_course_name_and_time(module):
         if len(possible_titles) == 0:
             raise Exception(f"Fix {key} / {key2}")
         return (possible_titles[0], parse_time(possible_study[0] if len(possible_study) > 0 else '15m'))
-    elif type == 'channel':
+    elif mtype == 'channel':
         if key in ('galaxy-intro', 'galaxy-intro2'):
             return ("Intro to Galaxy", parse_time('2H'))
         elif key == 'general':
             return ("General Galaxy Skills Module", parse_time('2H'))
         else:
-            raise Exception(f"Unknown module {module}")
+            return ("UNKNOWN", 0)
     else:
-        raise Exception(f"Unknown module {module}")
+        return ("UNKNOWN", 0)
 
 
 def addCertificateRequest(app, user_id):
+    from .models import CertificateRequest
     # Save to DB
     existing_requests = CertificateRequest.objects.filter(
         slack_user_id=user_id,

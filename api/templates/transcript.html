@@ -54,6 +54,30 @@ Transcript for {{ slack_user_id }}
 		<input class="btn btn-success" type="submit" value="Submit!">
 	</form>
 	<a class="btn" href="/transcript/">Return to transcript list</a>
+
+
+	<hr/>
+	<h2>Certificate Preview</h2>
+	<table class='table table-striped'>
+		<thead>
+			<tr>
+				<th>Item</th>
+				<th>ECTS</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for row in final_transcript %}
+			<tr>
+				<td>{{ row.1 }}</td>
+				<td>{{ row.2 }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+
+
+
 <style type="text/css" media="all">
 label {
 	width: 100%;
