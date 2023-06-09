@@ -1,5 +1,6 @@
 from django.core.management.base import BaseCommand, CommandError
 import time
+import requests
 import tqdm
 import shutil
 import subprocess
@@ -23,11 +24,8 @@ if 'SENTRY_DSN' in os.environ:
         traces_sample_rate=1.0,
     )
 
-app = App(
-    token=os.environ.get("SLACK_BOT_TOKEN", ""),
-    signing_secret=os.environ.get("SLACK_SIGNING_SECRET", ""),
-    token_verification_enabled=True,
-)
+from api.slack import app
+CERTIFICATES_API_KEY = os.environ.get('CERTIFICATES_API_KEY', '')
 
 
 class Command(BaseCommand):
@@ -35,71 +33,34 @@ class Command(BaseCommand):
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
     def build_certificate_for_user(self, cert):
-        if os.path.exists(f'certs/{cert.human_name}.pdf'):
-            return f'certs/{cert.human_name}.pdf'
+        cert_path = os.path.join('certs', f'{cert.human_name}.pdf')
+        if os.path.exists(cert_path):
+            return cert_path
 
         # cert = CertificateRequest.objects.get(slack_user_id=user_id)
-        user_id = cert.slack_user_id
-        transcript = Transcript.objects.filter(slack_user_id=user_id, valid=True)
+        print(cert.transcript_items)
 
-        cert_svg = tempfile.NamedTemporaryFile(delete=False, suffix='.svg')
-        cert_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
-        transcript_svg = tempfile.NamedTemporaryFile(delete=False, suffix='.svg')
-        transcript_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
-        final_pdf = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
+        response = requests.post('https://certificates.apps.galaxyproject.eu/certificate', json={
+            'name': cert.human_name,
+            'modules': [
+                f"{v}: {k}"
+                for (k, v) in
+                cert.transcript_items.items()
+            ],
+            'ects': cert.total_ects,
+        }, headers={
+            'Authorization': CERTIFICATES_API_KEY
+        })
 
-        uniq_items = dict([
-            get_course_name_and_time(t.channel) for t in transcript
-        ])
-        print(uniq_items)
+        # if it was successful
+        if response.status_code == 200:
+            with open(cert_path, 'wb') as handle:
+                handle.write(response.content)
+            return cert_path
+        else:
+            print(response.text)
+            raise Exception("Could not generate certificate")
 
-        # Generate our transcript text
-        transcript_text = ""
-        for i, t in enumerate(sorted(uniq_items.keys())):
-            formatted_time = str(uniq_items[t])
-            parts = formatted_time.split(':')
-            final_parts = ""
-            if int(parts[0]) != 0:
-                final_parts += f'{parts[0]}h'
-            if int(parts[1]) != 0:
-                final_parts += f'{parts[1]}m'
-
-            transcript_text += f'<flowPara id="courses.{i}">{t} ({final_parts})</flowPara>'
-
-        # Front side of cert
-        cert_svg.write(TEMPLATE.replace('NAME', cert.human_name).encode())
-        cert_svg.close()
-        subprocess.check_call([
-            'convert', '-density', '200', cert_svg.name, cert_pdf.name
-        ])
-        os.unlink(cert_svg.name)
-
-        # Back side of cert
-        transcript_svg.write(TEMPLATE_BACK.replace('<flowPara id="COURSES">COURSES</flowPara>', transcript_text).encode())
-        transcript_svg.close()
-        subprocess.check_call([
-            'convert', '-density', '200', transcript_svg.name, transcript_pdf.name
-        ])
-        os.unlink(transcript_svg.name)
-
-        # Merge our two PDFs
-        subprocess.check_call([
-            'gs', '-dBATCH', '-dNOPAUSE', '-q', '-sDEVICE=pdfwrite', f'-sOutputFile={final_pdf.name}', cert_pdf.name, transcript_pdf.name
-        ])
-        # Cleanup asap
-        cert_pdf.close()
-        transcript_pdf.close()
-        os.unlink(cert_pdf.name)
-        os.unlink(transcript_pdf.name)
-
-        # Upload
-        shutil.copyfile(final_pdf.name, f'certs/{cert.human_name}.pdf')
-
-        # Final cleanup
-        final_pdf.close()
-        os.unlink(final_pdf.name)
-
-        return f'certs/{cert.human_name}.pdf'
 
     def generate_rejection_text(self, cert):
         text = f"""Hello <@{cert.slack_user_id}>! Unfortunately we could not verify your certificate submissions, they may be inaccessible or deleted. If you think this is in error, please contact us\n\nHere is a list of the submissions you provided which we could not verify:\n"""
@@ -133,7 +94,7 @@ class Command(BaseCommand):
             if options['slack']:
                 try:
                     upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
-                    message = "Congratulations on attending GTN Tapas! Please find your certificate below."
+                    message = "Congratulations! Please find your certificate below."
                     message += "<"+upload['file']['permalink']+"| >"
                     message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
                     message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1J2gY8xgYMceUkcpouZeNYqnAr0XvEBvt?usp=sharing|Google Drive>"
