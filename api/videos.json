@@ -3457,7 +3457,7 @@
           "paulzierep"
         ],
         "captions": [
-
+          "paulzierep"
         ],
         "length": "1H5M",
         "galaxy_version": "23.01"
@@ -3481,7 +3481,7 @@
     ],
     "gtn_id": "metagenomics/metatranscriptomics",
     "title": "Metatranscriptomics analysis using microbiome RNA-seq data",
-    "captioned": false
+    "captioned": true
   },
   "metagenomics/taxonomic-profiling/tutorial": {
     "description": null,
@@ -3501,7 +3501,7 @@
           "bebatut"
         ],
         "captions": [
-
+          "sophia120199"
         ],
         "date": "2023-05-16",
         "length": "1H15M",
@@ -3510,7 +3510,7 @@
     ],
     "gtn_id": "metagenomics/taxonomic-profiling",
     "title": "Taxonomic Profiling and Visualization of Metagenomic Data",
-    "captioned": false
+    "captioned": true
   },
   "metagenomics/mothur-miseq-sop-short/tutorial": {
     "description": "This lecture briefly introduces 16S sequencing, a popular technique used for taxonomic profiling of microbial communities.",
@@ -4227,7 +4227,7 @@
     "gtn_id": "one-health/galaxy-pathogen-surveillance",
     "captioned": true
   },
-  "sequence-analysis/human-reads-removal/tutorial": {
+  "sequence-analysis/human-reads-removal": {
     "description": null,
     "materials": [
       {
@@ -5641,7 +5641,7 @@
         ],
         "date": "2021-05-12",
         "length": "1H5M",
-        "link": "MdQyltMAocg",
+        "link": "vx2icgaU_h0",
         "speakers": [
           "gmauro",
           "lldelisle"
@@ -5742,7 +5742,7 @@
         ],
         "date": "2021-05-26",
         "length": "59M",
-        "link": "vx2icgaU_h0",
+        "link": "MdQyltMAocg",
         "speakers": [
           "blankenberg",
           "abretaud",
@@ -5816,7 +5816,8 @@
     "description": null,
     "materials": [
       {
-        "link": "https://www.researchobject.org/ro-crate/1.2-DRAFT/introduction.html"
+        "link": "topics/fair/tutorials/ro-crate-intro/tutorial.html",
+        "type": "Tutorial"
       },
       {
         "link": "https://github.com/marketplace/actions/ro-crate-preview"
@@ -5984,6 +5985,34 @@
       "alt": "RO Crate logo"
     },
     "gtn_id": "ro-crates/lifemonitor"
+  },
+  "bioconductor/setup": {
+    "title": "Getting set up for the Bioconductor Smörgåsbord tutorials",
+    "description": "This video will help you get setup on the BioConductor Galaxy to run the tutorials in this module.",
+    "type": "Demo",
+    "support_channel": "bioconductor",
+    "cover": {
+      "link": "bioconductor-session.jpg",
+      "alt": "Bioconductor logo"
+    },
+    "materials": [
+      {
+        "link": "https://htmlpreview.github.io/?https://github.com/Bioconductor/workshop-contributions/blob/main/welcome.html",
+        "title": "Go to the Bioconductor Galaxy"
+      }
+    ],
+    "versions": [
+      {
+        "link": "2ErhMCctZaY",
+        "length": "5M",
+        "speakers": [
+          "almahmoud"
+        ],
+        "captions": [
+          "bioc"
+        ]
+      }
+    ]
   },
   "bioconductor/bioc-intro/tutorial": {
     "title": "Introduction to data analysis with R and Bioconductor",
@@ -6261,6 +6290,36 @@
       "https://support.bioconductor.org"
     ],
     "gtn_id": "bioconductor/fluentGenomics"
+  },
+  "bioconductor/MungeSumstats/tutorial": {
+    "title": "MungeSumstats: Standardise the format of GWAS summary statistics",
+    "type": "Tutorial",
+    "instructors": [
+      "Al-Murphy"
+    ],
+    "cover": {
+      "link": "bioconductor-session.jpg",
+      "alt": "Bioconductor logo"
+    },
+    "description": "The package is designed to handle the lack of standardisation of output\nfiles by the GWAS community. The MRC IEU Open GWAS team have provided full\nsummary statistics for >10k GWAS, which are API-accessible via the ieugwasr\nand gwasvcf packages. But these GWAS are only standardised in the sense that\nthey are VCF format, and can be fully standardised with MungeSumstats.\n\nMungeSumstats provides a framework to standardise the format for any GWAS\nsummary statistics, including those in VCF format, enabling downstream\nintegration and analysis. It addresses the most common discrepancies across\nsummary statistic files, and offers a range of adjustable Quality Control\n(QC) steps.\n",
+    "materials": [
+      {
+        "link": "https://neurogenomics.github.io/MungeSumstats/articles/MungeSumstats.html",
+        "title": "MungeSumstats: Standardise the format of GWAS summary statistics"
+      }
+    ],
+    "tags": [
+      "bioconductor",
+      "r"
+    ],
+    "versions": [
+
+    ],
+    "support_channel": "bioconductor",
+    "video_support_channels": [
+      "https://support.bioconductor.org"
+    ],
+    "gtn_id": "bioconductor/MungeSumstats"
   },
   "bioconductor/RNAseq123/tutorial": {
     "title": "RNA-seq analysis is easy as 1-2-3 with limma, Glimma and edgeR",

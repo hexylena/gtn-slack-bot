@@ -186,6 +186,15 @@ def update_home_tab(client, event, logger):
             "text": f"Certificate Status: {CertificateStates[certificate_request.approved]}"
         }
     })
+
+    home.append({
+        "type": "section",
+        "text": {
+            "type": "mrkdwn",
+            "text": f"Questions about your certificate? Please ask in <#C05C5FRDR5F>"
+        }
+    })
+
     home.append({
         "type": "header",
         "text": {

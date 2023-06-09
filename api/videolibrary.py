@@ -185,8 +185,6 @@ def parse_time(timestr):
         try:
             r = isodate.parse_duration(pt)
         except:
-            print(timestr, type(timestr), pt)
-            print('error')
             r = timedelta(hours=0)
     else:
         r = timestr
@@ -194,6 +192,25 @@ def parse_time(timestr):
     return r
 
 def get_course_name_and_time(module):
+    # Deal with some very old chnanels
+    # Can probably be removed in the future.
+    if module == 'channel:transcriptomics_advanced-r':
+        module = 'session:galaxy/r'
+    elif module == 'channel:epigenetics_dna-methylation':
+        module = 'gtn:epigenetics/methylation-seq'
+    elif module == 'channel:proteomics_proteogenomics':
+        module = 'session:proteomics/protegenomics'
+    elif module == 'channel:visualization_jbrowse': # WTF
+        module = 'channel:visualisation_jbrowse'
+    elif module == 'channel:transcriptomics_scrna-umis':
+        module = 'channel:single-cell_scrna-umis'
+    elif module == 'channel:transcriptomics_scrna-preprocessing-tenx':
+        module = 'channel:single-cell_scrna-preprocessing-tenx'
+    elif module == 'channel:transcriptomics_scrna-scanpy-pbmc3k':
+        module = 'channel:single-cell_scrna-scanpy-pbmc3k'
+    elif module == 'channel:proteomics_proteore-biomarkers-discovery':
+        module = 'gtn:proteomics/biomarker_selection'
+
     (mtype, key) = module.split(':', 1)
     key2 = "" + key
     if key2.endswith('/tutorial'):
@@ -247,7 +264,8 @@ def get_course_name_and_time(module):
             raise Exception(f"Fix {key} / {key2}")
         return (possible_titles[0], parse_time(possible_study[0] if len(possible_study) > 0 else '15m'))
     elif mtype == 'channel':
-        print(key.replace('_', '/', 1))
+        #print(mtype, key, key.replace('_', '/', 1), key.replace('_', '/', 1) in gtndata)
+
         if key in ('galaxy-intro', 'galaxy-intro2'):
             return ("Intro to Galaxy", parse_time('2H'))
         elif key == 'general':
@@ -263,8 +281,10 @@ def get_course_name_and_time(module):
                 '4:00:00',
             )
         else:
+            print('ERROR PROCESSING', mtype, key)
             return ("UNKNOWN", 0)
     else:
+        print('ERROR PROCESSING', key)
         return ("UNKNOWN", 0)
 
 

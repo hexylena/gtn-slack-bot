@@ -30,15 +30,18 @@ CERTIFICATES_API_KEY = os.environ.get('CERTIFICATES_API_KEY', '')
 
 class Command(BaseCommand):
     def add_arguments(self, parser):
+        parser.add_argument('--dry-run', action='store_true', help='Do a dry-run')
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
 
-    def build_certificate_for_user(self, cert):
+    def build_certificate_for_user(self, cert, dry_run):
         cert_path = os.path.join('certs', f'{cert.human_name}.pdf')
         if os.path.exists(cert_path):
-            return cert_path
+            return (cert_path, len(cert.transcript_items.items()))
 
         # cert = CertificateRequest.objects.get(slack_user_id=user_id)
-        print(cert.transcript_items)
+
+        if dry_run:
+            return (cert_path, len(cert.transcript_items.items()))
 
         response = requests.post('https://certificates.apps.galaxyproject.eu/certificate', json={
             'name': cert.human_name,
@@ -56,18 +59,23 @@ class Command(BaseCommand):
         if response.status_code == 200:
             with open(cert_path, 'wb') as handle:
                 handle.write(response.content)
-            return cert_path
+            return (cert_path, len(cert.transcript_items.items()))
         else:
-            print(response.text)
             raise Exception("Could not generate certificate")
 
 
     def generate_rejection_text(self, cert):
-        text = f"""Hello <@{cert.slack_user_id}>! Unfortunately we could not verify your certificate submissions, they may be inaccessible or deleted. If you think this is in error, please contact us\n\nHere is a list of the submissions you provided which we could not verify:\n"""
+        text = f"""Hello <@{cert.slack_user_id}>! Unfortunately we could not verify your certificate submissions, they may be inaccessible or deleted.\n\n"""
         transcript = Transcript.objects.filter(slack_user_id=cert.slack_user_id)
-        for t in transcript:
-            text += f"- {t.proof} ({t.channel})\n"
-        text += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
+
+        if len(transcript) == 0:
+            text += "You did not submit any tutorials for verification."
+        else:
+            text += "Here is a list of the submissions you provided which we could not verify:\n"
+            for t in transcript:
+                text += f"- {t.proof} ({t.channel})\n"
+
+        text += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C05C5FRDR5F>"
         return text
 
     def handle(self, *args, **options):
@@ -87,9 +95,9 @@ class Command(BaseCommand):
                     print("Error sending message")
 
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACC').order_by('slack_user_id')):
-            print(cert.slack_user_id)
             # user_id = 'U01F7TAQXNG'
-            file_path = self.build_certificate_for_user(cert)
+            (file_path, count) = self.build_certificate_for_user(cert, options['dry_run'])
+            #print(cert.slack_user_id, count)
 
             if options['slack']:
                 try:
