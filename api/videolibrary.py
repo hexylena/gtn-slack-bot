@@ -209,14 +209,19 @@ def get_course_name_and_time(module):
 
     if mtype == 'session':
         sum_study = timedelta(seconds=0)
+        seen_sk = []
         for sk in sessions[key]['videos']:
             sk2 = "" + sk
             if sk2.endswith('/tutorial'):
                 sk2 = sk2[:len(sk2) - len('/tutorial')]
             if sk2.endswith('/slides'):
                 sk2 = sk2[:len(sk2) - len('/slides')]
+            if sk2 in seen_sk:
+                continue
 
             sum_study += parse_time(studyloaddata.get(key, studyloaddata.get(sk2, "00M")))
+
+            seen_sk.append(sk2)
 
         return (sessions[key].get('title', key), sum_study)
     elif mtype == 'gtn':
@@ -242,6 +247,7 @@ def get_course_name_and_time(module):
             raise Exception(f"Fix {key} / {key2}")
         return (possible_titles[0], parse_time(possible_study[0] if len(possible_study) > 0 else '15m'))
     elif mtype == 'channel':
+        print(key.replace('_', '/', 1))
         if key in ('galaxy-intro', 'galaxy-intro2'):
             return ("Intro to Galaxy", parse_time('2H'))
         elif key == 'general':

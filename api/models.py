@@ -60,10 +60,15 @@ class CertificateRequest(models.Model):
 
     @property
     def total_ects(self):
-        return round(sum([
-            t.ects for t in
-            Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True)
-        ]), 2)
+        possible_final = Transcript.objects.filter(slack_user_id=self.slack_user_id, valid=True)
+        # Deduplicate
+        final_transcript = {
+            t.title: t.ects
+            for t in possible_final
+        }
+        # Sum
+        total_ects = sum(final_transcript.values())
+        return round(total_ects, 2)
 
 class ScheduledMessage(models.Model):
     slack_channel_id = models.CharField(max_length=32)
