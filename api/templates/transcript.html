@@ -58,6 +58,7 @@ Transcript for {{ slack_user_id }}
 
 	<hr/>
 	<h2>Certificate Preview</h2>
+	<p>Total ECTS: {{ total_ects }}</p>
 	<table class='table table-striped'>
 		<thead>
 			<tr>
@@ -66,10 +67,10 @@ Transcript for {{ slack_user_id }}
 			</tr>
 		</thead>
 		<tbody>
-			{% for row in final_transcript %}
+			{% for k,v in final_transcript.items %}
 			<tr>
-				<td>{{ row.1 }}</td>
-				<td>{{ row.2 }}</td>
+				<td>{{ k }}</td>
+				<td>{{ v }}</td>
 			</tr>
 			{% endfor %}
 		</tbody>

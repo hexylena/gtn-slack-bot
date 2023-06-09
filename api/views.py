@@ -267,12 +267,22 @@ def transcript(request, slack_user_id):
     ]
     #print(sorted(list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist])))))
 
+    # Get their transcript preview
+    possible_final = Transcript.objects.filter(slack_user_id=slack_user_id, valid=True)
+    final_transcript = {
+        t.title: t.ects
+        for t in possible_final
+    }
+    total_ects = sum(final_transcript.values())
+
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
         'name': CertificateRequest.objects.get(slack_user_id=slack_user_id).human_name,
         'channel_mapping': sorted(list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist])))),
         'message': None,
+        'final_transcript': final_transcript,
+        'total_ects': total_ects,
     }
     return template('transcript.html', request, context)
 
