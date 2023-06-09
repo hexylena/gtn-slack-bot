@@ -32,7 +32,7 @@ class Transcript(models.Model):
         t = parse_time(get_course_name_and_time(self.channel)[1])
         try:
             hours = (t.seconds / 3600)
-            homework_factor = 1.2
+            homework_factor = 1.5
             return round((hours * homework_factor) / 28, 2)
         except:
             print(t, type(t), self.channel)
