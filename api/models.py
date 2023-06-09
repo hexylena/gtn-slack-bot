@@ -30,9 +30,13 @@ class Transcript(models.Model):
     @property
     def ects(self):
         t = parse_time(get_course_name_and_time(self.channel)[1])
-        hours = (t.seconds / 3600)
-        homework_factor = 1.2
-        return round((hours * homework_factor) / 28, 2)
+        try:
+            hours = (t.seconds / 3600)
+            homework_factor = 1.2
+            return round((hours * homework_factor) / 28, 2)
+        except:
+            print(t, type(t), self.channel)
+            return 0
 
 class CertificateRequest(models.Model):
     slack_user_id = models.CharField(max_length=32)
