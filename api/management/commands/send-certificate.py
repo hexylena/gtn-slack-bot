@@ -32,6 +32,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--dry-run', action='store_true', help='Do a dry-run')
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
+        parser.add_argument('--helena-only', action='store_true', help='Assumes --slack, and will ONLY send it to Helena')
+        parser.add_argument('--specific-user', help='Ignores the rest and forcibly generates the certificate for a specific user')
+        parser.add_argument('--specific-name', help='For --specific-user, overrides the name on the CLI.')
 
     def build_certificate_for_user(self, cert, dry_run):
         cert_path = os.path.join('certs', f'{cert.human_name}.pdf')
@@ -61,6 +64,7 @@ class Command(BaseCommand):
                 handle.write(response.content)
             return (cert_path, len(cert.transcript_items.items()))
         else:
+            print(response.text)
             raise Exception("Could not generate certificate")
 
 
@@ -79,12 +83,37 @@ class Command(BaseCommand):
         return text
 
     def handle(self, *args, **options):
+        # Bioc
+        if 'specific_user' in options:
+            cert = CertificateRequest.objects.get(slack_user_id=options['specific_user'])
+            if 'specific_name' in options:
+                cert.human_name = options['specific_name']
+                cert.save()
+            (file_path, count) = self.build_certificate_for_user(cert, options['dry_run'])
+
+            upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
+            message = "Congratulations! Please find your certificate below."
+            message += "<"+upload['file']['permalink']+"| >"
+            message += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C05C5FRDR5F>\n"
+            message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1E92L-gP9dBWpCsLxVj0XBlgRWBI0QlQe?usp=drive_link|Google Drive>"
+            print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
+            time.sleep(2)
+
+            # Mark it as sent, successful.
+            cert.approved = 'S/S'
+            cert.save()
+            return
+
+        HELENA_SLACK_ID = 'U01F7TAQXNG'
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='REJ').order_by('slack_user_id')):
             text = self.generate_rejection_text(cert)
             print(f"=== Rejecting {cert} ===")
             print(text)
 
             if options['slack']:
+                if options['helena_only'] and cert.slack_user_id != HELENA_SLACK_ID:
+                    continue
+
                 try:
                     print(app.client.chat_postMessage(channel=cert.slack_user_id, text=text))
                     cert.approved = 'R/S'
@@ -100,12 +129,14 @@ class Command(BaseCommand):
             #print(cert.slack_user_id, count)
 
             if options['slack']:
+                if options['helena_only'] and cert.slack_user_id != HELENA_SLACK_ID:
+                    continue
                 try:
                     upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
                     message = "Congratulations! Please find your certificate below."
                     message += "<"+upload['file']['permalink']+"| >"
-                    message += ":robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C032C2MRHAS>"
-                    message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1J2gY8xgYMceUkcpouZeNYqnAr0XvEBvt?usp=sharing|Google Drive>"
+                    message += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C05C5FRDR5F>\n"
+                    message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1E92L-gP9dBWpCsLxVj0XBlgRWBI0QlQe?usp=drive_link|Google Drive>"
                     print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
                     time.sleep(2)
 

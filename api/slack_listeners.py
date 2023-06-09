@@ -176,8 +176,8 @@ def update_home_tab(client, event, logger):
         'ACC': 'Accepted',
         'REJ': 'Rejected (No valid transcripts found)',
         'UNK': 'Unknown',
-        'S/S': 'Certificate Sent',
-        'R/S': 'Rejection Sent',
+        'S/S': 'Accepted: Certificate Avaialble',
+        'R/S': 'Rejected (No valid transcripts found)',
     }
     home.append({
         "type": "section",
