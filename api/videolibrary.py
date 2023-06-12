@@ -211,7 +211,10 @@ def get_course_name_and_time(module):
     elif module == 'channel:proteomics_proteore-biomarkers-discovery':
         module = 'gtn:proteomics/biomarker_selection'
 
-    (mtype, key) = module.split(':', 1)
+    try:
+        (mtype, key) = module.split(':', 1)
+    except:
+        return ("UNKNOWN:" + module, 0)
     key2 = "" + key
     if key2.endswith('/tutorial'):
         key2 = key2[0:len(key2) - len('/tutorial')]
