@@ -1,4 +1,5 @@
 import json
+from django.shortcuts import get_object_or_404
 import pytz
 from csp.decorators import csp_exempt
 from django.utils import timezone
@@ -281,7 +282,7 @@ def transcript(request, slack_user_id):
     context = {
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
-        'name': CertificateRequest.objects.get(slack_user_id=slack_user_id).human_name,
+        'name': get_object_or_404(CertificateRequest, slack_user_id=slack_user_id).human_name,
         'channel_mapping': sorted(list(set(sorted([item for sublist in CHANNEL_MAPPING.values() for item in sublist])))),
         'message': None,
         'final_transcript': final_transcript,
