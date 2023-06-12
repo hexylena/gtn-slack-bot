@@ -32,7 +32,7 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--dry-run', action='store_true', help='Do a dry-run')
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
-        parser.add_argument('--helena-only', action='store_true', help='Assumes --slack, and will ONLY send it to Helena')
+        parser.add_argument('--limit', type=str, help='Will limit which users are processed. U01F7TAQXNG is helenas id.')
         parser.add_argument('--specific-user', help='Ignores the rest and forcibly generates the certificate for a specific user')
         parser.add_argument('--specific-name', help='For --specific-user, overrides the name on the CLI.')
 
@@ -84,7 +84,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Bioc
-        if 'specific_user' in options:
+        if options['specific_user']:
             cert = CertificateRequest.objects.get(slack_user_id=options['specific_user'])
             if 'specific_name' in options:
                 cert.human_name = options['specific_name']
@@ -104,15 +104,15 @@ class Command(BaseCommand):
             cert.save()
             return
 
-        HELENA_SLACK_ID = 'U01F7TAQXNG'
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='REJ').order_by('slack_user_id')):
+            if options['limit'] and cert.slack_user_id != options['limit']:
+                continue
+
             text = self.generate_rejection_text(cert)
             print(f"=== Rejecting {cert} ===")
             print(text)
 
             if options['slack']:
-                if options['helena_only'] and cert.slack_user_id != HELENA_SLACK_ID:
-                    continue
 
                 try:
                     print(app.client.chat_postMessage(channel=cert.slack_user_id, text=text))
@@ -123,14 +123,15 @@ class Command(BaseCommand):
                     print(e)
                     print("Error sending message")
 
-        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACC').order_by('slack_user_id')):
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='S/S').order_by('slack_user_id')):
+            if options['limit'] and cert.slack_user_id != options['limit']:
+                continue
+
             # user_id = 'U01F7TAQXNG'
             (file_path, count) = self.build_certificate_for_user(cert, options['dry_run'])
-            #print(cert.slack_user_id, count)
+            print(cert.slack_user_id, count)
 
             if options['slack']:
-                if options['helena_only'] and cert.slack_user_id != HELENA_SLACK_ID:
-                    continue
                 try:
                     upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
                     message = "Congratulations! Please find your certificate below."
