@@ -84,30 +84,36 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # Bioc
-        if options['specific_user']:
-            cert = CertificateRequest.objects.get(slack_user_id=options['specific_user'])
-            if 'specific_name' in options:
+        if options['specific_user'] or options['limit']:
+            c = options['specific_user'] or options['limit']
+
+            cert = CertificateRequest.objects.get(slack_user_id=c)
+            if options['specific_name']:
                 cert.human_name = options['specific_name']
                 cert.save()
             (file_path, count) = self.build_certificate_for_user(cert, options['dry_run'])
 
-            upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
+            if options['slack']:
+                upload = app.client.files_upload(file=file_path, filename=f'certificate-{cert.slack_user_id}.pdf')
+            else:
+                upload = {'file': {'permalink': 'https://example.zip'}}
+
             message = "Congratulations! Please find your certificate below."
             message += "<"+upload['file']['permalink']+"| >"
             message += "\n:robot_face: I am a bot account and do not read responses, anything you write to me will be lost. To talk to a human please write in <#C05C5FRDR5F>\n"
             message += ":warning: Please download this certificate soon, as it may be eventually removed from Slack. If you lose access to it, you can later download it from <https://drive.google.com/drive/folders/1E92L-gP9dBWpCsLxVj0XBlgRWBI0QlQe?usp=drive_link|Google Drive>"
-            print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
-            time.sleep(2)
 
-            # Mark it as sent, successful.
-            cert.approved = 'S/S'
-            cert.save()
+            if options['slack']:
+                print(app.client.chat_postMessage(channel=cert.slack_user_id, text=message))
+                time.sleep(2)
+                # Mark it as sent, successful.
+                cert.approved = 'S/S'
+                cert.save()
+            else:
+                print(message)
             return
 
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='REJ').order_by('slack_user_id')):
-            if options['limit'] and cert.slack_user_id != options['limit']:
-                continue
-
             text = self.generate_rejection_text(cert)
             print(f"=== Rejecting {cert} ===")
             print(text)
@@ -124,9 +130,6 @@ class Command(BaseCommand):
                     print("Error sending message")
 
         for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACC').order_by('slack_user_id')):
-            if options['limit'] and cert.slack_user_id != options['limit']:
-                continue
-
             # user_id = 'U01F7TAQXNG'
             (file_path, count) = self.build_certificate_for_user(cert, options['dry_run'])
             print(cert.slack_user_id, count)
