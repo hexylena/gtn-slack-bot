@@ -215,6 +215,10 @@ def get_course_name_and_time(module):
         (mtype, key) = module.split(':', 1)
     except:
         return ("UNKNOWN:" + module, 0)
+
+    if ':' not in module:
+        return ("UNKNOWN:" + module, 0)
+
     key2 = "" + key
     if key2.endswith('/tutorial'):
         key2 = key2[0:len(key2) - len('/tutorial')]

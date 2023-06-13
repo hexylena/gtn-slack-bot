@@ -123,7 +123,7 @@ class Command(BaseCommand):
                     print(e)
                     print("Error sending message")
 
-        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='S/S').order_by('slack_user_id')):
+        for cert in tqdm.tqdm(CertificateRequest.objects.filter(approved='ACC').order_by('slack_user_id')):
             if options['limit'] and cert.slack_user_id != options['limit']:
                 continue
 
