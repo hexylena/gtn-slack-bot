@@ -32,8 +32,8 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--dry-run', action='store_true', help='Do a dry-run')
         parser.add_argument('--slack', action='store_true', help='Send NOW via slack')
-        parser.add_argument('--limit', type=str, help='Will limit which users are processed. U01F7TAQXNG is helenas id.')
-        parser.add_argument('--specific-user', help='Ignores the rest and forcibly generates the certificate for a specific user')
+        #parser.add_argument('--limit', type=str, help='Will limit which users are processed. U01F7TAQXNG is helenas id.')
+        parser.add_argument('--specific-user', help='Ignores the rest and forcibly generates the certificate for a specific user. U01F7TAQXNG is helenas id.')
         parser.add_argument('--specific-name', help='For --specific-user, overrides the name on the CLI.')
 
     def build_certificate_for_user(self, cert, dry_run):
