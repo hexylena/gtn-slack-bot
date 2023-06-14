@@ -129,44 +129,49 @@ def slack_button(request):
 
     data = json.loads(request.POST['payload'])
     user = data['user']['id']
-    channel_group = data['actions'][0]['value']
 
-    # Load channel data if not already present
-    global CACHED_CHANNELS
-    if CACHED_CHANNELS is None:
-        CACHED_CHANNELS = _list_channels()
-    channels = {
-        x['id']: x
-        for x in CACHED_CHANNELS
-        if x['is_archived'] is False
-        and x['is_channel'] is True
-    }
-    import pprint; pprint.pprint(channels)
+    if data['callback_id'] == 'admin_activate_transcript':
+        # TODO:
+        # pop a modal with their transctipt.
+        pass
+    else:
+        # Channel joining
+        channel_group = data['actions'][0]['value']
 
-    # Find channels for this group
-    print(channel_group)
-    print(channels.keys())
-    should_join = [x for x in channels.keys() if channels[x]['name'].startswith(channel_group)]
+        # Load channel data if not already present
+        global CACHED_CHANNELS
+        if CACHED_CHANNELS is None:
+            CACHED_CHANNELS = _list_channels()
+        channels = {
+            x['id']: x
+            for x in CACHED_CHANNELS
+            if x['is_archived'] is False
+            and x['is_channel'] is True
+        }
+        import pprint; pprint.pprint(channels)
 
-    print(f"Inviting {user} ({data['user']['name']}) to {len(should_join)} channels: {should_join}")
-    for channel in should_join:
-        print(f"Channel {channels[channel]['name']}")
-        # Make sure we're in this channel first
-        if channel not in JOINED:
-            JOINED.append(channel)
+        # Find channels for this group
+        print(channel_group)
+        print(channels.keys())
+        should_join = [x for x in channels.keys() if channels[x]['name'].startswith(channel_group)]
+
+        print(f"Inviting {user} ({data['user']['name']}) to {len(should_join)} channels: {should_join}")
+        for channel in should_join:
+            print(f"Channel {channels[channel]['name']}")
+            # Make sure we're in this channel first
+            if channel not in JOINED:
+                JOINED.append(channel)
+                try:
+                    app.client.conversations_join(channel=channel)
+                except:
+                    print(f"Could not join conversation {channel}")
+            # Add user to channel
             try:
-                app.client.conversations_join(channel=channel)
+                app.client.conversations_invite(
+                    channel=channel, users=user
+                )
             except:
-                print(f"Could not join conversation {channel}")
-        # Add user to channel
-        try:
-            app.client.conversations_invite(
-                channel=channel, users=user
-            )
-        except:
-            print(f"Could not invite {user} to {channel}")
-
-
+                print(f"Could not invite {user} to {channel}")
     return HttpResponse("Done")
 
 
