@@ -131,34 +131,54 @@ def slack_button(request):
     user = data['user']['id']
 
     if data['callback_id'] == 'admin_activate_transcript':
+        print(data)
         # TODO:
         # pop a modal with their transctipt.
-        return JsonResponse({
-          "response_action": "push",
+        view = {
+          "trigger_id": data['trigger_id'],
           "view": {
             "type": "modal",
+            "callback_id": "edit-task",
             "title": {
               "type": "plain_text",
-              "text": "Updated view"
+              "text": "Edit task details"
+            },
+            "submit": {
+                "type": "plain_text",
+                "text": "Create"
             },
             "blocks": [
               {
-                "type": "image",
-                "image_url": "https://api.slack.com/img/blocks/bkb_template_images/plants.png",
-                "alt_text": "Plants"
+                "type": "input",
+                "block_id": "edit-task-title",
+                "label": {
+                  "type": "plain_text",
+                  "text": "Task title"
+                },
+                "element": {
+                  "type": "plain_text_input",
+                  "action_id": "task-title-value",
+                  "initial_value": "Block Kit documentation"
+                },
               },
               {
-                "type": "context",
-                "elements": [
-                  {
-                    "type": "mrkdwn",
-                    "text": "_Two of the author's cats sit aloof from the austere challenges of modern society_"
-                  }
-                ]
+                "type": "input",
+                "block_id": "edit-ticket-desc",
+                "label": {
+                  "type": "plain_text",
+                  "text": "Ticket description"
+                },
+                "element": {
+                  "type": "plain_text_input",
+                  "multiline": true,
+                  "action_id": "ticket-desc-value",
+                  "initial_value": "Update Block Kit documentation to include Block Kit in new surface areas (like modals)."
+                }
               }
             ]
           }
-        })
+        }
+        app.client.views.push(view=view)
     else:
         # Channel joining
         channel_group = data['actions'][0]['value']
