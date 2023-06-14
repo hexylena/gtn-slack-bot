@@ -133,7 +133,32 @@ def slack_button(request):
     if data['callback_id'] == 'admin_activate_transcript':
         # TODO:
         # pop a modal with their transctipt.
-        pass
+        return JsonResponse({
+          "response_action": "push",
+          "view": {
+            "type": "modal",
+            "title": {
+              "type": "plain_text",
+              "text": "Updated view"
+            },
+            "blocks": [
+              {
+                "type": "image",
+                "image_url": "https://api.slack.com/img/blocks/bkb_template_images/plants.png",
+                "alt_text": "Plants"
+              },
+              {
+                "type": "context",
+                "elements": [
+                  {
+                    "type": "mrkdwn",
+                    "text": "_Two of the author's cats sit aloof from the austere challenges of modern society_"
+                  }
+                ]
+              }
+            ]
+          }
+        })
     else:
         # Channel joining
         channel_group = data['actions'][0]['value']
