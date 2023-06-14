@@ -14,7 +14,7 @@ import uuid
 
 from .models import Transcript, CertificateRequest, Gratitude
 from django.http import HttpResponse
-from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS, BAD_COMPLETED
+from .videolibrary import CHANNEL_MAPPING, channel2module, validateGalaxyURLs, addCertificateRequest, CHANNEL_GROUPS, BAD_COMPLETED, get_transcript_mkrdwn
 from django.views.decorators.csrf import csrf_exempt
 from .i18n import ENCOURAGEMENT
 import json
@@ -24,7 +24,6 @@ from .slack import app
 import os
 
 ENABLED = False
-TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
 START_TIME = time.time()
 JOINED = []
 
@@ -109,30 +108,6 @@ def easter_egg(client, body):
     elif emoji == ':rainbow-flag':
         ephemeral(client, body, ":rainbow-flag: Thanks for advancing the queer agenda by taking over science! :microscope::rainbow-flag: (this message appears to you due to your chosen Slack status emoji.)")
 
-
-def get_transcript_mkrdwn(slack_user_id):
-    results = Transcript.objects.filter(slack_user_id=slack_user_id).order_by("-time")
-
-    courses_seen = {}
-    output = []
-    dates = {}
-    for x in results:
-        if x.channel in courses_seen:
-            continue
-        day = x.time.strftime('%B %d, %A')
-        if day not in dates:
-            dates[day] = []
-
-        dates[day].append(f"{x.time.strftime('%H:%M %Z')} | {x.channel} ")
-        courses_seen[x.channel] = True
-
-    congrats = random.choice(TRANSCRIPT_ENCOURAGEMENT)
-    text = f"*{congrats}*\n"
-    for d in sorted(dates.keys()):
-        text += f"\n*{d}*\n\n"
-        for o in dates[d]:
-            text += f"{o}\n"
-    return text
 
 
 @app.event("app_home_opened")

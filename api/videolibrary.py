@@ -322,3 +322,31 @@ def addCertificateRequest(app, user_id):
 # completed/
 # ... /completed
 BAD_COMPLETED = re.compile(r"(^`/completed?|^ /completed?|/ completed?|\\completed?|completed?\s*/|^completed?|[^/]completed?\s+|^.+/completed?|/<[^>]*\|completed?>|^completed?$)")
+
+
+TRANSCRIPT_ENCOURAGEMENT = ["Excellent work!", "Way to go!", "Great Progress!"]
+
+def get_transcript_mkrdwn(slack_user_id):
+    from .models import Transcript
+    results = Transcript.objects.filter(slack_user_id=slack_user_id).order_by("-time")
+
+    courses_seen = {}
+    output = []
+    dates = {}
+    for x in results:
+        if x.channel in courses_seen:
+            continue
+        day = x.time.strftime('%B %d, %A')
+        if day not in dates:
+            dates[day] = []
+
+        dates[day].append(f"{x.time.strftime('%H:%M %Z')} | {x.channel} ")
+        courses_seen[x.channel] = True
+
+    congrats = random.choice(TRANSCRIPT_ENCOURAGEMENT)
+    text = f"*{congrats}*\n"
+    for d in sorted(dates.keys()):
+        text += f"\n*{d}*\n\n"
+        for o in dates[d]:
+            text += f"{o}\n"
+    return text

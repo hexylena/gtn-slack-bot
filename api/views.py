@@ -1,4 +1,5 @@
 import json
+from django.core.exceptions import PermissionDenied
 from django.shortcuts import get_object_or_404
 import pytz
 from csp.decorators import csp_exempt
@@ -14,7 +15,7 @@ from django.template import loader
 import bleach
 from api.models import Transcript, CertificateRequest, ScheduledMessage, Gratitude
 from django.http import JsonResponse
-from api.videolibrary import CHANNEL_MAPPING
+from api.videolibrary import CHANNEL_MAPPING, get_transcript_mkrdwn
 from slack_bolt import App
 from django.views.decorators.csrf import csrf_exempt
 import os
@@ -131,7 +132,20 @@ def slack_button(request):
     user = data['user']['id']
 
     if data['callback_id'] == 'admin_activate_transcript':
+        # {'type': 'message_action', 'token': '', 'action_ts': '1686752778.566596', 'team': {'id': 'T01EL3YJPC2', 'domain': 'gtnsmrgsbord'}, 'user': {'id': 'U01F7TAQXNG', 'username': 'helena.rasche', 'team_id': 'T01EL3YJPC2', 'name': 'helena.rasche'}, 'channel': {'id': 'C01PQ3P2TTL', 'name': 'testing'}, 'is_enterprise_install': False, 'enterprise': None, 'callback_id': 'admin_activate_transcript', 'trigger_id': '############################################################', 'response_url': 'https://hooks.slack.com/app/##################################################', 'message_ts': '1685438052.975119', 
+        # 'message': {'client_msg_id': '2a3f23df-82ba-4d0e-8fef-464f121dbe9c',
+        #             'type': 'message', 'text': '/<https://usegalaxy.eu/u/nziparfait/h/smorgasbordnzi2023|completed>',
+        #             'user': 'U01F7TAQXNG', 'ts': '1685438052.975119', 'blocks': [], 'team': 'T01EL3YJPC2', 'attachments': []}}
+        ALLOWED_USERS = ['U01F7TAQXNG']
+        # TODO: check admin status
+        if data['user']['id'] not in ALLOWED_USERS:
+            raise PermissionDenied()
+
+        target_slack_user_id = data['message']['user']
+        transcript = get_transcript_mkrdwn(target_slack_user_id)
         print(data)
+        print(transcript)
+
         # TODO:
         # pop a modal with their transctipt.
         view = {
@@ -170,7 +184,7 @@ def slack_button(request):
                 },
                 "element": {
                   "type": "plain_text_input",
-                  "multiline": true,
+                  "multiline": True,
                   "action_id": "ticket-desc-value",
                   "initial_value": "Update Block Kit documentation to include Block Kit in new surface areas (like modals)."
                 }
