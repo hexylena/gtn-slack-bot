@@ -192,7 +192,7 @@ def slack_button(request):
             ]
           }
         }
-        app.client.views.push(view=view)
+        app.views.push(view=view)
     else:
         # Channel joining
         channel_group = data['actions'][0]['value']
