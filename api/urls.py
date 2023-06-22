@@ -24,6 +24,7 @@ def slack_events_handler(request: HttpRequest):
 urlpatterns = [
     path("", views.index, name="index"),
     path('mapping.json', views.mapping, name='mapping'),
+    path('dump.tsv', views.dump_tsv, name='dump_tsv'),
     path('transcript/', views.transcript_list, name='transcript_list'),
     path('gratitude/', views.gratitude_list, name='gratitude_list'),
     path('schedule/', views.schedule_message, name='schedule_message'),

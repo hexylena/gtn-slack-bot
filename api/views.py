@@ -288,6 +288,17 @@ def schedule_message(request):
 
 
 @login_required
+def dump_tsv(request):
+    x = Transcript.objects.filter(valid=True).values_list('slack_user_id', 'time', 'channel')
+    res = "\n".join([
+        '\t'.join([row[0], row[1].strftime('%Y-%m-%d %H:%M:%S.%f%z'), row[2]])
+        for row in x
+    ])
+    return HttpResponse(res, content_type='text/tsv')
+
+
+
+@login_required
 def transcript(request, slack_user_id):
     if request.method == 'POST':
         results = {}
