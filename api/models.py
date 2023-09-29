@@ -1,22 +1,29 @@
 from django.db import models
 from django.utils import timezone
 from api.videolibrary import get_course_name_and_time, parse_time
+from django.contrib.auth.models import User
 
 
-#class Event(models.Model):
-#    id = models.CharField(max_length=32)
-#
-#class Registration(models.Model):
-#    event = models.ForeignKey('Event')
-#    name = models.TextField()
-#    email = models.TextField()
-#
-#class Statistics(models.Model):
-#    name = models.CharField(max_length=32)
-#    added = models.DateTimeField(auto_now_add=True)
+class Event(models.Model):
+    name = models.CharField(max_length=64)
+    # Lets certbot automatically start/stop/know when event is over
+    start = models.DateTimeField() # Nothing before this date
+    end = models.DateTimeField() # End of Joining
+    end_grace = models.DateTimeField() # Final day to register a completion
+
+
+class EventOrganiser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    events = models.ManyToManyField(Event)
+
+
+class Registration(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    slack_user_id = models.CharField(max_length=32)
 
 
 class Transcript(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     slack_user_id = models.CharField(max_length=32)
     time = models.DateTimeField(auto_now_add=True)
     channel = models.TextField()
@@ -39,6 +46,7 @@ class Transcript(models.Model):
             return 0
 
 class CertificateRequest(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     slack_user_id = models.CharField(max_length=32)
     human_name = models.CharField(max_length=64)
     human_name_updated = models.DateTimeField(null=True, blank=True)
@@ -81,6 +89,7 @@ class CertificateRequest(models.Model):
         return round(total_ects, 2)
 
 class ScheduledMessage(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     slack_channel_id = models.CharField(max_length=32)
     message = models.TextField()
     scheduled_for = models.DateTimeField()
@@ -91,6 +100,7 @@ class ScheduledMessage(models.Model):
         return self.scheduled_for - timezone.now()
 
 class Gratitude(models.Model):
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
     message = models.TextField()
     date = models.DateTimeField()
     slack_channel_id = models.CharField(max_length=64)
