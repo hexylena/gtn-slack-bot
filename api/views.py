@@ -13,7 +13,7 @@ from django.http import HttpResponse
 from django.shortcuts import redirect
 from django.template import loader
 import bleach
-from api.models import Transcript, CertificateRequest, ScheduledMessage, Gratitude
+from api.models import Transcript, CertificateRequest, ScheduledMessage, Gratitude, Event, EventOrganiser
 from django.http import JsonResponse
 from api.videolibrary import CHANNEL_MAPPING, get_transcript_mkrdwn
 from slack_bolt import App
@@ -87,12 +87,15 @@ def gratitude_list(request):
 
 
 @login_required
-def transcript_list(request):
-    trans = CertificateRequest.objects.all().order_by('slack_user_id')
+def transcript_list(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+
+    trans = CertificateRequest.objects.filter(event=event).order_by('slack_user_id')
     done = 0
     if len(trans) > 0:
-        done = 100 * len([x.approved for x in trans if x.approved != 'UNK']) / len(trans)
+        done = 100 * len([x.state for x in trans if x.state != 'UNK']) / len(trans)
     context = {
+        'event': event,
         'users': trans,
         'done': done
     }
@@ -297,9 +300,20 @@ def dump_tsv(request):
     return HttpResponse(res, content_type='text/tsv')
 
 
+@login_required
+def event_list(request):
+    events = request.user.eventorganiser.events.all()
+    return template('eventlist.html', request, {'events': events, 'user': request.user})
+
 
 @login_required
-def transcript(request, slack_user_id):
+def event_home(request, event_id):
+    event = get_object_or_404(Event, id=event_id)
+    return template('event.html', request, {'event': event, 'user': request.user})
+
+@login_required
+def transcript(request, event_id, slack_user_id):
+    event = get_object_or_404(Event, id=event_id)
     if request.method == 'POST':
         results = {}
         for k, v in request.POST.items():
@@ -336,7 +350,7 @@ def transcript(request, slack_user_id):
         cr = CertificateRequest.objects.filter(slack_user_id=slack_user_id).get()
         cr.approved = 'ACC' if request.POST['decision'] == 'ACC' else 'REJ'
         cr.save()
-        return redirect('transcript_list')
+        return redirect('transcript_list', event.id)
 
 
     trans = Transcript.objects.filter(slack_user_id=slack_user_id).order_by('-time')
@@ -355,6 +369,7 @@ def transcript(request, slack_user_id):
     total_ects = sum(final_transcript.values())
 
     context = {
+        'event': event,
         'transcript': safetrans,
         'slack_user_id': slack_user_id,
         'name': get_object_or_404(CertificateRequest, slack_user_id=slack_user_id).human_name,

@@ -1,18 +1,35 @@
 from django.contrib import admin
 
 # Register your models here.
-from .models import Transcript, CertificateRequest, ScheduledMessage, Gratitude
+from .models import Transcript, CertificateRequest, ScheduledMessage, Gratitude, Event, EventOrganiser, SlackUser
 
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ("name", "start", "end", "end_grace", "student_count", "organiser_list")
+    list_filter = ('name',)
+
+@admin.register(EventOrganiser)
+class EventOrganiserAdmin(admin.ModelAdmin):
+    list_display = ("user", "human_name", "events_managed")
+    list_filter = ('user', 'events')
+
+
+@admin.register(SlackUser)
+class SlackUserAdmin(admin.ModelAdmin):
+    list_display = ("current_event", "slack_user_id")
+    list_filter = ('current_event',)
 
 @admin.register(Transcript)
 class TranscriptAdmin(admin.ModelAdmin):
-    list_display = ("slack_user_id", "time", "channel", "proof", "valid", "title", "ects")
-    list_filter = ('channel', 'valid')
+    list_display = ('event', "slack_user", "channel", "valid", "title", "ects")
+    list_filter = ('event', 'channel', 'valid')
 
 
 @admin.register(CertificateRequest)
 class CertificateRequestAdmin(admin.ModelAdmin):
-    list_display = ("slack_user_id", "time", "human_name", "human_name_updated", "approved", "transcript_count")
+    list_display = ("event", "slack_user", "human_name", "state", "transcript_count")
+    list_filter = ('event',)
 
 
 @admin.register(ScheduledMessage)

@@ -18,10 +18,10 @@ Certificate Request List
 	</thead>
 	<tbody>
 		{% for user in users %}
-		{% if user.approved != 'ACC' and user.approved != 'REJ' %}
+		{% if user.state != 'ACC' and user.state != 'REJ' %}
 		<tr>
 			<td>
-				<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
+				<a href="{% url 'transcript' event.id user.slack_user_id %}">{{ user.slack_user }}</a>
 			</td>
 			<td>
 				{{ user.transcript_count }}
@@ -46,10 +46,10 @@ Certificate Request List
 	</thead>
 	<tbody>
 		{% for user in users %}
-		{% if user.approved == 'ACC' %}
+		{% if user.state == 'ACC' %}
 		<tr>
 			<td>
-				<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
+				<a href="{% url 'transcript' event.id user.slack_user_id %}">{{ user.slack_user }}</a>
 			</td>
 			<td>
 				{{ user.transcript_count }}
@@ -74,10 +74,10 @@ Certificate Request List
 	</thead>
 	<tbody>
 		{% for user in users %}
-		{% if user.approved == 'REJ' %}
+		{% if user.state == 'REJ' %}
 		<tr>
 			<td>
-				<a href="{{ user.slack_user_id }}">{{ user.slack_user_id }}</a>
+				<a href="{% url 'transcript' event.id user.slack_user_id %}">{{ user.slack_user }}</a>
 			</td>
 			<td>
 				{{ user.transcript_count }}

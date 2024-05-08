@@ -6,25 +6,66 @@ from django.contrib.auth.models import User
 
 class Event(models.Model):
     name = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
     # Lets certbot automatically start/stop/know when event is over
     start = models.DateTimeField() # Nothing before this date
     end = models.DateTimeField() # End of Joining
     end_grace = models.DateTimeField() # Final day to register a completion
 
+    @property
+    def student_count(self):
+        return self.slackuser_set.all().count()
+
+    @property
+    def organiser_list(self):
+        return ', '.join([
+            str(u.human_name)
+            for u in
+            self.eventorganiser_set.all()
+        ])
+
+    def __str__(self):
+        return self.name
+
 
 class EventOrganiser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    human_name = models.CharField(max_length=32, null=True)
+    slack_user_id = models.CharField(max_length=32, null=True)
     events = models.ManyToManyField(Event)
 
+    @property
+    def events_managed(self):
+        return ', '.join([
+            str(e.name)
+            for e in
+            self.events.all()
+        ])
 
-class Registration(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    def __str__(self):
+        return self.human_name
+
+
+class SlackUser(models.Model):
     slack_user_id = models.CharField(max_length=32)
+    # We track the 'current' event which will be used to correctly tag transcripts/etc.
+    current_event = models.ForeignKey(Event, null=True, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.slack_user_id
 
 
 class Transcript(models.Model):
+    # Transcripts must still be associated with an event, which we'll copy
+    # (dereference) from the slack_user.current_event.
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    slack_user_id = models.CharField(max_length=32)
+    slack_user = models.ForeignKey(SlackUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     time = models.DateTimeField(auto_now_add=True)
     channel = models.TextField()
     proof = models.TextField()
@@ -47,11 +88,14 @@ class Transcript(models.Model):
 
 class CertificateRequest(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    slack_user_id = models.CharField(max_length=32)
+    slack_user = models.ForeignKey(SlackUser, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    # I don't really care if they want different names on each course
+    # transcript? Seems safer for folks who prefer different names in different
+    # contexts, too.
     human_name = models.CharField(max_length=64)
-    human_name_updated = models.DateTimeField(null=True, blank=True)
-    time = models.DateTimeField(auto_now_add=True)
-    course = models.TextField()
 
     CertificateStates = [
         ('ACC', 'Accepted'),
@@ -60,7 +104,7 @@ class CertificateRequest(models.Model):
         ('S/S', 'Certificate Sent'),
         ('R/S', 'Rejection Sent'),
     ]
-    approved = models.CharField(max_length=3, choices=CertificateStates, default='UNK')
+    state = models.CharField(max_length=3, choices=CertificateStates, default='UNK')
 
     @property
     def transcript_count(self):
@@ -91,8 +135,11 @@ class CertificateRequest(models.Model):
 class ScheduledMessage(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     slack_channel_id = models.CharField(max_length=32)
-    message = models.TextField()
+
     scheduled_for = models.DateTimeField()
+    scheduled_by = models.ForeignKey(EventOrganiser, on_delete=models.CASCADE)
+
+    message = models.TextField()
     sent = models.DateTimeField(null=True, blank=True)
 
     @property
@@ -101,6 +148,9 @@ class ScheduledMessage(models.Model):
 
 class Gratitude(models.Model):
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    slack_user = models.ForeignKey(SlackUser, on_delete=models.CASCADE)
+
     message = models.TextField()
     date = models.DateTimeField()
     slack_channel_id = models.CharField(max_length=64)
+    slack_channel_name = models.CharField(max_length=64)
