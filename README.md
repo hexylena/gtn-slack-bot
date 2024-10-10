@@ -30,3 +30,4 @@ and instructors will receive a message with which tutorials they're requesting +
 - We can automatically congratulate them in the channel and prompt them to make suggestions there or tell us what they thought about it, or one thing they wished it answered. This is a much more direct CTA than currently.
 - Instructors get a very very good view of which tutorials are being completed when.
 - The bot can control that a history is public and datasets shared properly and offer advice when it isn't, how to make their history public, instructions for sharing, etc.
+
