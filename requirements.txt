@@ -4,7 +4,6 @@ certifi==2023.5.7
 charset-normalizer==3.1.0
 dj-database-url==2.0.0
 Django==4.2.1
-django-heroku==0.3.1
 gunicorn==20.1.0
 idna==3.4
 isodate==0.6.1
