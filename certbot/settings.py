@@ -196,6 +196,7 @@ STATIC_URL = 'static/'
 # Enable WhiteNoise's GZip compression of static assets.
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
+MAX_CONN_AGE = 600
 if "DATABASE_URL" in os.environ:
     # Configure Django for DATABASE_URL environment variable.
     DATABASES["default"] = dj_database_url.config(
@@ -205,7 +206,6 @@ if "DATABASE_URL" in os.environ:
     if "CI" in os.environ:
         DATABASES["default"]["TEST"] = DATABASES["default"]
 
-MAX_CONN_AGE = 600
 IS_HEROKU = "DYNO" in os.environ
 
 # SECURITY WARNING: don't run with debug turned on in production!
